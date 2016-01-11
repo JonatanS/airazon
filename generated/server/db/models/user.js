@@ -13,18 +13,30 @@ var schema = new mongoose.Schema({
     salt: {
         type: String
     },
-    twitter: {
-        id: String,
-        username: String,
-        token: String,
-        tokenSecret: String
-    },
     facebook: {
         id: String
     },
     google: {
         id: String
-    }
+    },
+	isAdmin: {
+		type: boolean
+	},
+	billing: [{
+	 	lineOne: {type: String, required: true},
+		lineTwo: String,
+		zip: {type: String, required: true},
+		state: {type: String, required: true},
+		city: {type: String, required: true}
+		}],
+	shipping: [{
+	 	lineOne: {type: String, required: true},
+		lineTwo: String,
+		zip: {type: String, required: true},
+		state: {type: String, required: true},
+		city: {type: String, required: true}
+		}],
+	cart: [{type: mongoose.Schema.Types.ObjectId, ref: 'Product'}]
 });
 
 // method to remove sensitive information from user objects before sending them out
