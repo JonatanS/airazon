@@ -23,6 +23,7 @@ var schema = new mongoose.Schema({
 		type: boolean
 	},
 	billing: [{
+		name: {type: String, required: true},
 	 	lineOne: {type: String, required: true},
 		lineTwo: String,
 		zip: {type: String, required: true},
@@ -30,6 +31,7 @@ var schema = new mongoose.Schema({
 		city: {type: String, required: true}
 		}],
 	shipping: [{
+		name: {type: String, required: true},
 	 	lineOne: {type: String, required: true},
 		lineTwo: String,
 		zip: {type: String, required: true},
