@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/JonatanS/airazon.png?label=ready&title=Ready)](https://waffle.io/JonatanS/airazon)
 <p align="center"><img src="https://jlau-bucket-1.s3.amazonaws.com/uploads/topic/image/42/fullstack.png" /></p>
 
 <h3 align="center">Fullstack [Academy] Generator</h3>
