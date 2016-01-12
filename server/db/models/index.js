@@ -3,5 +3,5 @@
 // anywhere the User model needs to be used.
 require('./user');
 require('./product');
-require('./orders');
-require('./reviews');
+require('./order');
+require('./review');
