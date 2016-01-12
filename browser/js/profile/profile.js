@@ -1,6 +1,6 @@
 app.config(function ($stateProvider) {
 
-    $stateProvider.state('loggedInUser', {
+    $stateProvider.state('profile', {
         url: '/profile',
         template: '<img ng-repeat="item in stash" width="300" ng-src="{{ item }}" />',
         // controller: function ($scope) {
