@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-md-6 searchbar">
                     <div class="input-group">
-                      <input type="text" class="form-control input-lg" placeholder="Find Products">
+                      <input type="text" class="form-control input-lg" placeholder="Find Air">
                       <span class="input-group-addon" id="searchbar"><span class="glyphicon glyphicon-search"></span></span>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
 
                     <a  id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="fa fa-sign-in"></i></a>
                     <div ng-show="user" class="welcome">
-                        <span>Welcome, {{ user.email }}!</span>
+                        <span>Welcome, {{ user.firstName }}!</span>
                         <a ng-click="logout()">Logout</a>
                     </div>
                 </div>
