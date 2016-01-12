@@ -6,7 +6,7 @@ var chalk = require('chalk');
 var DATABASE_URI = require(path.join(__dirname, '../env')).DATABASE_URI;
 
 var mongoose = require('mongoose');
-var db = mongoose.connect(DATABASE_URI).connection;
+var db = mongoose.connect('mongodb://admin:stackstorepassword@ds043605.mongolab.com:43605/stackstore').connection;
 
 // Require our models -- these should register the model into mongoose
 // so the rest of the application can simply call mongoose.model('User')
