@@ -22,6 +22,8 @@ var schema = new mongoose.Schema({
 	isAdmin: {
 		type: Boolean
 	},
+    firstName: {type: String, required: true},
+    lastName: {type: String, required: true},
 	billing: [{
 		name: {type: String, required: true},
 	 	lineOne: {type: String, required: true},
