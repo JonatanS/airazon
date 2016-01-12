@@ -35,7 +35,7 @@ var seedUsers = function (products) {
             isAdmin: true,
             cart:[products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
-                name: "Jon Sa",
+                name: "Tester Admin",
                 lineOne: "5 Hanover Square",
                 city: "New York",
                 state: "NY",
@@ -55,14 +55,14 @@ var seedUsers = function (products) {
             isAdmin: false,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
-                name: "Jon St",
+                name: "Dan T",
                 lineOne: "6660 32nd Place NW",
                 city: "Washington",
                 state: "DC",
                 zipcode: "20015"
             }],
             shipping: [{
-                name: "Jon St",
+                name: "Dan T",
                 lineOne: "6680 32nd Place NW",
                 city: "Washington",
                 state: "DC",
@@ -75,14 +75,14 @@ var seedUsers = function (products) {
             isAdmin: true,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
-                name: "Jon Sr",
+                name: "Jess P",
                 lineOne: "1045 Shepard Drive",
                 city: "Blue Bell",
                 state: "PA",
                 zipcode: "19422"
             }],
             shipping: [{
-                name: "Jon Sr",
+                name: "Jess P",
                 lineOne: "284901 32nd Place NW",
                 city: "Washington",
                 state: "DC",
@@ -95,14 +95,14 @@ var seedUsers = function (products) {
             isAdmin: false,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
-                name: "Jon Ss",
+                name: "Everett",
                 lineOne: "10 Downing Street",
                 city: "San Francisco",
                 state: "CA",
                 zipcode: "94101"
             }],
             shipping: [{
-                name: "Jon Ss",
+                name: "Everett",
                 lineOne: "6680 32nd Place NW",
                 city: "Washington",
                 state: "DC",
@@ -252,10 +252,9 @@ connectToDb.then(function () {
         if (products.length === 0) {
             return seedProducts();
         } else {
-            console.log(chalk.magenta('Seems to already be user data, exiting!'));
+            console.log(chalk.magenta('Seems to already be product data, exiting!'));
         }
     }).then(function(products){
-        console.log(products)
         return User.findAsync({}).then(function (users) {
             if (users.length === 0) {
                 return seedUsers(products);
@@ -263,7 +262,7 @@ connectToDb.then(function () {
                 console.log(chalk.magenta('Seems to already be user data, exiting!'));
             }
         }).then(function(users){
-            console.log(chalk.green('user seed successful!'));
+            console.log(chalk.green('users seed successful!'));
             return Order.findAsync({}).then(function (orders) {
                 if (orders.length === 0) {
                     return seedOrders(products, users);
@@ -271,12 +270,12 @@ connectToDb.then(function () {
                     console.log(chalk.magenta('Seems to already be user data, exiting!'));
                 }
             }).then(function(){
-                console.log(chalk.green('order seed successful!'));
+                console.log(chalk.green('orders seed successful!'));
                 return Review.findAsync({}).then(function (reviews) {
                     if (reviews.length === 0) {
                         return seedReviews(products, users);
                     } else {
-                        console.log(chalk.magenta('Seems to already be user data, exiting!'));
+                        console.log(chalk.magenta('Seems to already be review data, exiting!'));
                     }
                 })
             }).then(function(){
@@ -286,7 +285,7 @@ connectToDb.then(function () {
             })
         })
     }).then(function () {
-        console.log(chalk.green('product seed successful!'));
+        console.log(chalk.green('products seed successful!'));
         process.kill(0);
 
     }).catch(function (err) {
