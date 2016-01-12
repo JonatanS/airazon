@@ -7,8 +7,14 @@ var schema = new mongoose.Schema({
 	name: {type: String, required: true},
 	price: {type: Number, required: true},
 	stock: {type: Number, required: true},
-	// imageUrls: {type: [String], validate: [atLeastOne, 'At least one image url is required']},
-	// tags: {type: [String], validate: [atLeastOne, 'At least one tag required']},
+	images: {type: [String], validate: { 
+		validator: atLeastOne,
+		message: 'At least one image url is required'}
+	},
+	tags: {type: [String], validate: { 
+		validator: atLeastOne,
+		message: 'At least one image url is required'}
+	},
 	source: {
 			latitude: {type: Number, required: true},
 			longitude: {type: Number, required: true},
@@ -22,7 +28,7 @@ schema.virtual('description').get(function() {
 		return returnMe;
 });
 
-var atLeastOne = function(val) {
+function atLeastOne(val) {
 		return val.length > 0;
 }
 
