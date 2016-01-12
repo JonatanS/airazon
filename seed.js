@@ -34,6 +34,8 @@ var seedUsers = function (products) {
         {
             isAdmin: true,
             cart:[products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "John",
+            lastName: "Doe",
             billing: [{
                 name: "Tester Admin",
                 lineOne: "5 Hanover Square",
@@ -54,6 +56,8 @@ var seedUsers = function (products) {
         {
             isAdmin: false,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Jane",
+            lastName: "Doe",
             billing: [{
                 name: "Dan T",
                 lineOne: "6660 32nd Place NW",
@@ -74,6 +78,8 @@ var seedUsers = function (products) {
         {
             isAdmin: true,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Joe",
+            lastName: "Canoli",
             billing: [{
                 name: "Jess P",
                 lineOne: "1045 Shepard Drive",
@@ -94,6 +100,8 @@ var seedUsers = function (products) {
         {
             isAdmin: false,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Eidur",
+            lastName: "Gudjohnsen",
             billing: [{
                 name: "Everett",
                 lineOne: "10 Downing Street",
@@ -114,6 +122,9 @@ var seedUsers = function (products) {
         {
             isAdmin: true,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Rajon",
+            lastName: "Rando",
+
             billing: [{
                 name: "Jon S",
                 lineOne: "1162 Pacific Street",
