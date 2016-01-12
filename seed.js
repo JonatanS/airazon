@@ -53,7 +53,7 @@ var seedUsers = function (products) {
         },
         {
             isAdmin: false,
-            // cart: [Product.find({}).then(function(products){return products[Math.floor(Math.random()*products.length)]._id})],
+            cart: [products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
                 name: "Jon St",
                 lineOne: "6660 32nd Place NW",
@@ -73,7 +73,7 @@ var seedUsers = function (products) {
         },
         {
             isAdmin: true,
-            // cart: [Product.find({}).then(function(products){return products[Math.floor(Math.random()*products.length)]._id})],
+            cart: [products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
                 name: "Jon Sr",
                 lineOne: "1045 Shepard Drive",
@@ -93,7 +93,7 @@ var seedUsers = function (products) {
         },
         {
             isAdmin: false,
-            // cart: [Product.find({}).then(function(products){return products[Math.floor(Math.random()*products.length)]._id})],
+            cart: [products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
                 name: "Jon Ss",
                 lineOne: "10 Downing Street",
@@ -113,7 +113,7 @@ var seedUsers = function (products) {
         },
         {
             isAdmin: true,
-            // cart: [Product.find({}).then(function(products){return products[Math.floor(Math.random()*products.length)]._id})],
+            cart: [products[Math.floor(Math.random()*products.length)]._id],
             billing: [{
                 name: "Jon S",
                 lineOne: "1162 Pacific Street",
@@ -136,51 +136,35 @@ var seedUsers = function (products) {
 
 };
 
-var seedReviews = function(){
+var seedReviews = function(products, users){
     var reviews = [
         {
             title: "The worst air ever",
             body: "This air flippin' sucked. 10/10 would never buy again",
             rating: 1,
-            userId: User.findOne({email:'everett@fsa.com'}).then(function(user){
-                return user._id
-            }),
-            productId: Product.find().then(function(products){
-                return products[2]._id
-            })
+            userId: users[Math.floor(Math.random()*users.length)]._id,
+            productId: products[Math.floor(Math.random()*products.length)]._id
         },
         {
             title: "This air felt good",
             body: "Perfect for respirating. In love with this air.",
             rating: 5,
-            userId: User.findOne({email:'jon@fsa.com'}).then(function(user){
-                return user._id
-            }),
-            productId: Product.find().then(function(products){
-                return products[2]._id
-            })
+            userId: users[Math.floor(Math.random()*users.length)]._id,
+            productId: products[Math.floor(Math.random()*products.length)]._id
         },
         {
             title: "Could be better",
             body: "I could definitely feel that this air was fresh, but it had a lemon after-taste, which I found to be quite unpleasant.",
             rating: 3,
-            userId: User.findOne({email:'wnmprk@fsa.com'}).then(function(user){
-                return user._id
-            }),
-            productId: Product.find().then(function(products){
-                return products[1]._id
-            })
+            userId: users[Math.floor(Math.random()*users.length)]._id,
+            productId: products[Math.floor(Math.random()*products.length)]._id
         },
         {
             title: "This air is filthy",
             body: "This air should be sold for $0.02, not $2! You can actually see the smog in the bottle. Gross.",
             rating: 1,
-            userId:User.findOne({email:'ldt@fsa.com'}).then(function(user){
-                return user._id
-            }),
-            productId: Product.find().then(function(products){
-                return products[0]._id
-            })
+            userId: users[Math.floor(Math.random()*users.length)]._id,
+            productId: products[Math.floor(Math.random()*products.length)]._id
         }
     ]
     return Review.createAsync(reviews);
@@ -229,49 +213,34 @@ var seedProducts = function() {
     return Product.createAsync(products);
 }
 
-var seedOrders = function() {
+var seedOrders = function(products, users) {
     var orders = [
         {
             products:[
                 {
                     pricePaid: 1232,
-                    reference: Product.find({})
-                                .then(function(products){
-                                    return products[Math.floor(Math.random()*products.length)]
-                                })
+                    reference: products[Math.floor(Math.random()*products.length)]._id
                 }
             ],
-            userId: User.findOne({email:'ldt@fsa.com'}).then(function(user){
-                return user._id
-            })
+            userId: users[Math.floor(Math.random()*users.length)]._id
         },
         {
             products:[
                 {
                     pricePaid: 22,
-                    reference: Product.find({})
-                                .then(function(products){
-                                    return products[Math.floor(Math.random()*products.length)]
-                                })
+                    reference: products[Math.floor(Math.random()*products.length)]._id
                 }
             ],
-            userId: User.findOne({email:'wnmprk@fsa.com'}).then(function(user){
-                return user._id
-            })
+            userId: users[Math.floor(Math.random()*users.length)]._id
         },
         {
             products:[
                 {
                     pricePaid: 112,
-                    reference: Product.find({})
-                                .then(function(products){
-                                    return products[Math.floor(Math.random()*products.length)]
-                                })
+                    reference: products[Math.floor(Math.random()*products.length)]._id
                 }
             ],
-            userId: User.findOne({email:'jon@fsa.com'}).then(function(user){
-                return user._id
-            })
+            userId: users[Math.floor(Math.random()*users.length)]._id
         }
     ]
     return Order.createAsync(orders);
@@ -287,19 +256,39 @@ connectToDb.then(function () {
         }
     }).then(function(products){
         console.log(products)
-        User.findAsync({}).then(function (users) {
+        return User.findAsync({}).then(function (users) {
             if (users.length === 0) {
                 return seedUsers(products);
             } else {
                 console.log(chalk.magenta('Seems to already be user data, exiting!'));
             }
-        }).then(function () {
+        }).then(function(users){
             console.log(chalk.green('user seed successful!'));
-        }).catch(function (err) {
-            console.error(err);
+            return Order.findAsync({}).then(function (orders) {
+                if (orders.length === 0) {
+                    return seedOrders(products, users);
+                } else {
+                    console.log(chalk.magenta('Seems to already be user data, exiting!'));
+                }
+            }).then(function(){
+                console.log(chalk.green('order seed successful!'));
+                return Review.findAsync({}).then(function (reviews) {
+                    if (reviews.length === 0) {
+                        return seedReviews(products, users);
+                    } else {
+                        console.log(chalk.magenta('Seems to already be user data, exiting!'));
+                    }
+                })
+            }).then(function(){
+                console.log(chalk.green('reviews seed successful!'));
+            }).catch(function (err) {
+                console.error(err);
+            })
         })
     }).then(function () {
         console.log(chalk.green('product seed successful!'));
+        process.kill(0);
+
     }).catch(function (err) {
         console.error(err);
     })
