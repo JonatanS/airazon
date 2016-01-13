@@ -4,7 +4,6 @@ app.directive('product', function() {
 				scope: { thisProduct: '=banana' },
 				templateUrl: 'js/products/products.directive.html',
 				link: function(scope, element, attr) {
-					console.log(scope.thisProduct);
 				}
 		}
 });

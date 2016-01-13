@@ -188,8 +188,9 @@ var seedProducts = function() {
             name: "Air from NY",
             price: 100,
             stock: 1000,
-            images: ['https://static.pexels.com/photos/2324/skyline-buildings-new-york-skyscrapers.jpg','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUV95ErqGmD1eZlUCZ0Rbvc-dvZvSMWujulwPYmWK-IzU2HrYM'],
+            images: ['http://i.imgur.com/oJypOhK.jpg', 'http://i.imgur.com/m7Ig7ML.jpg'],
             tags: ["New York", "urban", "premium", "NY"],
+            category: ["Urban"],
             source: {
                 latitude: 40.7064248,
                 longitude: -74.0078114,
@@ -200,20 +201,35 @@ var seedProducts = function() {
             name: "Air from Sydney, AU",
             price: 250,
             stock: 100,
-            images: ['https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRNypjn-Z-TWQFZvifZZw_hY47fnltdEX4Pv_j1abeTwJbRx2Je'],
+            images: ['http://i.imgur.com/XFMfIIP.jpg', 'http://i.imgur.com/7T1EjWH.jpg'],
             tags: ["Australia","Sydney", "urban", "premium", "clean", "AU", "foreign", "international"],
+            category: ["Exotic"],
             source: {
-                latitude: -33.8560861,
-                longitude: 151.2159864,
-                altitude: 2
+                latitude: -2.163106,
+                longitude: -55.126648,
+                altitude: 3
             }
         },
         {
             name: "Air from Beijing, China",
             price: 2,
             stock: 10000,
-            images: ['http://i.huffpost.com/gen/1565472/images/o-BEIJING-SMOG-facebook.jpg', 'http://news.bbcimg.co.uk/media/images/65252000/jpg/_65252694_u3k1uo1r.jpg'],
+            images: ['http://i.imgur.com/4kad0ty.jpg', 'http://i.imgur.com/JkFalKZ.jpg'],
             tags: ["China","Beijing", "urban", "smog", "dirty", "foreign", "international"],
+            category: ["Urban"],
+            source: {
+                latitude: 39.9068385,
+                longitude: 116.3989807,
+                altitude: 154
+            }
+        },
+        {
+            name: "Air from the Amazon Rainforest",
+            price: 2,
+            stock: 10000,
+            images: ['http://i.imgur.com/j3uzyMn.jpg', 'http://i.imgur.com/L8OnxfU.jpg'],
+            tags: ["Amazon","Rainforest", "clean", "beautiful", "nature", "foreign", "international"],
+            category: ["Exotic", "Nature"],
             source: {
                 latitude: 39.9068385,
                 longitude: 116.3989807,
