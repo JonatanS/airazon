@@ -1,3 +1,26 @@
 <h1>{{ currentUser.firstName + ' ' + currentUser.lastName }}'s Profile</h1>
 
-<p>{{ currentUser }}</p>
+<div class="row userinfo">
+    <div class="col-md-4 user">
+        <h4>Your Profile</h4>
+        <ul>
+            <li>First: {{val}}</li>
+        </ul>
+    </div>
+
+    <div class="col-md-4 billing address">
+        <h4>Default Billing Address</h4>
+        <ul ng-repeat="(key, val) in currentUser.billing[0]"ng-if="key!='_id'">
+            <li>{{key | uppercase}}: {{val}}</li>
+        </ul>
+    </div>
+
+    <div class="col-md-4 shipping address">
+        <h4>Default Shipping Address</h4>
+        <ul ng-repeat="(key, val) in currentUser.shipping[0]" ng-if="key!='_id'">
+            <li>{{key | uppercase}}: {{val}}</li>
+        </ul>
+    </div>
+</div>
+
+{{currentUser.reviews}}

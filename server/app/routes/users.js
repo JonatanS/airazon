@@ -23,6 +23,7 @@ router.get('/', function (req, res, next) {
 	.then(null, next);
 });
 
+//MIGHT BE USED BY ADMIN?
 router.get('/:id', function (req, res, next) {
 	var userReviews = Review.find({ userId: req.params.id });
 	var userOrders = Order.find({ userId: req.params.id });
