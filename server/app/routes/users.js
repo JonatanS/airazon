@@ -7,6 +7,14 @@ var User = mongoose.models.User;
 var Review = mongoose.models.Review;
 var Order = mongoose.models.Order;
 
+var ensureAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.status(401).end();
+    }
+};
+
 router.get('/', function (req, res, next) {
 	return User.find({})
 	.then(function (users) {
