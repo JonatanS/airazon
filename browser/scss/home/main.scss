@@ -1,12 +1,17 @@
 #home {
-  fullstack-logo {
-    padding-top: 30px;
-    width: 150px;
-    margin: 0 auto;
+  .jumbotron {
+      background-image: url("http://images3.alphacoders.com/719/71999.jpg");
+      height: 400px;
   }
   h1 {
     margin-top: 40px;
     text-align: center;
+    color: black;
+  }
+  p{
+    margin-top: 50px;
+    text-align: center;
+    color: black;
   }
 }
 

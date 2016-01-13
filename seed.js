@@ -34,8 +34,10 @@ var seedUsers = function (products) {
         {
             isAdmin: true,
             cart:[products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "John",
+            lastName: "Doe",
             billing: [{
-                name: "Jon Sa",
+                name: "Tester Admin",
                 lineOne: "5 Hanover Square",
                 city: "New York",
                 state: "NY",
@@ -54,15 +56,17 @@ var seedUsers = function (products) {
         {
             isAdmin: false,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Jane",
+            lastName: "Doe",
             billing: [{
-                name: "Jon St",
+                name: "Dan T",
                 lineOne: "6660 32nd Place NW",
                 city: "Washington",
                 state: "DC",
                 zipcode: "20015"
             }],
             shipping: [{
-                name: "Jon St",
+                name: "Dan T",
                 lineOne: "6680 32nd Place NW",
                 city: "Washington",
                 state: "DC",
@@ -74,15 +78,17 @@ var seedUsers = function (products) {
         {
             isAdmin: true,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Joe",
+            lastName: "Canoli",
             billing: [{
-                name: "Jon Sr",
+                name: "Jess P",
                 lineOne: "1045 Shepard Drive",
                 city: "Blue Bell",
                 state: "PA",
                 zipcode: "19422"
             }],
             shipping: [{
-                name: "Jon Sr",
+                name: "Jess P",
                 lineOne: "284901 32nd Place NW",
                 city: "Washington",
                 state: "DC",
@@ -94,15 +100,17 @@ var seedUsers = function (products) {
         {
             isAdmin: false,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Eidur",
+            lastName: "Gudjohnsen",
             billing: [{
-                name: "Jon Ss",
+                name: "Everett",
                 lineOne: "10 Downing Street",
                 city: "San Francisco",
                 state: "CA",
                 zipcode: "94101"
             }],
             shipping: [{
-                name: "Jon Ss",
+                name: "Everett",
                 lineOne: "6680 32nd Place NW",
                 city: "Washington",
                 state: "DC",
@@ -114,6 +122,9 @@ var seedUsers = function (products) {
         {
             isAdmin: true,
             cart: [products[Math.floor(Math.random()*products.length)]._id],
+            firstName: "Rajon",
+            lastName: "Rando",
+
             billing: [{
                 name: "Jon S",
                 lineOne: "1162 Pacific Street",
@@ -177,8 +188,9 @@ var seedProducts = function() {
             name: "Air from NY",
             price: 100,
             stock: 1000,
-            images: ['https://static.pexels.com/photos/2324/skyline-buildings-new-york-skyscrapers.jpg','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUV95ErqGmD1eZlUCZ0Rbvc-dvZvSMWujulwPYmWK-IzU2HrYM'],
+            images: ['http://i.imgur.com/oJypOhK.jpg', 'http://i.imgur.com/m7Ig7ML.jpg'],
             tags: ["New York", "urban", "premium", "NY"],
+            category: ["Urban"],
             source: {
                 latitude: 40.7064248,
                 longitude: -74.0078114,
@@ -189,20 +201,35 @@ var seedProducts = function() {
             name: "Air from Sydney, AU",
             price: 250,
             stock: 100,
-            images: ['https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRNypjn-Z-TWQFZvifZZw_hY47fnltdEX4Pv_j1abeTwJbRx2Je'],
+            images: ['http://i.imgur.com/XFMfIIP.jpg', 'http://i.imgur.com/7T1EjWH.jpg'],
             tags: ["Australia","Sydney", "urban", "premium", "clean", "AU", "foreign", "international"],
+            category: ["Exotic"],
             source: {
-                latitude: -33.8560861,
-                longitude: 151.2159864,
-                altitude: 2
+                latitude: -2.163106,
+                longitude: -55.126648,
+                altitude: 3
             }
         },
         {
             name: "Air from Beijing, China",
             price: 2,
             stock: 10000,
-            images: ['http://i.huffpost.com/gen/1565472/images/o-BEIJING-SMOG-facebook.jpg', 'http://news.bbcimg.co.uk/media/images/65252000/jpg/_65252694_u3k1uo1r.jpg'],
+            images: ['http://i.imgur.com/4kad0ty.jpg', 'http://i.imgur.com/JkFalKZ.jpg'],
             tags: ["China","Beijing", "urban", "smog", "dirty", "foreign", "international"],
+            category: ["Urban"],
+            source: {
+                latitude: 39.9068385,
+                longitude: 116.3989807,
+                altitude: 154
+            }
+        },
+        {
+            name: "Air from the Amazon Rainforest",
+            price: 2,
+            stock: 10000,
+            images: ['http://i.imgur.com/j3uzyMn.jpg', 'http://i.imgur.com/L8OnxfU.jpg'],
+            tags: ["Amazon","Rainforest", "clean", "beautiful", "nature", "foreign", "international"],
+            category: ["Exotic", "Nature"],
             source: {
                 latitude: 39.9068385,
                 longitude: 116.3989807,
@@ -252,10 +279,9 @@ connectToDb.then(function () {
         if (products.length === 0) {
             return seedProducts();
         } else {
-            console.log(chalk.magenta('Seems to already be user data, exiting!'));
+            console.log(chalk.magenta('Seems to already be product data, exiting!'));
         }
     }).then(function(products){
-        console.log(products)
         return User.findAsync({}).then(function (users) {
             if (users.length === 0) {
                 return seedUsers(products);
@@ -263,7 +289,7 @@ connectToDb.then(function () {
                 console.log(chalk.magenta('Seems to already be user data, exiting!'));
             }
         }).then(function(users){
-            console.log(chalk.green('user seed successful!'));
+            console.log(chalk.green('users seed successful!'));
             return Order.findAsync({}).then(function (orders) {
                 if (orders.length === 0) {
                     return seedOrders(products, users);
@@ -271,12 +297,12 @@ connectToDb.then(function () {
                     console.log(chalk.magenta('Seems to already be user data, exiting!'));
                 }
             }).then(function(){
-                console.log(chalk.green('order seed successful!'));
+                console.log(chalk.green('orders seed successful!'));
                 return Review.findAsync({}).then(function (reviews) {
                     if (reviews.length === 0) {
                         return seedReviews(products, users);
                     } else {
-                        console.log(chalk.magenta('Seems to already be user data, exiting!'));
+                        console.log(chalk.magenta('Seems to already be review data, exiting!'));
                     }
                 })
             }).then(function(){
@@ -286,7 +312,7 @@ connectToDb.then(function () {
             })
         })
     }).then(function () {
-        console.log(chalk.green('product seed successful!'));
+        console.log(chalk.green('products seed successful!'));
         process.kill(0);
 
     }).catch(function (err) {
