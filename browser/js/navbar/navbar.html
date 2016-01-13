@@ -18,10 +18,22 @@
                 </div>
                 <div  class="col-sm-3 login">
 
-                    <a  id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="fa fa-sign-in"></i></a>
+                    <a id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="fa fa-sign-in"></i></a>
                     <div ng-show="user" class="welcome">
-                        <span>Welcome, {{ user.firstName }}!</span>
-                        <a ng-click="logout()">Logout</a>
+
+                        <div class="dropdown">
+                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" ui-sref='profile'>
+                            {{ user.firstName + ' ' + user.lastName }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li><a href="#">Your Account</a></li>
+                            <li><a href="#">Edit Account</a></li>
+                            <li><a href="#">View Orders</a></li>
+                            <li><a href="#">View Reviews</a></li>
+                          </ul>
+                        </div>
+                        <a id="logout-btn" ng-click="logout()"><span><i class="fa fa-sign-out"></i></span></a>
                     </div>
                 </div>
             </div>
