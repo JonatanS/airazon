@@ -42,7 +42,7 @@ router.post("/signup", function(req,res,next){
 	});
 })
 
-router.put('/addAddress/', function(req, res, next) {
+router.put('/addAddress', function(req, res, next) {
 	User.findById(req.body.userId).then(function(user){
 		var newAddress = JSON.parse(req.body.address)
 		if(req.body.type === "shipping"){
@@ -64,7 +64,48 @@ router.put('/addAddress/', function(req, res, next) {
 	});
 });
 
-
+router.put("/updateAddress", function(req,res,next){
+	var editedAddress = JSON.parse(req.body.address);
+	var addressId = editedAddress._id;
+	// console.log(editedAddress.zipcode)
+	User.findById(req.body.userId).then(function(user){
+		var indexOfAddress;
+		if(req.body.type==="shipping"){
+			for(var i=0; i<user.shipping.length; i++){
+				// console.log(user.shipping[i]._id.toString(), addressId)
+				if(user.shipping[i]._id.toString() === addressId){
+					console.log("THIS WAS FOUND")
+					indexOfAddress = i;			
+				}
+			}
+			console.log(user.shipping[indexOfAddress])
+			for(var key in user.shipping[indexOfAddress]){
+				if(key!=="_id"){
+					user.shipping[indexOfAddress][key] = editedAddress[key] ? editedAddress[key]: user.shipping[indexOfAddress][key]
+				}
+			}
+			console.log(user.shipping[indexOfAddress])
+		}
+		else{
+			for(var i=0; i<user.billing.length; i++){
+				if(user.billing[i]._id.toString() === addressId){
+					indexOfAddress = i;			
+				}
+			}
+			for(var key in user.billing[indexOfAddress]){
+				if(key!=="_id"){
+					user.billing[indexOfAddress][key] = editedAddress[key] ? editedAddress[key]: user.billing[indexOfAddress][key]
+				}
+			}
+		}
+		user.save().then(function(user){
+			res.send(user)
+		})
+	}).then(null, function(err) {
+		console.error(err);
+		res.send(err);
+	});
+})
 
 router.delete("/deleteAddress", function(req, res, next){
 	var addressId = req.body.addressId
