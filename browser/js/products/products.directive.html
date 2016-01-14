@@ -1,0 +1,11 @@
+<div ng-controller="SingleProductCtrl" class='col-lg-3 col-md-4 col-sm-6' >
+    <div>
+        <img class="product_images center-block" ng-src='{{thisProduct.emitted.fulfill[0].product.images[0]}}' width='80%'>
+    </div>
+    <div class="text-center">
+        {{thisProduct.emitted.fulfill[0].product.name}}
+        <br>
+        <span ng-repeat="t in ratingArr track by $index"><i class='material-icons stars md-dark'>star_rate</i></span><span ng-repeat="t in remainder track by $index"><i class='material-icons stars white'>star_rate</i></span>
+    </div>
+</div>
+
