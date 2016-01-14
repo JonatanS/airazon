@@ -8,11 +8,11 @@ var Review = mongoose.models.Review;
 var Order = mongoose.models.Order;
 
 var ensureAuthenticated = function (req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.status(401).end();
-    }
+	if (req.isAuthenticated()) {
+		next();
+	} else {
+		res.status(401).end();
+	}
 };
 
 router.get('/', function (req, res, next) {
@@ -20,7 +20,36 @@ router.get('/', function (req, res, next) {
 	.then(function (users) {
 		res.send(users);
 	})
-	.then(null, next);
+.then(null, next);
+});
+
+router.post("/signup", function(req,res,next){
+	var importantObj = {
+	 email : req.body.email,
+	 password : req.body.password,
+	 firstName : req.body.firstName,
+	 lastName : req.body.lastName,
+	 isAdmin: req.body.isAdmin,
+	 billing: JSON.parse(req.body.billing),
+	 shipping: JSON.parse(req.body.shipping),
+	 cart: req.body.cart
+	}
+	User.create(importantObj).then(function(result) {
+		res.send(result);
+	}).then(null, function(err) {
+		console.error(err);
+		res.status(500).send(err);
+	});
+})
+
+router.put('/addShipping/', function(req, res, next) {
+	var idToUpdateBy = mongoose.Types.ObjectId(req.body.userId);
+	User.update({_id: idToUpdateBy}, {$push: {shipping:req.body.newShipping}}, {runValidators: true}).then(function(result) {
+		res.send(result)
+	}).then(null, function(err) {
+		console.error(err);
+		res.send(err);
+	});
 });
 
 router.get('/:id', function (req, res, next) {
@@ -34,5 +63,5 @@ router.get('/:id', function (req, res, next) {
 		user.orders = data[2];
 		res.send(user);
 	})
-	.then(null, next);
+.then(null, next);
 });
