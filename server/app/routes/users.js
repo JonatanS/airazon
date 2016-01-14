@@ -43,9 +43,21 @@ router.post("/signup", function(req,res,next){
 })
 
 router.put('/addShipping/', function(req, res, next) {
-	var idToUpdateBy = mongoose.Types.ObjectId(req.body.userId);
-	User.update({_id: idToUpdateBy}, {$push: {shipping:req.body.newShipping}}, {runValidators: true}).then(function(result) {
-		res.send(result)
+	User.findById(req.body.userId).then(function(user){
+		// console.log(user)
+		// console.log(req.body.newShipping)
+		var newShipping = JSON.parse(req.body.newShipping)
+		user.shipping.push(newShipping)
+		// console.log(req.body.newShipping)
+		// user.markModified('shipping')
+		console.log(user.shipping)
+		user.save().then(function(){
+			console.log(user)
+			res.send(user)
+		}).then(null, function(err){
+			console.err(err);
+			res.send(err);
+		})
 	}).then(null, function(err) {
 		console.error(err);
 		res.send(err);
