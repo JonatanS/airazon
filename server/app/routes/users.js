@@ -42,15 +42,15 @@ router.post("/signup", function(req,res,next){
 	});
 })
 
-router.put('/addShipping/', function(req, res, next) {
+router.put('/addAddress/', function(req, res, next) {
 	User.findById(req.body.userId).then(function(user){
-		// console.log(user)
-		// console.log(req.body.newShipping)
-		var newShipping = JSON.parse(req.body.newShipping)
-		user.shipping.push(newShipping)
-		// console.log(req.body.newShipping)
-		// user.markModified('shipping')
-		console.log(user.shipping)
+		var newAddress = JSON.parse(req.body.address)
+		if(req.body.type === "shipping"){
+			user.shipping.push(newAddress)
+		}
+		else{
+			user.billing.push(newAddress)
+		}
 		user.save().then(function(){
 			console.log(user)
 			res.send(user)
@@ -64,23 +64,34 @@ router.put('/addShipping/', function(req, res, next) {
 	});
 });
 
-router.put('/addBilling/', function(req, res, next) {
+
+
+router.delete("/deleteAddress", function(req, res, next){
+	var addressId = req.body.addressId
 	User.findById(req.body.userId).then(function(user){
-		var newBilling = JSON.parse(req.body.newBilling)
-		user.billing.push(newBilling)
-		console.dir(user.billing)
-		user.save().then(function(){
-			console.log(user)
+		var indexOfAddress;
+		if(req.body.type==="shipping"){
+			for(var i=0; i<user.shipping.length; i++){
+				if(user.shipping[i]._id.toString() === addressId){
+					indexOfAddress = i;			}
+			}
+			user.shipping.splice(indexOfAddress,1);
+		}
+		else{
+			for(var i=0; i<user.billing.length; i++){
+				if(user.billing[i]._id.toString() === addressId){
+					indexOfAddress = i;			}
+			}
+			user.billing.splice(indexOfAddress,1);
+		}
+		user.save().then(function(user){
 			res.send(user)
-		}).then(null, function(err){
-			console.err(err);
-			res.send(err);
 		})
 	}).then(null, function(err) {
 		console.error(err);
 		res.send(err);
 	});
-});
+})
 
 //MIGHT BE USED BY ADMIN?
 router.get('/:id', function (req, res, next) {
