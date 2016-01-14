@@ -24,14 +24,15 @@ router.get('/', function (req, res, next) {
 });
 
 router.post("/signup", function(req,res,next){
+	console.log("THIS IS THE BODY:",req.body.email)
 	var importantObj = {
 	 email : req.body.email,
 	 password : req.body.password,
 	 firstName : req.body.firstName,
 	 lastName : req.body.lastName,
 	 isAdmin: req.body.isAdmin,
-	 billing: JSON.parse(req.body.billing),
-	 shipping: JSON.parse(req.body.shipping),
+	 billing: req.body.billing,
+	 shipping: req.body.shipping,
 	 cart: req.body.cart
 	}
 	User.create(importantObj).then(function(result) {
@@ -67,12 +68,10 @@ router.put('/addAddress', function(req, res, next) {
 router.put("/updateAddress", function(req,res,next){
 	var editedAddress = JSON.parse(req.body.address);
 	var addressId = editedAddress._id;
-	// console.log(editedAddress.zipcode)
 	User.findById(req.body.userId).then(function(user){
 		var indexOfAddress;
 		if(req.body.type==="shipping"){
 			for(var i=0; i<user.shipping.length; i++){
-				// console.log(user.shipping[i]._id.toString(), addressId)
 				if(user.shipping[i]._id.toString() === addressId){
 					indexOfAddress = i;			
 				}

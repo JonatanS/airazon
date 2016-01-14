@@ -38,13 +38,19 @@ describe('Members Route', function () {
 
 	});
 
-	xdescribe('Authenticated request', function () {
+	describe('Authenticated request', function () {
 
 		var loggedInAgent;
 
 		var userInfo = {
 			email: 'joe@gmail.com',
-			password: 'shoopdawoop'
+			password: 'shoopdawoop',
+			firstName: "raquan",
+			lastName: "doe",
+			isAdmin: false,
+			billing: [{name:"somename", lineOne: "423 somestreet", zipcode: "20001", state: "NY", city: "NY"}],
+			shipping: [{name:"somename", lineOne: "423 somestreet", zipcode: "20001", state: "NY", city: "NY"}],
+			cart: [null]
 		};
 
 		beforeEach('Create a user', function (done) {
@@ -56,10 +62,18 @@ describe('Members Route', function () {
 			loggedInAgent.post('/login').send(userInfo).end(done);
 		});
 
-		xit('should get with 200 response and with an array as the body', function (done) {
-			loggedInAgent.get('/api/members/secret-stash').expect(200).end(function (err, response) {
+		it('should get with 200 response and with an array as the body', function (done) {
+			loggedInAgent.get('/api/users/').expect(200).end(function (err, response) {
 				if (err) return done(err);
-				expect(response.body).to.be.an('array');
+				expect(response.body[0].email).equals('joe@gmail.com');
+				done();
+			});
+		});
+
+		it('should get with 200 response and with an object as the body', function (done) {
+			loggedInAgent.post('/api/users/signup').send(userInfo).expect(200).end(function (err, response) {
+				if (err) return done(err);
+				expect(response.body.email).equals('joe@gmail.com');
 				done();
 			});
 		});
