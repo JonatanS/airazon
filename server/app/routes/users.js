@@ -82,6 +82,7 @@ router.put('/addBilling/', function(req, res, next) {
 	});
 });
 
+//MIGHT BE USED BY ADMIN?
 router.get('/:id', function (req, res, next) {
 	var userReviews = Review.find({ userId: req.params.id });
 	var userOrders = Order.find({ userId: req.params.id });
@@ -93,5 +94,13 @@ router.get('/:id', function (req, res, next) {
 		user.orders = data[2];
 		res.send(user);
 	})
-.then(null, next);
+	.then(null, next);
+});
+
+router.put('/:id', function (req, res, next) {
+	return User.findOneAndUpdate({ _id: req.params.id }, req.body)
+	.then(function (updatedUser) {
+		res.send(updatedUser);
+	})
+	.then(null, next);
 });

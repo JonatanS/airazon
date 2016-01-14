@@ -1,3 +1,32 @@
+<div id="profile">
 <h1>{{ currentUser.firstName + ' ' + currentUser.lastName }}'s Profile</h1>
 
-<p>{{ currentUser }}</p>
+<div class="row userinfo">
+    <div class="col-md-4 user">
+        <h4>Your Profile<span><a ui-sref="profile-edit"><i class="material-icons">mode_edit</i></a></span></h4>
+        <ul>
+            <li>NAME: {{ currentUser.firstName + ' ' + currentUser.lastName }}</li>
+            <li>EMAIL: {{ currentUser.email }}</li>
+            <li>PASSWORD: {{ currentUser.password | password }}</li>
+            <li># OF ORDERS: {{ currentUser.orders.length }}</li>
+            <li># OF REVIEWS: {{ currentUser.reviews.length }}</li>
+        </ul>
+    </div>
+
+    <div class="col-md-4 billing address">
+        <h4>Default Billing Address<span><a ui-sref="editAddress(currentUser.billing[0]._id)"><i class="material-icons">mode_edit</i></a></span></h4>
+        <ul ng-repeat="(key, val) in currentUser.billing[0]"ng-if="key!='_id'">
+            <li>{{key | uppercase}}: {{val}}</li>
+        </ul>
+    </div>
+
+    <div class="col-md-4 shipping address">
+        <h4>Default Shipping Address<span><a ui-sref="editAddress(currentUser.shipping[0]._id)"><i class="material-icons">mode_edit</i></a></span></h4>
+        <ul ng-repeat="(key, val) in currentUser.shipping[0]" ng-if="key!='_id'">
+            <li>{{key | uppercase}}: {{val}}</li>
+        </ul>
+    </div>
+</div>
+</div>
+
+{{currentUser.reviews}}
