@@ -1,9 +1,8 @@
 .idea
-generated/node_modules
-generated/bower_components
-generated/public
 node_modules
-bower_components
 npm-debug.log
+public
 .DS_Store
-coverage/
+coverage
+**.swp
+**~
