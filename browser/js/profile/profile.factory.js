@@ -9,7 +9,6 @@ app.factory('ProfileFactory', function ($http) {
 		getOne: function (id) {
 			return $http.get('/api/users/' + id)
 			.then(function (user) {
-				console.log(user)
 				return user.data;
 			})
 		},
@@ -17,8 +16,9 @@ app.factory('ProfileFactory', function ($http) {
 			return $http.delete('/api/users/' + id).exec();
 		},
 		update: function (userObj) {
-			return $http.put('/api/users/' + userObj._id, { user: userObj })
+			return $http.put('/api/users/' + userObj._id, userObj)
 			.then(function (user) {
+				console.log(userObj, user)
 				return user.data;
 			})
 		},

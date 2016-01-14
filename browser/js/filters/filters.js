@@ -5,7 +5,6 @@ app.filter('password', function(){
         {
             retstr = retstr +String.fromCharCode(8226);
         }
-        console.log(retstr);
         return retstr;
     }
 });
