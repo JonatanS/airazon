@@ -74,17 +74,14 @@ router.put("/updateAddress", function(req,res,next){
 			for(var i=0; i<user.shipping.length; i++){
 				// console.log(user.shipping[i]._id.toString(), addressId)
 				if(user.shipping[i]._id.toString() === addressId){
-					console.log("THIS WAS FOUND")
 					indexOfAddress = i;			
 				}
 			}
-			console.log(user.shipping[indexOfAddress])
 			for(var key in user.shipping[indexOfAddress]){
 				if(key!=="_id"){
 					user.shipping[indexOfAddress][key] = editedAddress[key] ? editedAddress[key]: user.shipping[indexOfAddress][key]
 				}
 			}
-			console.log(user.shipping[indexOfAddress])
 		}
 		else{
 			for(var i=0; i<user.billing.length; i++){
