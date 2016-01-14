@@ -64,6 +64,24 @@ router.put('/addShipping/', function(req, res, next) {
 	});
 });
 
+router.put('/addBilling/', function(req, res, next) {
+	User.findById(req.body.userId).then(function(user){
+		var newBilling = JSON.parse(req.body.newBilling)
+		user.billing.push(newBilling)
+		console.dir(user.billing)
+		user.save().then(function(){
+			console.log(user)
+			res.send(user)
+		}).then(null, function(err){
+			console.err(err);
+			res.send(err);
+		})
+	}).then(null, function(err) {
+		console.error(err);
+		res.send(err);
+	});
+});
+
 router.get('/:id', function (req, res, next) {
 	var userReviews = Review.find({ userId: req.params.id });
 	var userOrders = Order.find({ userId: req.params.id });
