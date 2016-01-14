@@ -4,29 +4,30 @@ var mongoose = require('mongoose');
 var _ = require('lodash');
 
 var schema = new mongoose.Schema({
+    category: {
+        type: String, required: true,
+        enum: ["urban", "nature", "exotic"],
+    },
 	name: {type: String, required: true},
 	price: {type: Number, required: true},
-	stock: {type: Number, required: true},
-	images: {type: [String], validate: { 
+	stock: {type: Number, required: true, min: 0},
+	images: {type: [String], validate: {
 		validator: atLeastOne,
 		message: 'At least one image url is required'}
 	},
-	tags: {type: [String]},
-	category: {type: [String], enum: ["Urban", "Nature", "Exotic"], validate: { 
-		validator: atLeastOne,
-		message: 'At least one category is required'}
-	},
-	source: {
-		latitude: {type: Number, required: true},
-		longitude: {type: Number, required: true},
-		altitude: {type: Number, required: true}
-	}
+    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    source: {
+        name: {type: String, required: true},
+        latitude: {type: Number, required: true},
+        longitude: {type: Number, required: true},
+        altitude: {type: Number, required: true}
+    },
+    tags: {type: [String]},
 });
 
 schema.virtual('description').get(function() {
-	var returnMe = "";
-	returnMe += this.name + " is from " + this.source.latitude;
-	return returnMe;
+    //TODO: Write more stuff here
+	return this.name + " is from " + this.source.name + ", a place known for " + this.category;
 });
 
 function atLeastOne(val) {
