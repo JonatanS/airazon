@@ -11,9 +11,10 @@ var schema = new mongoose.Schema({
 		validator: atLeastOne,
 		message: 'At least one image url is required'}
 	},
-	tags: {type: [String], validate: { 
+	tags: {type: [String]},
+	category: {type: [String], enum: ["Urban", "Nature", "Exotic"], validate: { 
 		validator: atLeastOne,
-		message: 'At least one image url is required'}
+		message: 'At least one category is required'}
 	},
 	source: {
 			latitude: {type: Number, required: true},

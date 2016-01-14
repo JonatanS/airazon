@@ -103,7 +103,7 @@ describe('User model', function () {
             var saltSpy;
 
             var createUser = function () {
-                return User.create({ email: 'obama@gmail.com', password: 'potus' });
+                return User.create({ email: 'obama@gmail.com', password: 'potus', isAdmin: false, firstName: 'Obama', lastName: 'ObamaPart2', billing: {"name": "Richard William", "lineOne": "1600 Penn", "zipcode": "20014", "city": "Washington", "state": "DC"}, shipping: {"name": "Richard William", "lineOne": "1600 Penn", "zipcode": "20014", "city": "Washington", "state": "DC"}, cart: '5696a87a8d47bb07100c283f'});
             };
 
             beforeEach(function () {
