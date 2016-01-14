@@ -1,6 +1,6 @@
 <div ng-controller="SingleProductCtrl" class='col-lg-3 col-md-4 col-sm-6' >
     <div>
-        <img class="product_images center-block" ng-src='{{thisProduct.emitted.fulfill[0].product.images[0]}}' width='80%'>
+        <a ui-sref='viewOneProduct({productId: thisProduct.emitted.fulfill[0].product._id})'><img class="product_images center-block" ng-src='{{thisProduct.emitted.fulfill[0].product.images[0]}}' width='80%'></a>
     </div>
     <div class="text-center">
         {{thisProduct.emitted.fulfill[0].product.name}}
