@@ -27,11 +27,11 @@ router.get('/', function (req, res, next) {
 
 // populates reviews/orders/address for one user, access only for signed in user and ADMINS
 router.get('/:id', function (req, res, next) {
-	var userAddress = Address.find({ userId: req.params.id });
+	var userAddresses = Address.find({ userId: req.params.id });
 	var userReviews = Review.find({ userId: req.params.id });
 	var userOrders = Order.find({ userId: req.params.id });
 	var user = User.findById(req.params.id).lean()
-	Promise.all([user, userAddress, userReviews, userOrders])
+	Promise.all([user, userAddresses, userReviews, userOrders])
 	.then(function (data) {
 		user = data[0];
 		user.addresses = data[1];
@@ -42,21 +42,15 @@ router.get('/:id', function (req, res, next) {
 	.then(null, next);
 });
 
-// signing up as user
+// create new user
 router.post('/signup', function (req,res,next){
 	Address.create(req.body.address)
-	.then(function (addAddress) {
-		var userInfo = {
-			firstName : req.body.firstName,
-			lastName : req.body.lastName,
-			email : req.body.email,
-			password : req.body.password,
-			isAdmin: req.body.isAdmin,
-			addresses: addAddress
-		};
-		User.create(userInfo)
+	.then(function (address) {
+		var user = req.body.user;
+		user.addresses.push(address)
+		User.create(user)
 		.then(function(result) {
-			res.send(result);
+        res.status(201).json(result);
 		})
 	})
 	.then(null, next);
@@ -66,13 +60,13 @@ router.post('/signup', function (req,res,next){
 router.put('/:id', function (req, res, next) {
 	return User.findOneAndUpdate({ _id: req.params.id }, req.body)
 	.then(function (updatedUser) {
-		res.send(updatedUser);
+		res.json(updatedUser);
 	})
 	.then(null, next);
 });
 
 // add address to one user
-router.post('/:id/addAddress', function (req, res, next) {
+router.post('/:id/addresses/', function (req, res, next) {
 	Address.create(req.body.address)
 	.then(function (newAddress) {
 		User.findById(req.params.id)
@@ -84,15 +78,11 @@ router.post('/:id/addAddress', function (req, res, next) {
 	.then(null, next);
 });
 
-router.put("/:id/updateAddress", function (req,res,next){
-	var editedAddress = JSON.parse(req.body.address);
-	var addressId = editedAddress._id;
-	Address.findByIdAndUpdate(req.body._id, req.body)
+//update user's address:
+router.put("/:id/addresses/:addressId", function (req,res,next){
+	return Address.findByIdAndUpdate(req.params.addressId, req.body)
 	.then(function (updatedAddress){
 		res.send(updatedAddress);
 	})
 	.then(null, next);
 });
-
-// router.delete("/:id/deleteAddress", function (req, res, next){
-// });
