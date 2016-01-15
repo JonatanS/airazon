@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var schema = new mongoose.Schema({
     address:  {type: mongoose.Schema.Types.ObjectId, ref: 'Address'},
+    created_at: {type: Date}
     products: [{
         quantity: {type: Number, required: true, min: 1},
         pricePaid: {type: Number, required: true, min:0.01},
@@ -15,7 +16,7 @@ var schema = new mongoose.Schema({
         updated_at: {type: Date}
     },
     trackingNumber: Number,
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
 });
 
 schema.virtual('total').get(function() {
@@ -27,6 +28,7 @@ schema.virtual('total').get(function() {
 schema.pre('save', function(next){
     var now = new Date();
     this.status.updated_at = now;
+    if (this.status === 'processing') this.created_at = now;
     if(!this.trackingNumber)
         this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
     next();
