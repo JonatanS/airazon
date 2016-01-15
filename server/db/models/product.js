@@ -28,9 +28,14 @@ var schema = new mongoose.Schema({
     tags: {type: [String]},
 });
 
-schema.virtual('description').get(function() {
+schema.virtual('shortDescription').get(function() {
     //TODO: Write more stuff here
 	return this.name + " is from " + this.source.name + ", a place known for " + this.category;
+});
+
+schema.virtual('longDescription').get(function() {
+    //TODO: Write more stuff here
+    return this.name + " is from " + this.source.name + ", a place known for " + this.category + "\n\n" + ipsum;
 });
 
 function atLeastOne(val) {
@@ -42,3 +47,5 @@ schema.plugin(deepPopulate);
 
 
 mongoose.model('Product', schema);
+
+var ipsum = "Bacon ipsum dolor amet pork ham hock pancetta cow t-bone ball tip, jerky strip steak bacon doner landjaeger tenderloin. Turkey spare ribs pork loin alcatra pork belly bresaola pig venison leberkas salami turducken. Kielbasa pork belly pancetta, capicola brisket pork loin ground round tongue swine turducken pastrami short loin. Brisket flank picanha pork belly, bacon capicola shankle alcatra. Bacon pork chop pork belly, jowl ham hock drumstick tri-tip capicola jerky turkey frankfurter pig swine pancetta brisket.\n\nCorned beef pork loin hamburger, jowl boudin shank brisket rump. Shoulder alcatra bresaola, brisket ground round prosciutto short loin pastrami. Pork chuck ground round strip steak drumstick doner jerky pastrami turkey alcatra landjaeger corned beef. Capicola short ribs swine pork loin cupim meatloaf pork sausage fatback, chuck picanha bacon. Boudin capicola flank, sausage corned beef hamburger meatball beef swine alcatra ground round tongue landjaeger shankle t-bone. Ham hock filet mignon ribeye swine landjaeger sirloin pork short ribs meatball."
