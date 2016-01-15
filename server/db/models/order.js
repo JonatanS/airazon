@@ -30,7 +30,7 @@ var schema = new mongoose.Schema({
     status: {
         current: {
             type: String,
-            enum: ['transit', 'delivered', 'processing', 'cart']
+            enum: ['transit', 'delivered', 'processing', 'cart', 'cancelled']
         },
         updated_at: {
             type: Date
@@ -40,7 +40,7 @@ var schema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
 });
 
 schema.virtual('total').get(function() {
