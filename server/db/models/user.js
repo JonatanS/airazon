@@ -4,43 +4,16 @@ var mongoose = require('mongoose');
 var _ = require('lodash');
 
 var schema = new mongoose.Schema({
-    email: {
-        type: String
-    },
-    password: {
-        type: String
-    },
-    salt: {
-        type: String
-    },
-    facebook: {
-        id: String
-    },
-    google: {
-        id: String
-    },
-	isAdmin: {
-		type: Boolean
-	},
-    firstName: {type: String, required: true},
-    lastName: {type: String, required: true},
-	billing: [{
-		name: {type: String, required: true},
-	 	lineOne: {type: String, required: true},
-		lineTwo: String,
-		zipcode: {type: String, required: true},
-		state: {type: String, required: true},
-		city: {type: String, required: true}
-		}],
-	shipping: [{
-		name: {type: String, required: true},
-	 	lineOne: {type: String, required: true},
-		lineTwo: String,
-		zipcode: {type: String, required: true},
-		state: {type: String, required: true},
-		city: {type: String, required: true}
-		}],
-	cart: [{type: mongoose.Schema.Types.ObjectId, ref: 'Product'}]
+    firstName: { type: String },
+    lastName: { type: String },
+    email: { type: String },
+    password: { type: String },
+    salt: { type: String },
+    facebook: { id: String },
+    google: { id: String },
+	isAdmin: { type: Boolean, default: false },
+	addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address'}],
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
 });
 
 // method to remove sensitive information from user objects before sending them out
@@ -62,14 +35,11 @@ var encryptPassword = function (plainText, salt) {
 };
 
 schema.pre('save', function (next) {
-
     if (this.isModified('password')) {
         this.salt = this.constructor.generateSalt();
         this.password = this.constructor.encryptPassword(this.password, this.salt);
     }
-
     next();
-
 });
 
 schema.statics.generateSalt = generateSalt;
