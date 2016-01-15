@@ -4,6 +4,7 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Promise = require('bluebird');
 var User = mongoose.models.User;
+var Address = mongoose.models.Address;
 var Review = mongoose.models.Review;
 var Order = mongoose.models.Order;
 
@@ -15,136 +16,53 @@ var ensureAuthenticated = function (req, res, next) {
 	}
 };
 
+// get all users (ADMIN only)
 router.get('/', function (req, res, next) {
 	return User.find({})
 	.then(function (users) {
 		res.send(users);
 	})
-.then(null, next);
+	.then(null, next);
 });
 
-router.post("/signup", function(req,res,next){
-	console.log("THIS IS THE BODY:",req.body.email)
-	var importantObj = {
-	 email : req.body.email,
-	 password : req.body.password,
-	 firstName : req.body.firstName,
-	 lastName : req.body.lastName,
-	 isAdmin: req.body.isAdmin,
-	 billing: req.body.billing,
-	 shipping: req.body.shipping,
-	 cart: req.body.cart
-	}
-	User.create(importantObj).then(function(result) {
-		res.send(result);
-	}).then(null, function(err) {
-		console.error(err);
-		res.status(500).send(err);
-	});
-})
-
-router.put('/addAddress', function(req, res, next) {
-	User.findById(req.body.userId).then(function(user){
-		var newAddress = JSON.parse(req.body.address)
-		if(req.body.type === "shipping"){
-			user.shipping.push(newAddress)
-		}
-		else{
-			user.billing.push(newAddress)
-		}
-		user.save().then(function(){
-			console.log(user)
-			res.send(user)
-		}).then(null, function(err){
-			console.err(err);
-			res.send(err);
-		})
-	}).then(null, function(err) {
-		console.error(err);
-		res.send(err);
-	});
-});
-
-router.put("/updateAddress", function(req,res,next){
-	var editedAddress = JSON.parse(req.body.address);
-	var addressId = editedAddress._id;
-	User.findById(req.body.userId).then(function(user){
-		var indexOfAddress;
-		if(req.body.type==="shipping"){
-			for(var i=0; i<user.shipping.length; i++){
-				if(user.shipping[i]._id.toString() === addressId){
-					indexOfAddress = i;			
-				}
-			}
-			for(var key in user.shipping[indexOfAddress]){
-				if(key!=="_id"){
-					user.shipping[indexOfAddress][key] = editedAddress[key] ? editedAddress[key]: user.shipping[indexOfAddress][key]
-				}
-			}
-		}
-		else{
-			for(var i=0; i<user.billing.length; i++){
-				if(user.billing[i]._id.toString() === addressId){
-					indexOfAddress = i;			
-				}
-			}
-			for(var key in user.billing[indexOfAddress]){
-				if(key!=="_id"){
-					user.billing[indexOfAddress][key] = editedAddress[key] ? editedAddress[key]: user.billing[indexOfAddress][key]
-				}
-			}
-		}
-		user.save().then(function(user){
-			res.send(user)
-		})
-	}).then(null, function(err) {
-		console.error(err);
-		res.send(err);
-	});
-})
-
-router.delete("/deleteAddress", function(req, res, next){
-	var addressId = req.body.addressId
-	User.findById(req.body.userId).then(function(user){
-		var indexOfAddress;
-		if(req.body.type==="shipping"){
-			for(var i=0; i<user.shipping.length; i++){
-				if(user.shipping[i]._id.toString() === addressId){
-					indexOfAddress = i;			}
-			}
-			user.shipping.splice(indexOfAddress,1);
-		}
-		else{
-			for(var i=0; i<user.billing.length; i++){
-				if(user.billing[i]._id.toString() === addressId){
-					indexOfAddress = i;			}
-			}
-			user.billing.splice(indexOfAddress,1);
-		}
-		user.save().then(function(user){
-			res.send(user)
-		})
-	}).then(null, function(err) {
-		console.error(err);
-		res.send(err);
-	});
-})
-
-//MIGHT BE USED BY ADMIN?
+// populates reviews/orders/address for one user, access only for signed in user and ADMINS
 router.get('/:id', function (req, res, next) {
+	var userAddress = Address.find({ userId: req.params.id });
 	var userReviews = Review.find({ userId: req.params.id });
 	var userOrders = Order.find({ userId: req.params.id });
 	var user = User.findById(req.params.id).lean()
-	Promise.all([user, userReviews, userOrders])
+	Promise.all([user, userAddress, userReviews, userOrders])
 	.then(function (data) {
 		user = data[0];
-		user.reviews = data[1];
-		user.orders = data[2];
+		user.addresses = data[1];
+		user.reviews = data[2];
+		user.orders = data[3];
 		res.send(user);
 	})
 	.then(null, next);
 });
 
+// signing up as user
+router.post('/signup', function (req,res,next){
+	Address.create(req.body.address)
+	.then(function (addAddress) {
+		var userInfo = {
+			firstName : req.body.firstName,
+			lastName : req.body.lastName,
+			email : req.body.email,
+			password : req.body.password,
+			isAdmin: req.body.isAdmin,
+			addresses: addAddress
+		};
+		User.create(userInfo)
+		.then(function(result) {
+			res.send(result);
+		})
+	})
+	.then(null, next);
+})
+
+// update one user: only signed in user and ADMIN have access
 router.put('/:id', function (req, res, next) {
 	return User.findOneAndUpdate({ _id: req.params.id }, req.body)
 	.then(function (updatedUser) {
@@ -152,3 +70,29 @@ router.put('/:id', function (req, res, next) {
 	})
 	.then(null, next);
 });
+
+// add address to one user
+router.post('/:id/addAddress', function (req, res, next) {
+	Address.create(req.body.address)
+	.then(function (newAddress) {
+		User.findById(req.params.id)
+		.then(function (user) {
+			user.addresses.push(newAddress);
+			user.save();
+		});
+	})
+	.then(null, next);
+});
+
+router.put("/:id/updateAddress", function (req,res,next){
+	var editedAddress = JSON.parse(req.body.address);
+	var addressId = editedAddress._id;
+	Address.findByIdAndUpdate(req.body._id, req.body)
+	.then(function (updatedAddress){
+		res.send(updatedAddress);
+	})
+	.then(null, next);
+});
+
+// router.delete("/:id/deleteAddress", function (req, res, next){
+// });
