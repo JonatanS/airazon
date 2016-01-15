@@ -29,8 +29,7 @@ var Address = Promise.promisifyAll(mongoose.model('Address'));
 
 
 //should work
-var seedUsers = function (addresses, products, reviews) {
-
+var seedUsers = function (addresses, reviews) {
     var users = [
         {
             firstName: "Leon",
@@ -38,10 +37,8 @@ var seedUsers = function (addresses, products, reviews) {
             email: "ldthorne@brandeis.edu",
             password: "i_hate_mongoose",
             isAdmin: true,
-            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
-            user: users[Math.floor(Math.random()*users.length)]._id
-
+            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
         },
         {
             firstName: "Jonatan",
@@ -49,20 +46,18 @@ var seedUsers = function (addresses, products, reviews) {
             email: "js@schumacher.com",
             password: "im_slowly_becoming_ok_with_mongoose",
             isAdmin: false,
-            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
-            user: users[Math.floor(Math.random()*users.length)]._id
+            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
 
         },
         {
             firstName: "Jessica",
             lastName: "Park",
-            email: "jessicapark@gmailc.om",
+            email: "jessicapark@gmail.com",
             password: "im_ambivalent_about_mongoose",
             isAdmin: true,
-            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
-            user: users[Math.floor(Math.random()*users.length)]._id
+            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
 
         },
         {
@@ -71,9 +66,8 @@ var seedUsers = function (addresses, products, reviews) {
             email: "everettross@gmail.com",
             password: "i_hate_vim",
             isAdmin: false,
-            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
-            user: users[Math.floor(Math.random()*users.length)]._id
+            addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
         }
     ];
     return User.createAsync(users);
@@ -101,7 +95,7 @@ var seedReviews = function(products, users){
         {
             title: "Could be better",
             body: "I could definitely feel that this air was fresh, but it had a lemon after-taste, which I found to be quite unpleasant.",
-            rati: 3,
+            rating: 3,
             user: users[Math.floor(Math.random()*users.length)]._id,
             product: products[Math.floor(Math.random()*products.length)]._id
         },
@@ -127,7 +121,7 @@ var seedProducts = function(reviews) {
             price: 100,
             stock: 1000,
             images: ['http://i.imgur.com/oJypOhK.jpg', 'http://i.imgur.com/m7Ig7ML.jpg'],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 description: "This is from NY",
                 latitude: 40.7064248,
@@ -142,7 +136,7 @@ var seedProducts = function(reviews) {
             price: 250,
             stock: 100,
             images: ['http://i.imgur.com/XFMfIIP.jpg', 'http://i.imgur.com/7T1EjWH.jpg'],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 description: "This air is from Sydney",
                 latitude: -2.163106,
@@ -157,7 +151,7 @@ var seedProducts = function(reviews) {
             price: 2,
             stock: 10000,
             images: ['http://i.imgur.com/4kad0ty.jpg', 'http://i.imgur.com/JkFalKZ.jpg'],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 description: "This is from Beijing",
                 latitude: 39.9068385,
@@ -172,7 +166,7 @@ var seedProducts = function(reviews) {
             price: 40,
             stock: 204,
             images: ['http://i.imgur.com/j3uzyMn.jpg', 'http://i.imgur.com/L8OnxfU.jpg'],
-            reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
+            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 latitude: 39.9068385,
                 longitude: 116.3989807,
@@ -220,6 +214,8 @@ var seedAddresses = function(){
             zipcode: "11020"
         }
     ]
+    return Address.createAsync(addresses);
+
 }
 
 
@@ -246,7 +242,7 @@ var seedOrders = function(addresses, products, users) {
                 },
             ],
             status: {
-                type: "processing",
+                current: "processing",
                 updated_at: new Date()
             },
             user: users[Math.floor(Math.random()*users.length)]._id
@@ -261,7 +257,7 @@ var seedOrders = function(addresses, products, users) {
                 }
             ],
             status: {
-                type: "cart",
+                current: "cart",
                 updated_at: new Date(1000432432)
             },
             user: users[Math.floor(Math.random()*users.length)]._id
@@ -281,7 +277,7 @@ var seedOrders = function(addresses, products, users) {
                 }
             ],
             status: {
-                type: "delivered",
+                current: "delivered",
                 updated_at: new Date()
             },
             user: users[Math.floor(Math.random()*users.length)]._id
@@ -301,7 +297,7 @@ var seedOrders = function(addresses, products, users) {
                 }
             ],
             status: {
-                type: "delivered",
+                current: "delivered",
                 updated_at: new Date()
             },
             user: users[Math.floor(Math.random()*users.length)]._id
@@ -320,7 +316,8 @@ connectToDb.then(function () {
     seedAddresses()
         .then(function(addresses){
             savedAddresses = addresses;
-            return seedUsers(savedAddresses, [], []);
+            console.log("ADDRESSES SEEDED")
+            return seedUsers(savedAddresses, []);
         })
         .then(function(users){
             console.log(chalk.green('users seeded successfully!'));
