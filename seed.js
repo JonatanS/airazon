@@ -163,7 +163,7 @@ var seedProducts = function(reviews) {
                 latitude: 39.9068385,
                 longitude: 116.3989807,
                 altitude: 154
-            }
+            },
             tags: ["China","Beijing", "urban", "smog", "dirty", "foreign", "international"]
         },
         {
@@ -231,7 +231,7 @@ var seedOrders = function(addresses, products, users) {
             products: [
                 {
                     quantity: 3,
-                    pricePaid: 30
+                    pricePaid: 30,
                     product: products[Math.floor(Math.random()*products.length)]._id
                 },
                 {
