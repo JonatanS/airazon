@@ -38,7 +38,6 @@ var seedUsers = function (addresses, reviews) {
             password: "i_hate_mongoose",
             isAdmin: true,
             addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
         },
         {
             firstName: "Jonatan",
@@ -47,7 +46,6 @@ var seedUsers = function (addresses, reviews) {
             password: "im_slowly_becoming_ok_with_mongoose",
             isAdmin: false,
             addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
 
         },
         {
@@ -57,7 +55,6 @@ var seedUsers = function (addresses, reviews) {
             password: "im_ambivalent_about_mongoose",
             isAdmin: true,
             addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
 
         },
         {
@@ -67,10 +64,29 @@ var seedUsers = function (addresses, reviews) {
             password: "i_hate_vim",
             isAdmin: false,
             addresses: [addresses[Math.floor(Math.random()*addresses.length)]._id]
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id]
         }
     ];
-    return User.createAsync(users);
+    return User.createAsync(users)
+    .then(function(users){
+        var usersPromises = [];
+        users.forEach(function(user){
+            user.addresses.forEach(function(addressId){
+                var addressPromise = Address.findById(addressId)
+                .then(function(foundAddress){
+                    foundAddress.user = user._id;
+                    return foundAddress.save()
+                    .then(function(){
+                        console.log("Address updated with user ids successfully!");
+                    })
+                })
+                usersPromises.push(addressPromise);
+            })
+        })
+        return Promise.all(usersPromises)
+        .then(function(){
+            return users;
+        })
+    })
 
 };
 
@@ -107,8 +123,33 @@ var seedReviews = function(products, users){
             product: products[Math.floor(Math.random()*products.length)]._id
         }
     ]
-    return Review.createAsync(reviews);
-
+    return Review.createAsync(reviews)
+    .then(function(reviews){
+        var reviewsPromise = [];
+        reviews.forEach(function(review){
+            var userPromise = User.findById(review.user)
+            .then(function(foundUser){
+                foundUser.reviews.push(review._id)
+                return foundUser.save()
+                .then(function(){
+                    console.log("Users updated with reviews successfully")
+                });
+            })
+            var productPromise = Product.findById(review.product)
+            .then(function(foundProduct){
+                foundProduct.reviews.push(review._id);
+                return foundProduct.save()
+                .then(function(){
+                    console.log("Product updated with reviews successfully")
+                })
+            })
+            reviewsPromise.push(Promise.all([userPromise, productPromise]))
+        })
+        return Promise.all(reviewsPromise)
+    })
+    .then(function(){
+        console.log("Everything updated successfully! :)");
+    })
 }
 
 
@@ -121,7 +162,6 @@ var seedProducts = function(reviews) {
             price: 100,
             stock: 1000,
             images: ['http://i.imgur.com/oJypOhK.jpg', 'http://i.imgur.com/m7Ig7ML.jpg'],
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 description: "This is from NY",
                 latitude: 40.7064248,
@@ -136,7 +176,6 @@ var seedProducts = function(reviews) {
             price: 250,
             stock: 100,
             images: ['http://i.imgur.com/XFMfIIP.jpg', 'http://i.imgur.com/7T1EjWH.jpg'],
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 description: "This air is from Sydney",
                 latitude: -2.163106,
@@ -151,7 +190,6 @@ var seedProducts = function(reviews) {
             price: 2,
             stock: 10000,
             images: ['http://i.imgur.com/4kad0ty.jpg', 'http://i.imgur.com/JkFalKZ.jpg'],
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 description: "This is from Beijing",
                 latitude: 39.9068385,
@@ -166,7 +204,6 @@ var seedProducts = function(reviews) {
             price: 40,
             stock: 204,
             images: ['http://i.imgur.com/j3uzyMn.jpg', 'http://i.imgur.com/L8OnxfU.jpg'],
-            // reviews: [reviews[Math.floor(Math.random()*reviews.length)]._id],
             source: {
                 latitude: 39.9068385,
                 longitude: 116.3989807,
@@ -303,7 +340,25 @@ var seedOrders = function(addresses, products, users) {
             user: users[Math.floor(Math.random()*users.length)]._id
         }
     ]
-    return Order.createAsync(orders);
+    return Order.createAsync(orders)
+    .then(function(orders){
+        var ordersPromises = [];
+        orders.forEach(function(order){
+            var userPromise = User.findById(order.user)
+            .then(function(foundUser){
+                foundUser.orders.push(order._id);
+                return foundUser.save()
+                .then(function(){
+                    console.log("User updated with order successfully!");
+                })
+            })
+            ordersPromises.push(userPromise);
+        })
+    })
+    return Promise.all(ordersPromises)
+    .then(function(){
+        console.log("Successfully updated")
+    })
 }
 
 

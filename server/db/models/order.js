@@ -6,38 +6,62 @@ var _ = require('lodash');
 // var User = models.User;
 
 var schema = new mongoose.Schema({
-    address:  {type: mongoose.Schema.Types.ObjectId, ref: 'Address'},
+    address: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address'
+    },
     products: [{
-        quantity: {type: Number, required: true, min: 1},
-        pricePaid: {type: Number, required: true, min:0.01},
-        product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product'}
+        quantity: {
+            type: Number,
+            required: true,
+            min: 1
+        },
+        pricePaid: {
+            type: Number,
+            required: true,
+            min: 0.01
+        },
+        product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        }
     }],
     status: {
-        current: {type: String, enum: ['transit', 'delivered', 'processing', 'cart']},
-        updated_at: {type: Date}
+        current: {
+            type: String,
+            enum: ['transit', 'delivered', 'processing', 'cart']
+        },
+        updated_at: {
+            type: Date
+        }
     },
     trackingNumber: Number,
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 });
 
 schema.virtual('total').get(function() {
-    return this.products.reduce( function(prev, cur) {
+    return this.products.reduce(function(prev, cur) {
         return (cur.quantity * cur.pricePaid) + prev;
     }, 0);
 });
 
-schema.pre('save', function(next){
+schema.pre('save', function(next) {
     var now = new Date();
     this.status.updated_at = now;
-    if(!this.trackingNumber)
+    if (!this.trackingNumber)
         this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
     next();
 });
 
 schema.pre('remove', function(next) {
     //remove order from user.orders[]
-    User.findById(this.user).then(function (user) {
-        user.orders.pull({_id: this._id});
+    User.findById(this.user).then(function(user) {
+        user.orders.pull({
+            _id: this._id
+        });
         next();
     });
 });
