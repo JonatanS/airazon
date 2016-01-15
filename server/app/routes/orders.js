@@ -8,9 +8,8 @@ var Order = models.Order;
 var User = mongoose.models.User;
 
 
-// GET /api/orders
+// GET /api/orders with optional status param
 router.get('/', function (req, res, next) {
-    //use deep-populate to grab reviews and users thereof
     return Order.find({}).populate('user')
     .then( function (orders) {
         res.status(200).send(orders);
