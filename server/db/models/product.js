@@ -67,7 +67,7 @@ schema.virtual('longDescription').get(function() {
 });
 
 schema.pre('remove', function(next) {
-    Review.find(product: this._id).remove();
+    Review.find({product: this._id}).remove();
     next();
 });
 
