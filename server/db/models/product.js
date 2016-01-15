@@ -2,6 +2,9 @@
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 var _ = require('lodash');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+
+
 
 var schema = new mongoose.Schema({
     category: {
@@ -15,9 +18,9 @@ var schema = new mongoose.Schema({
 		validator: atLeastOne,
 		message: 'At least one image url is required'}
 	},
-    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Reviews'}],
     source: {
-        name: {type: String, required: true},
+        description: {type: String},
         latitude: {type: Number, required: true},
         longitude: {type: Number, required: true},
         altitude: {type: Number, required: true}
@@ -33,5 +36,9 @@ schema.virtual('description').get(function() {
 function atLeastOne(val) {
 	return val.length > 0;
 }
+
+schema.plugin(deepPopulate);
+
+
 
 mongoose.model('Product', schema);

@@ -2,8 +2,8 @@
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 var _ = require('lodash');
-var models = require('./models');
-var User = models.User;
+//var models = require('../models');
+// var User = models.User;
 
 var schema = new mongoose.Schema({
     address:  {type: mongoose.Schema.Types.ObjectId, ref: 'Address'},
