@@ -33,7 +33,6 @@ schema.pre('save', function(next){
 });
 
 schema.pre('remove', function(next) {
-    //remove order from user.orders[]
     User.findById(this.user).then(function (user) {
         user.orders.pull({_id: this._id});
         next();

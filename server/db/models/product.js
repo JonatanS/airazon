@@ -36,7 +36,6 @@ schema.virtual('longDescription').get(function() {
     return this.name + " is from " + this.source.name + ", a place known for " + this.category + "\n\n" + ipsum;
 });
 
-//TODO: Does this need to be in a try-catch?
 schema.pre('remove', function(next) {
     Review.find(product: this._id).remove();
     next();
