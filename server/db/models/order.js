@@ -13,7 +13,7 @@ var schema = new mongoose.Schema({
         product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product'}
     }],
     status: {
-        type: String, enum: ['Transit', 'Delivered', 'Processing', 'Cart'],
+        current: {type: String, enum: ['transit', 'delivered', 'processing', 'cart']},
         updated_at: {type: Date}
     },
     trackingNumber: Number,
@@ -27,7 +27,7 @@ schema.virtual('total').get(function() {
 });
 
 schema.pre('save', function(next){
-    now = new Date();
+    var now = new Date();
     this.status.updated_at = now;
     if(!this.trackingNumber)
         this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
