@@ -31,8 +31,8 @@ describe('Users Route', function () {
             guestAgent = supertest.agent(app);
         });
 
-        xit('should get a 401 response', function (done) {
-            guestAgent.get('/api/members/secret-stash')
+        it('should get a 401 response', function (done) {
+            guestAgent.get('/api/users')
             .expect(401)
             .end(done);
         });
@@ -80,35 +80,13 @@ describe('Users Route', function () {
 
         beforeEach('attach address to user', function (done) {
             testUser.addresses.push(testAddress._id);
-            testUser.save().then(function(){
+            console.log('\n\ntestUserWAdress:', testUser);
+            testUser.save()
+            .then(function(){
                 done();
             });
         });
 
-
-        // beforeEach('Create a user with address', function (done) {
-        //     var thisUser;
-        //     return User.create(userInfo)
-        //     .then(function(user){
-        //         thisUser = user;
-        //         // console.log('\n\n\n our user', thisUser)
-        //         addressInfo.user = thisUser._id;
-        //         //create address
-        //         return Address.create(addressInfo)
-        //         .then (function (address) {
-        //             console.log('\n\n\n user before', thisUser);
-        //             //add to user
-        //             thisUser.addresses.push(address._id);
-        //             console.log('\n\n\n user after', user);
-        //             thisUser.save().then(function(){
-        //                 console.log("finished populating");
-        //             });
-        //         })
-        //         .then(function(){
-        //             done();
-        //         });
-        //     });
-        // });
 
         beforeEach('Create loggedIn user agent and authenticate', function (done) {
             loggedInAgent = supertest.agent(app);
@@ -119,6 +97,25 @@ describe('Users Route', function () {
              loggedInAgent.get('/api/users/').expect(200).end(function (err, response) {
                  if (err) return done(err);
                  expect(response.body[0].email).equals('joe@gmail.com');
+                 done();
+             });
+         });
+
+
+         it('should get user by ID with 200 response and with an object as the body', function (done) {
+             loggedInAgent.get('/api/users/'+ testUser._id).expect(200).end(function (err, response) {
+                 if (err) return done(err);
+                 expect(response.body.email).equals('joe@gmail.com');
+                 done();
+             });
+         });
+
+
+         it('should get user\'s address by ID with 200 response and with an object as the body', function (done) {
+             loggedInAgent.get('/api/users/'+ testUser._id).expect(200).end(function (err, response) {
+                 if (err) return done(err);
+                 console.log(response.body);
+                 expect(response.body.addresses[0].zipcode).equals('20015');
                  done();
              });
          });

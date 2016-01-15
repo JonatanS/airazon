@@ -27,11 +27,11 @@ router.get('/', function (req, res, next) {
 
 // populates reviews/orders/address for one user, access only for signed in user and ADMINS
 router.get('/:id', function (req, res, next) {
-	var userAddresses = Address.find({ userId: req.params.id });
-	var userReviews = Review.find({ userId: req.params.id });
-	var userOrders = Order.find({ userId: req.params.id });
+	var userAddresses = Address.find({ user: req.params.id });
+	var userReviews = Review.find({ user: req.params.id });
+	var userOrders = Order.find({ user: req.params.id });
 	var user = User.findById(req.params.id).lean()
-	Promise.all([user, userAddresses, userReviews, userOrders])
+	return Promise.all([user, userAddresses, userReviews, userOrders])
 	.then(function (data) {
 		user = data[0];
 		user.addresses = data[1];
