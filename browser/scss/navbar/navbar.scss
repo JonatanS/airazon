@@ -67,7 +67,22 @@ navbar {
   #logout-btn {
     font-size: 48px;
   }
-  img {
-    width: 70px;
+  #brand{
+    padding: 0px;
+  }
+  #icons-left{
+    float: left;
+    width: 5%;
+  }
+  #icons-right{
+    width: 10%;
+  }
+  .welcome{
+    margin: 0px;
+    height: 48px;
+  }
+  img{
+    display:block;
+    margin:auto;
   }
 }
