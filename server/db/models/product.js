@@ -4,8 +4,6 @@ var mongoose = require('mongoose');
 var _ = require('lodash');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
-
-
 var schema = new mongoose.Schema({
     category: {
         type: String,
@@ -68,13 +66,16 @@ schema.virtual('longDescription').get(function() {
     return this.name + " is from " + this.source.name + ", a place known for " + this.category + "\n\n" + ipsum;
 });
 
+schema.pre('remove', function(next) {
+    Review.find(product: this._id).remove();
+    next();
+});
+
 function atLeastOne(val) {
     return val.length > 0;
 }
 
 schema.plugin(deepPopulate);
-
-
 
 mongoose.model('Product', schema);
 

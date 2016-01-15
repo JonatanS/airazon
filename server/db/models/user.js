@@ -69,6 +69,12 @@ schema.pre('save', function(next) {
     next();
 });
 
+schema.pre('remove', function (next) {
+    Review.find({user: this._id}).remove();
+    Order.find({user: this._id}).remove();
+    next();
+});
+
 schema.statics.generateSalt = generateSalt;
 schema.statics.encryptPassword = encryptPassword;
 

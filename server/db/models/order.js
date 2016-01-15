@@ -2,13 +2,14 @@
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 var _ = require('lodash');
-//var models = require('../models');
-// var User = models.User;
 
 var schema = new mongoose.Schema({
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'
+    },
+    created_at: {
+        type: Date
     },
     products: [{
         quantity: {
@@ -48,20 +49,18 @@ schema.virtual('total').get(function() {
     }, 0);
 });
 
-schema.pre('save', function(next) {
+schema.pre('save', function(next){
     var now = new Date();
     this.status.updated_at = now;
-    if (!this.trackingNumber)
+    if (this.status === 'processing') this.created_at = now;
+    if(!this.trackingNumber)
         this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
     next();
 });
 
 schema.pre('remove', function(next) {
-    //remove order from user.orders[]
-    User.findById(this.user).then(function(user) {
-        user.orders.pull({
-            _id: this._id
-        });
+    User.findById(this.user).then(function (user) {
+        user.orders.pull({_id: this._id});
         next();
     });
 });
