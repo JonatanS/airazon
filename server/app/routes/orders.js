@@ -41,15 +41,16 @@ router.param('id', function (req,res,next, id){
 // GET /api/orders/:id
 router.get('/:id', function (req, res, next) {
     res.json(req.order);
+    // next();
 });
 
 // REMOVE /api/orders/:id
 router.delete('/:id', function (req, res, next) {
     req.order.remove()
     .then(function() {
-        res.status(204).end()
+        res.status(204).end();
     })
-    .then(null, next)
+    .then(null, next);
 });
 
 // UPDATE /api/orders/:id
