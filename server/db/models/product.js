@@ -4,8 +4,6 @@ var mongoose = require('mongoose');
 var _ = require('lodash');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
-
-
 var schema = new mongoose.Schema({
     category: {
         type: String, required: true,
@@ -43,8 +41,6 @@ function atLeastOne(val) {
 }
 
 schema.plugin(deepPopulate);
-
-
 
 mongoose.model('Product', schema);
 
