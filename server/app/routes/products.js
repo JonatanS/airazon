@@ -39,6 +39,7 @@ router.param('id', function (req,res,next, id){
 // GET /api/products/:id
 router.get('/:id', function (req, res, next) {
     res.json(req.product);
+    // next();
 });
 
 // REMOVE /api/products/:id
