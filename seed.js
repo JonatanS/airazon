@@ -211,6 +211,19 @@ var seedProducts = function(reviews) {
             },
             tags: ["Amazon","Rainforest", "clean", "beautiful", "nature", "foreign", "international"]
         },
+        {
+            category: "nature",
+            name: "THIS IS A TEST FOR AN OUT OF STOCK ITEM",
+            price: 40,
+            stock: 0,
+            images: ['http://i.imgur.com/j3uzyMn.jpg', 'http://i.imgur.com/L8OnxfU.jpg'],
+            source: {
+                latitude: 39.9068385,
+                longitude: 116.3989807,
+                altitude: 154
+            },
+            tags: ["Amazon","Rainforest", "clean", "beautiful", "nature", "foreign", "international"]
+        }
     ]
     return Product.createAsync(products);
 }

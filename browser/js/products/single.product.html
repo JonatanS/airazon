@@ -9,17 +9,23 @@
         </div>
         <div class="product-info">
             <h2>{{ oneProduct.name }}</h2>
+            <h3 class="text-danger" ng-hide="oneProduct.stock>0">OUT OF STOCK</h3>
             <span ng-repeat="t in ratingArr track by $index"><i class='material-icons stars md-dark'>star_rate</i></span><span ng-repeat="t in remainder track by $index"><i class='material-icons stars white'>star_rate</i></span>
-            <h3 id="price">${{oneProduct.price}}</h3>
+            <h3 id="price">{{oneProduct.price | currency}}</h3>
+            <div>
+            <button type="button" class="btn add-to-cart" ng-show="oneProduct.stock>0">Add to Cart</button>
+            </div>
             <h4>{{oneProduct.shortDescription}}</h4>
         </div>
     </div>
     <div class="col-xs-8" id="right-bar">
-        <div class="jumbotron text-center">
+        <div class="col-xl-6 col-lg-6 col-md-8 col-sm-10 col-xs-12">
             <h1>{{ oneProduct.name }}</h1>
+            <h3>Product description</h3>
+            <p id="long-description">{{oneProduct.longDescription}}</p>
+        	<h3>Reviews</h3>
         </div>
-        <h2>Reviews</h2>
-        <div ng-repeat="review in oneProduct.reviews">
+        <div class="row" ng-repeat="review in oneProduct.reviews">
             <review this-review="review"></review>
         </div>
     </div>
