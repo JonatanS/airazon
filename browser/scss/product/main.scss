@@ -16,6 +16,8 @@
 	float: left;
 	position: fixed;
 	overflow-y: scroll;
+	border-right: 2px solid;
+	height: 100vh
 }
 
 #carousel-images {
@@ -25,7 +27,7 @@
 
 #right-bar {
 	float: right;
-	background-color: blue;
+
 }
 
 .product-info{
@@ -34,4 +36,27 @@
 
 #price {
 	margin-top: 5px;
+}
+
+.jumbotron{
+	background: transparent;
+}
+#name {
+	float: right;
+}
+#title {
+	float: left;
+}
+.review{
+	width: 60%;
+	border-style: solid;
+    border-color: grey;
+    border-width: 1px;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+}
+
+#review-body{
+	clear: both;
 }
