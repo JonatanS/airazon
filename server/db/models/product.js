@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var mongoose = require('mongoose');
 var _ = require('lodash');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
+var Review = mongoose.model('Review');
 
 var schema = new mongoose.Schema({
     category: {
@@ -32,7 +33,7 @@ var schema = new mongoose.Schema({
     },
     reviews: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Reviews'
+        ref: 'Review'
     }],
     source: {
         description: {
@@ -58,12 +59,12 @@ var schema = new mongoose.Schema({
 
 schema.virtual('shortDescription').get(function() {
     //TODO: Write more stuff here
-    return this.name + " is from " + this.source.name + ", a place known for " + this.category;
+    return this.name + " is from " + this.source.latitude +", "+ this.source.longitude + ", a place known for " + this.category;
 });
 
 schema.virtual('longDescription').get(function() {
     //TODO: Write more stuff here
-    return this.name + " is from " + this.source.name + ", a place known for " + this.category + "\n\n" + ipsum;
+    return this.name + " is from " + this.source.latitude +", "+ this.source.longitude + ", a place known for " + this.category + "\n\n" + ipsum;
 });
 
 schema.pre('remove', function(next) {
