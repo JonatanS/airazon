@@ -1,3 +1,19 @@
 <div class='single-product'>
-	<h4>{{ oneProduct }}</h4>
+    <div id="left-bar" class="col-lg-4">
+        <div>
+            <uib-carousel id="carousel-images" interval="myInterval" no-wrap="noWrapSlides">
+                <uib-slide ng-repeat="image in oneProduct.images">
+                    <img ng-src="{{image}}" style="margin:auto;">
+                </uib-slide>
+            </uib-carousel>
+        </div>
+        <div class="product-info">
+        	<h2>{{ oneProduct.name }}</h2>
+        	<span ng-repeat="t in ratingArr track by $index"><i class='material-icons stars md-dark'>star_rate</i></span><span ng-repeat="t in remainder track by $index"><i class='material-icons stars white'>star_rate</i></span>
+        	<h3 id="price">${{oneProduct.price}}</h3>
+        	<h4>{{oneProduct.shortDescription}}</h4>
+        </div>
+    </div>
+    <div class="col-lg-8" id="right-bar">
+    </div>
 </div>

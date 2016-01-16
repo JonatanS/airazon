@@ -11,3 +11,27 @@
 .stars{
   width:20px;
 }
+
+#left-bar{
+	float: left;
+	position: fixed;
+	overflow-y: scroll;
+}
+
+#carousel-images {
+	width: 80%;
+	margin: 5% auto;
+}
+
+#right-bar {
+	float: right;
+	background-color: blue;
+}
+
+.product-info{
+	text-align: center;
+}
+
+#price {
+	margin-top: 5px;
+}
