@@ -1,9 +1,7 @@
 'use strict';
-var crypto = require('crypto');
 var mongoose = require('mongoose');
-var _ = require('lodash');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
-var Review = mongoose.model('Review');
+// var Review = mongoose.model('Review');
 
 var schema = new mongoose.Schema({
     category: {

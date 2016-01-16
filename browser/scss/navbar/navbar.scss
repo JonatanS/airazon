@@ -55,17 +55,18 @@ navbar {
     }
   }
 
-  .material-icons {
-    font-size: 48px;
+  .icons {
+    font-size: 40px;
+    vertical-align: top;
   }
-
+/*
   #login-btn {
     float: right;
-    font-size: 48px;
-  }
-
-  #logout-btn {
-    font-size: 48px;
+  }*/
+  #profile-btn {
+    vertical-align: top;
+    background-color: Transparent;
+    border-radius: 5px;
   }
   #brand{
     padding: 0px;
