@@ -48,6 +48,13 @@ schema.methods.sanitize = function() {
     return _.omit(this.toJSON(), ['password', 'salt']);
 };
 
+schema.methods.addOrder = function(order) {
+    return this.findById(order.user)
+    .then( function (user){
+        user.orders.push(order._id);
+    });
+};
+
 // generateSalt, encryptPassword and the pre 'save' and 'correctPassword' operations
 // are all used for local authentication security.
 var generateSalt = function() {
