@@ -5,9 +5,7 @@ var mongoose = require('mongoose');
 var Promise = require('bluebird');
 var User = mongoose.models.User;
 var Address = mongoose.models.Address;
-var Review = mongoose.models.Review;
-var Order = mongoose.models.Order;
-var _ = require('lodash')
+var _ = require('lodash');
 
 var ensureAuthenticated = function (req, res, next) {
 	if (req.isAuthenticated()) {
@@ -44,7 +42,7 @@ router.post('/signup', function (req,res,next){
 
 // populates reviews/orders/address for one user, access only for signed in user and ADMINS
 router.param('id', function (req,res,next, id){
-    return User.findById(req.params.id).populate('addresses reviews orders')
+    return User.findById(id).populate('addresses reviews orders')
     .then(function (user) {
         req.user = user;
         next();
@@ -53,7 +51,7 @@ router.param('id', function (req,res,next, id){
 });
 
 
-router.get('/:id', ensureAuthenticated,function (req, res, next) {
+router.get('/:id', ensureAuthenticated,function (req, res) {
     res.status(200).json(req.user);
 });
 

@@ -1,4 +1,4 @@
-app.directive('navbar', function ($rootScope, AuthService, AUTH_EVENTS, $state) {
+app.directive('navbar', function ($rootScope, AuthService,ProfileFactory, AUTH_EVENTS, $state) {
 
     return {
         restrict: 'E',
@@ -15,6 +15,9 @@ app.directive('navbar', function ($rootScope, AuthService, AUTH_EVENTS, $state) 
             ];
 
             scope.user = null;
+            scope.cart = {
+                contents : []
+            };
 
             scope.isLoggedIn = function () {
                 return AuthService.isAuthenticated();
@@ -26,9 +29,20 @@ app.directive('navbar', function ($rootScope, AuthService, AUTH_EVENTS, $state) 
                 });
             };
 
-            var setUser = function () {
+            var setUserAndCart = function () {
+                console.log("\n\nsetUserAndCart!!!")
                 AuthService.getLoggedInUser().then(function (user) {
-                    scope.user = user;
+                    if (user) {
+                        //get their cart contents:
+                        ProfileFactory.getOne(user._id).then(function (populatedUser) {
+                            scope.user = populatedUser;
+                            scope.cart.contents = scope.user.orders.filter(function (o) {
+                                return o.status === 'cart';
+                            });
+                            console.log(scope.user);
+                        });
+                    }
+                    else scope.user = null;
                 });
             };
 
@@ -36,9 +50,10 @@ app.directive('navbar', function ($rootScope, AuthService, AUTH_EVENTS, $state) 
                 scope.user = null;
             };
 
-            setUser();
 
-            $rootScope.$on(AUTH_EVENTS.loginSuccess, setUser);
+            setUserAndCart();
+
+            $rootScope.$on(AUTH_EVENTS.loginSuccess, setUserAndCart);
             $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
             $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
 
