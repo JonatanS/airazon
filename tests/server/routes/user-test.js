@@ -23,7 +23,7 @@ describe('Users Route', function () {
     //     clearDB(done);
     // });
 
-    xdescribe('Unauthenticated request', function () {
+    describe('Unauthenticated request', function () {
 
         var guestAgent;
 
@@ -60,6 +60,21 @@ describe('Users Route', function () {
             zipcode: "20015"
         };
 
+        var modifiedAddress = {
+            firstName: "Leon",
+            lastName: "Thorne",
+            street: "123 5TH AVE",
+            city: "Berlin",
+            state: "DE",
+            zipcode: "11111"
+        }
+
+        var newUser =
+        {
+            user: userInfo,
+            address: addressInfo
+        }
+
         var testUser, testAddress;
         beforeEach('Create a user', function (done) {
             return User.create(userInfo)
@@ -80,20 +95,18 @@ describe('Users Route', function () {
 
         beforeEach('attach address to user', function (done) {
             testUser.addresses.push(testAddress._id);
-            console.log('\n\ntestUserWAdress:', testUser);
             testUser.save()
             .then(function(){
                 done();
             });
         });
 
-
         beforeEach('Create loggedIn user agent and authenticate', function (done) {
             loggedInAgent = supertest.agent(app);
             loggedInAgent.post('/login').send(userInfo).end(done);
         });
 
-         it('should get with 200 response and with an array as the body', function (done) {
+         xit('should get with 200 response and with an array as the body', function (done) {
              loggedInAgent.get('/api/users/').expect(200).end(function (err, response) {
                  if (err) return done(err);
                  expect(response.body[0].email).equals('joe@gmail.com');
@@ -101,40 +114,32 @@ describe('Users Route', function () {
              });
          });
 
-
-         it('should get user by ID with 200 response and with an object as the body', function (done) {
-             loggedInAgent.get('/api/users/'+ testUser._id).expect(200).end(function (err, response) {
-                 if (err) return done(err);
-                 expect(response.body.email).equals('joe@gmail.com');
-                 done();
-             });
-         });
-
-
-         it('should get user\'s address by ID with 200 response and with an object as the body', function (done) {
-             loggedInAgent.get('/api/users/'+ testUser._id).expect(200).end(function (err, response) {
-                 if (err) return done(err);
-                 console.log(response.body);
-                 expect(response.body.addresses[0].zipcode).equals('20015');
-                 done();
-             });
-         });
-
-
-        xit('should get with 200 response and with an object as the body', function (done) {
-            loggedInAgent.post('/api/users/signup').send(userInfo).expect(200).end(function (err, response) {
+        xit('signup new user should get with 201 response and with an object as the body', function (done) {
+            loggedInAgent.post('/api/users/signup').send(newUser).expect(201).end(function (err, response) {
                 if (err) return done(err);
                 expect(response.body.email).equals('joe@gmail.com');
                 done();
             });
         });
 
-        xit('should get with 200 response and with an object as the body', function () {
-            User.find().then(function(users){console.log(users)})
-            Address.find().then(function(users){console.log(users)})
-            expect('joe@gmail.com').equals('joe@gmail.com');
-            done();
-        });
+        xit('should get user\'s address by ID with 200 response and with an object as the body', function (done) {
+             loggedInAgent.get('/api/users/'+ testUser._id).expect(200).end(function (err, response) {
+                 if (err) return done(err);
+                 expect(response.body.addresses[0].zipcode).equals('20015');
+                 done();
+             });
+         });
+
+        it('should update user\'s address with 200 response and with an updated user object as the body', function (done) {
+             loggedInAgent.put('/api/users/'+ testUser._id +'/addresses/' +testAddress._id).send(modifiedAddress).expect(200).end(function (err, response) {
+                 if (err) return done(err);
+                 console.log("\n\n\n",response.body);
+                 expect(response.body.city).equals('Berlin');
+                 done();
+             });
+         });
+
+
     });
 
 });
