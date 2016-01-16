@@ -1,0 +1,35 @@
+<div id="user">
+<h1>{{ currentUser.firstName + ' ' + currentUser.lastName }}'s Profile</h1>
+<div class="row userinfo">
+    <div class="col-md-3 user">
+        <h4>Your Profile<span><a ui-sref-active="active" ui-sref="user-edit"><i class="material-icons">mode_edit</i></a></span></h4>
+        <li>Name: {{ currentUser.firstName + ' ' + currentUser.lastName }}</li>
+        <li>Email: {{ currentUser.email }}</li>
+        <li>Password: {{ currentUser.password | password }}</li>
+    </div>
+    <div class="col-md-3 addresses">
+        <h4>Address(es)<span><a ui-sref-active="active" ui-sref="user-edit"><i class="material-icons">mode_edit</i></a></span></h4>
+        <ul ng-repeat='address in currentUser.addresses'>
+            <li>{{ address.firstName + ' ' + address.lastName }}</li>
+            <li>{{ address.street }}</li>
+            <li>{{ address.city + ', ' + address.state + ' ' + address.zipcode }}</li>
+        </ul>
+    </div>
+    <div class="col-md-3 reviews">
+        <h4>Review(s)<span><a ui-sref-active="active" ui-sref="user-edit"><i class="material-icons">mode_edit</i></a></span></h4>
+        <ul ng-repeat='review in currentUser.reviews'>
+            <li style="font-weight:bold"><a ui-sref-active="active" ui-sref='viewOneProduct({productId: review.product})'>{{ review.title }}</a></li>
+            <li>{{ review.body }}</li>
+            <li>Rating: {{ review.rating }}</li>
+        </ul>
+    </div>
+    <div class="col-md-3 orders">
+        <h4>Order(s)</h4>
+        <ul ng-repeat='order in currentUser.orders'>
+            <li>{{ order }}</li>
+        </ul>
+    </div>
+</div>
+</div>
+
+{{currentUser.orders}}
