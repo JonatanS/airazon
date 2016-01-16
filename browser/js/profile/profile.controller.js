@@ -1,31 +1,40 @@
-app.controller('ProfileCtrl', function($scope, $state, Session, ProfileFactory) {
-	//$scope.currentUser = Session.user;
+app.controller('ProfileCtrl', function($rootScope,$scope, AuthService, AUTH_EVENTS, $state, ProfileFactory) {
+    //$scope.currentUser = Session.user;
     // fix this later.
     $scope.editProfile = function () {
-    	$scope.hasSubmitted = true;
-    	// console.log($scope.currentUser);
-    	// console.log($scope.updatedProfile);
-		for (var prop in $scope.updatedProfile) {
-			// console.log(prop);
-			if ($scope.updatedProfile[prop]) {
-    			$scope.currentUser[prop] = $scope.updatedProfile[prop];
-    		}
-		}
-		
-    	ProfileFactory.update($scope.currentUser)
-    	.then(function () {	
-    		$state.go('profile');
-    	})
-    	.catch(function (e) {
-    		$scope.hasSubmitted = false
-    		$scope.serverError = e.message || "Something went wrong!"
-    	});
+        $scope.hasSubmitted = true;
+        // console.log($scope.currentUser);
+        // console.log($scope.updatedProfile);
+        for (var prop in $scope.updatedProfile) {
+            if ($scope.updatedProfile[prop]) {
+                $scope.currentUser[prop] = $scope.updatedProfile[prop];
+            }
+        }
+
+        ProfileFactory.update($scope.currentUser)
+        .then(function () {
+            $state.go('profile');
+        })
+        .catch(function (e) {
+            $scope.hasSubmitted = false
+            $scope.serverError = e.message || "Something went wrong!"
+        });
     };
 
-    var populateUser = function () {
-        ProfileFactory.getOne(Session.user._id).then(function(user) {
+    var setUser = function () {
+        AuthService.getLoggedInUser().then(function (user) {
+            console.log($scope);
+            console.log(user);
             $scope.currentUser = user;
-        })
+        });
     };
-    populateUser();
+
+    var removeUser = function () {
+        $scope.currentUser = null;
+    };
+    setUser();
+
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, setUser);
+    $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
+    $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
 });
