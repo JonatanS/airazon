@@ -31,6 +31,8 @@ router.param('id', function (req,res,next, id){
     return Product.findById(id).deepPopulate('reviews.user')
     .then(function(product){
         req.product = product;
+        console.log(req.product);
+        console.log(product)
         next();
     })
     .then(null, next);

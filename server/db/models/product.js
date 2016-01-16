@@ -54,21 +54,29 @@ var schema = new mongoose.Schema({
     },
     tags: {
         type: [String]
-    },
+    }
 });
 
 schema.virtual('shortDescription').get(function() {
     //TODO: Write more stuff here
-    return this.name + " is from " + this.source.latitude +", "+ this.source.longitude + ", a place known for " + this.category;
+    return this.name + " is from " + this.source.latitude + ", " + this.source.longitude + ", a place known for " + this.category;
+});
+schema.set('toJSON', {
+   virtuals: true
+});
+schema.set('toObject', {
+   virtuals: true
 });
 
 schema.virtual('longDescription').get(function() {
     //TODO: Write more stuff here
-    return this.name + " is from " + this.source.latitude +", "+ this.source.longitude + ", a place known for " + this.category + "\n\n" + ipsum;
+    return this.name + " is from " + this.source.latitude + ", " + this.source.longitude + ", a place known for " + this.category + "\n\n" + ipsum;
 });
 
 schema.pre('remove', function(next) {
-    Review.find({product: this._id}).remove();
+    Review.find({
+        product: this._id
+    }).remove();
     next();
 });
 
