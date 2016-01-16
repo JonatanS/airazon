@@ -1,4 +1,4 @@
-app.controller('ProfileCtrl', function($rootScope,$scope, AuthService, AUTH_EVENTS, $state, ProfileFactory) {
+app.controller('ProfileCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS, $state, ProfileFactory) {
     //$scope.currentUser = Session.user;
     // fix this later.
     $scope.editProfile = function () {
@@ -23,9 +23,9 @@ app.controller('ProfileCtrl', function($rootScope,$scope, AuthService, AUTH_EVEN
 
     var setUser = function () {
         AuthService.getLoggedInUser().then(function (user) {
-            console.log($scope);
-            console.log(user);
-            $scope.currentUser = user;
+            ProfileFactory.getOne(user._id).then(function (populatedUser) {
+                $scope.currentUser = populatedUser;
+            });
         });
     };
 
