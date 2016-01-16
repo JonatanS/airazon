@@ -1,5 +1,5 @@
 app.filter('password', function(){
-    return function(str) {
+    return function() {
         var retstr = ""
         for (var i = 0; i < 10; i++)
         {

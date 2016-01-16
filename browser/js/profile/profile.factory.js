@@ -22,8 +22,8 @@ app.factory('ProfileFactory', function ($http) {
 				return user.data;
 			})
 		},
-		add: function (userObj) {
-			return $http.post('/api/users', { user: userObj })
+		signup: function (userObj) {
+			return $http.post('/api/users/signup', userObj)
 			.then(function (user) {
 				return user.data;
 			});

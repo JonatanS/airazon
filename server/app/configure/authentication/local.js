@@ -28,9 +28,7 @@ module.exports = function (app) {
 
     // A POST /login route is created to handle login.
     app.post('/login', function (req, res, next) {
-
         var authCb = function (err, user) {
-
             if (err) return next(err);
 
             if (!user) {
@@ -47,11 +45,7 @@ module.exports = function (app) {
                     user: user.sanitize()
                 });
             });
-
         };
-
         passport.authenticate('local', authCb)(req, res, next);
-
     });
-
 };

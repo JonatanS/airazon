@@ -14,8 +14,8 @@ module.exports = function (app) {
         clientSecret: googleConfig.clientSecret,
         callbackURL: googleConfig.callbackURL
     };
-
     var verifyCallback = function (accessToken, refreshToken, profile, done) {
+        console.log("google profile:", profile);
 
         UserModel.findOne({ 'google.id': profile.id }).exec()
             .then(function (user) {
@@ -24,6 +24,9 @@ module.exports = function (app) {
                     return user;
                 } else {
                     return UserModel.create({
+                        email: profile.emails[0].value,
+                        firstName: profile.name.givenName,
+                        lastName: profile.name.familyName,
                         google: {
                             id: profile.id
                         }
@@ -51,6 +54,7 @@ module.exports = function (app) {
     app.get('/auth/google/callback',
         passport.authenticate('google', { failureRedirect: '/login' }),
         function (req, res) {
+            console.log('response from google?');
             res.redirect('/');
         });
 
