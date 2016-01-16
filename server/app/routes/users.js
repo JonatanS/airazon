@@ -32,17 +32,12 @@ router.get('/', ensureAuthenticated,function (req, res, next) {
 	.then(null, next);
 });
 
-// create new user
+// create new user WITHOUT address
 router.post('/signup', function (req,res,next){
-    Address.create(req.body.address)
-    .then(function (address) {
-        var user = req.body.user;
-        user.addresses = [];
-        user.addresses.push(address)
-        User.create(user)
-        .then(function(result) {
-        res.status(201).json(result);
-        })
+    console.log(req.body);
+    return User.create(req.body)
+    .then(function(result) {
+    res.status(201).json(result);
     })
     .then(null, next);
 })

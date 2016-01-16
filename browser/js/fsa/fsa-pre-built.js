@@ -88,10 +88,18 @@
 
         this.login = function (credentials) {
             return $http.post('/login', credentials)
-                .then(onSuccessfulLogin)
-                .catch(function () {
-                    return $q.reject({ message: 'Invalid login credentials.' });
-                });
+            .then(onSuccessfulLogin)
+            .catch(function () {
+                return $q.reject({ message: 'Invalid login credentials.' });
+            });
+        };
+
+        this.signup = function (credentials) {
+            return $http.post('/signup', credentials)
+            .then(onSuccessfulLogin)
+            .catch(function () {
+                return $q.reject({ message: 'Invalid signup credentials.' });
+            });
         };
 
         this.logout = function () {
