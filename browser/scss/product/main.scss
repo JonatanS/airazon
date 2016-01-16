@@ -54,9 +54,21 @@
     border-width: 1px;
     border-radius: 10px;
     padding: 10px;
-    margin: 5px;
+    margin: 5px 4%;
+}
+
+#long-description{
+	margin-left: 4%;
 }
 
 #review-body{
 	clear: both;
+}
+.product-name {
+	margin-left: 40%;
+}
+
+.add-to-cart {
+	background-color:#5B9147;
+	color: #FFF
 }
