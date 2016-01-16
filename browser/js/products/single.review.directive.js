@@ -8,6 +8,8 @@ app.directive('review', function() {
 		link: function(scope, element, attr) {
 			console.log("this is coming from the single review directive")
 			console.log(scope.thisReview)
+			scope.numStars = new Array(scope.thisReview.rating)
+			scope.numNotStars = new Array(5-scope.thisReview.rating)
 		}
 	}
 });

@@ -8,7 +8,8 @@ var schema = new mongoose.Schema({
         ref: 'Address'
     },
     created_at: {
-        type: Date
+        type: Date,
+        default: Date.now()
     },
     products: [{
         quantity: {
