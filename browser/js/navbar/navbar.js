@@ -1,4 +1,4 @@
-app.directive('navbar', function ($rootScope, AuthService,ProfileFactory, AUTH_EVENTS, $state) {
+app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state) {
 
     return {
         restrict: 'E',
@@ -34,7 +34,7 @@ app.directive('navbar', function ($rootScope, AuthService,ProfileFactory, AUTH_E
                 AuthService.getLoggedInUser().then(function (user) {
                     if (user) {
                         //get their cart contents:
-                        ProfileFactory.getOne(user._id).then(function (populatedUser) {
+                        UserFactory.getOne(user._id).then(function (populatedUser) {
                             scope.user = populatedUser;
                             scope.cart.contents = scope.user.orders.filter(function (o) {
                                 return o.status === 'cart';
