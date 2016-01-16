@@ -15,17 +15,14 @@
                     </div>
                 </div>
                 <div class="col-sm-3 icons" id="icons-right">
-                    <a ui-sref-active="active" ui-sref="home"><i class="material-icons">home</i></a>
-                    <a ui-sref-active="active" ui-sref="cart"><i class="fa fa-shopping-cart"></i></a>
-                </div>
-                <div class="col-sm-3 login">
-                    <a id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="fa fa-sign-in"></i></a>
-                    <div ng-show="user" class="welcome">
-                    <button class="btn btn-default" ui-sref='profile'>
+                    <a ui-sref-active="active" ui-sref="home"><i class="icons material-icons">home</i></a>
+                    <a ui-sref-active="active" ui-sref="cart"><i <i class="icons material-icons">shopping_cart</i></a>
+                </div><div class="col-sm-3 login">
+                    <a id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="icons fa fa-sign-in"></i></a>
+                    <a id="logout-btn" ng-click="logout()"><span><i class="icons fa fa-sign-out"></i></span></a>
+                    <button id="profile-btn" ng-show="user" class="btn btn-default" ui-sref='profile'>
                     {{ user.firstName + ' ' + user.lastName }}
                     </button>
-                    <a id="logout-btn" ng-click="logout()"><span><i class="fa fa-sign-out"></i></span></a>
-                    </div>
                 </div>
             </div>
 
