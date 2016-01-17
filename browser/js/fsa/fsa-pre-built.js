@@ -144,7 +144,9 @@
                         id: -1
                     }
                 }
-            });
+            }).then(function() {
+				$rootScope.$emit('cart populated', 'no need');
+			});
         };
 
         this.create = function (sessionId, user) {
