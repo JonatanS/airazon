@@ -8,10 +8,10 @@ app.config(function ($stateProvider) {
 
 });
 
-app.controller('SignupCtrl', function ($scope, ProfileFactory, $state) {
+app.controller('SignupCtrl', function ($scope, UserFactory, $state) {
 
   $scope.sendSignup = function(signupInfo){
-    ProfileFactory.signup(signupInfo)
+    UserFactory.signup(signupInfo)
     .then(function(){
         $state.go('home');
         }).catch(function () {

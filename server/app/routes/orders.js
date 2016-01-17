@@ -37,8 +37,9 @@ router.param('id', function (req,res,next, id){
 });
 
 // GET /api/orders/:id
-router.get('/:id', function (req, res) {
+router.get('/:id', function (req, res, next) {
     res.json(req.order);
+    console.log(next);
     // next();
 });
 
