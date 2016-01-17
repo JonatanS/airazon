@@ -1,4 +1,4 @@
-app.factory('ProductFactory', function($http) {
+app.factory('ProductFactory', function ($http) {
     return {
         getAll: function() {
             return $http.get('/api/products/')

@@ -16,13 +16,24 @@ router.get('/', function (req, res, next) {
 
 // POST /api/orders
 router.post('/', function (req, res, next){
+    console.log(req.body);
     Order.create(req.body)
     .then( function (order) {
         if (order.user) {
+            console.log(order.user);
             //add to user.orders[]
-            User.addOrder(order);
+            return User.findById(order.user)
+            .then(function(userToUpdate){
+                userToUpdate.orders.push(order._id);
+                //{$push:order._id})
+                return userToUpdate.save()
+                .then(function (updatedUser){
+                    console.log(updatedUser);
+                    res.status(201).json(order);
+                });
+            });
         }
-        res.status(201).json(order);
+        else( console.error("THIS ORDER HAS NO USER", order._id));
     })
     .then(null, next);
 });

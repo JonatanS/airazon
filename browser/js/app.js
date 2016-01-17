@@ -1,7 +1,16 @@
 'use strict';
-window.app = angular.module('FullstackGeneratedApp', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate']);
+
+window.app = angular.module('FullstackGeneratedApp', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate'])
+// allow DI for use in controllers, unit tests
+.constant('_', window._)
+// use in views, ng-repeat="x in _.range(3)"
+.run(function ($rootScope) {
+ $rootScope._ = window._;
+});
 
 app.config(function ($urlRouterProvider, $locationProvider) {
+
+
     // This turns off hashbang urls (/#about) and changes it to something normal (/about)
     $locationProvider.html5Mode(true);
     // If we go to a URL that ui-router doesn't have registered, go to the "/" url.
