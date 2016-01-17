@@ -111,7 +111,7 @@
 
     });
 
-    app.service('Session', function ($rootScope, AUTH_EVENTS) {
+    app.service('Session', function ($rootScope, AUTH_EVENTS, UserFactory) {
 
         var self = this;
 
@@ -125,15 +125,24 @@
 
         this.id = null;
         this.user = null;
+        this.cart = null;
 
         this.create = function (sessionId, user) {
             this.id = sessionId;
             this.user = user;
+            UserFactory.getOne(user._id).then(function (populatedUser) {
+                console.log(self);
+                self.cart = populatedUser.orders.filter(function (o) {
+                    return o.status.current === 'cart';
+                })[0];
+                console.log('session with cart', self.cart);
+            });
         };
 
         this.destroy = function () {
             this.id = null;
             this.user = null;
+            this.cart = null;
         };
 
     });

@@ -1,5 +1,8 @@
 <section id="cart">
-    <p>
-        This should be your cart
-    </p>
+<h2><span>Your cart contains {{cart.products.length}} item</span><span ng-show="cart.products.length > 1">s</span><span ng-show="cart.products.length === 0">Your cart is empty. Go get some fresh air!</span></h2>
+    <h4>Your cart was created on {{cart.created_at | date : 'short'}}</h4>
+    Everett or Dan, can you try to make this work with your product directove?
+<!--     <div ng-repeat='product in cart.products'>
+       <product this-product='product'></product>
+   </div> -->
 </section>
