@@ -125,16 +125,21 @@
 
         this.id = null;
         this.user = null;
-        this.cart = null;
+        this.cart = {
+            products: [],
+            hasBeenSaved: false,
+            id: -1
+        };
 
         this.create = function (sessionId, user) {
             this.id = sessionId;
             this.user = user;
             UserFactory.getOne(user._id).then(function (populatedUser) {
-                console.log(self);
-                self.cart = populatedUser.orders.filter(function (o) {
+                console.log(populatedUser);
+                _.merge(self.cart, populatedUser.orders.filter(function (o) {
                     return o.status.current === 'cart';
-                })[0];
+                })[0]);
+                //if (!self.cart) self.cart = {products:[], id: -1};
                 console.log('session with cart', self.cart);
             });
         };

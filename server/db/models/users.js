@@ -1,5 +1,5 @@
 'use strict';
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
 var _ = require('lodash');
 var crypto = require('crypto');
 

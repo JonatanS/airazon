@@ -35,6 +35,8 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                             scope.cart = scope.user.orders.filter(function (o) {
                                 return o.status.current === 'cart';
                             })[0];
+
+                            if (!scope.cart) scope.cart = {products:[], id: -1};
                         });
                     }
                     else scope.user = null;
