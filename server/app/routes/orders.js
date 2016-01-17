@@ -26,7 +26,7 @@ router.post('/', function (req, res, next){
                 userToUpdate.orders.push(order._id);
                 //{$push:order._id})
                 return userToUpdate.save()
-                .then(function (updatedUser){
+                .then(function (){
                     res.status(201).json(order);
                 });
             });
