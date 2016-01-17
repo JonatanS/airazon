@@ -59,12 +59,6 @@ schema.pre('save', function(next){
     if (this.status === 'processing') this.created_at = now;
     if(!this.trackingNumber)
         this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
-    // //add to user:
-    // console.log(User);
-    // User.findById(this.user).then(function (user) {
-    //     if(user) user.orders.push({_id: this._id});
-    //     next();
-    // });
     next();
 });
 
