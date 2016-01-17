@@ -6,6 +6,8 @@ app.controller('ProductCtrl', function ($scope, $state, ProductFactory) {
 			$scope.filterParam = $state.params.filter;
 		}
 	});
-});
 
+	$scope.$on('searching', function(emit, filter) {
+		$scope.filterParam = filter;
+	});
 });
