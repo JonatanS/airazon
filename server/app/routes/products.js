@@ -8,7 +8,7 @@ var Product = mongoose.models.Product;
 router.get('/', function (req, res, next) {
     //use deep-populate to grab reviews and users thereof
     return Product.find({}).deepPopulate('reviews.user')
-    .then( function (products) {
+    .then(function (products) {
         res.status(200).send(products);
     }).then(null, next);
 });
@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
 // POST /api/products
 router.post('/', function (req, res, next){
     Product.create(req.body)
-    .then( function (product) {
+    .then(function (product) {
         res.status(201).json(product);
     })
     .then(null, next);
@@ -50,7 +50,7 @@ router.delete('/:id', function (req, res, next) {
 router.put('/:id', function (req, res, next) {
     req.product.set(req.body);
     req.product.save()
-    .then( function () {
+    .then(function () {
         res.json(req.product);
     })
     .then(null, next);
