@@ -1,8 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
-var models = require('../../db/models');
-var Review = models.Review;
+var Review = require('./reviews');
 
 
 var atLeastOne = function (val) {

@@ -27,9 +27,10 @@ module.exports = function (app) {
 
     // A POST /login route is created to handle login.
     app.post('/login', function (req, res, next) {
+        console.log('LOGIING INNN');
         var authCb = function (err, user) {
             if (err) return next(err);
-
+            console.log('1!');
             if (!user) {
                 var error = new Error('Invalid login credentials.');
                 error.status = 401;
@@ -39,6 +40,7 @@ module.exports = function (app) {
             // req.logIn will establish our session.
             req.logIn(user, function (loginErr) {
                 if (loginErr) return next(loginErr);
+                console.log("NO ERROR - SANITIZING");
                 // We respond with a response object that has user with _id and email.
                 res.status(200).send({
                     user: user.sanitize()

@@ -2,9 +2,8 @@
 const mongoose = require('mongoose');
 var _ = require('lodash');
 
-var models = require('../../db/models');
-var Review = models.Review;
-var Order = models.Order;
+var Review = require('./reviews');
+var Order = require('./orders');
 
 var schema = new mongoose.Schema({
     firstName: {

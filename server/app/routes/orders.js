@@ -1,10 +1,9 @@
 'use strict';
 var router = require('express').Router();
 module.exports = router;
-// var mongoose = require('mongoose');
-var models = require('../../db/models');
-var Order = models.Order;
-var User = models.User;
+const mongoose = require('mongoose');
+var Order = mongoose.models.Order;
+var User = mongoose.models.User;
 
 
 // GET /api/orders with optional status param
