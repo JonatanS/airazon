@@ -1,6 +1,7 @@
 'use strict';
 var mongoose = require('mongoose');
-// var User = mongoose.model('User');
+var models = require('../../db/models');
+var User = models.User;
 
 var schema = new mongoose.Schema({
     address: {

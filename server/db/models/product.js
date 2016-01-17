@@ -1,7 +1,15 @@
 'use strict';
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
-// var Review = mongoose.model('Review');
+var models = require('../../db/models');
+var Review = models.Review;
+
+
+var atLeastOne = function (val) {
+    return val.length > 0;
+};
+var ipsum = "Bacon ipsum dolor amet pork ham hock pancetta cow t-bone ball tip, jerky strip steak bacon doner landjaeger tenderloin. Turkey spare ribs pork loin alcatra pork belly bresaola pig venison leberkas salami turducken. Kielbasa pork belly pancetta, capicola brisket pork loin ground round tongue swine turducken pastrami short loin. Brisket flank picanha pork belly, bacon capicola shankle alcatra. Bacon pork chop pork belly, jowl ham hock drumstick tri-tip capicola jerky turkey frankfurter pig swine pancetta brisket.\n\nCorned beef pork loin hamburger, jowl boudin shank brisket rump. Shoulder alcatra bresaola, brisket ground round prosciutto short loin pastrami. Pork chuck ground round strip steak drumstick doner jerky pastrami turkey alcatra landjaeger corned beef. Capicola short ribs swine pork loin cupim meatloaf pork sausage fatback, chuck picanha bacon. Boudin capicola flank, sausage corned beef hamburger meatball beef swine alcatra ground round tongue landjaeger shankle t-bone. Ham hock filet mignon ribeye swine landjaeger sirloin pork short ribs meatball."
+
 
 var schema = new mongoose.Schema({
     category: {
@@ -78,12 +86,7 @@ schema.pre('remove', function(next) {
     next();
 });
 
-function atLeastOne(val) {
-    return val.length > 0;
-}
-
 schema.plugin(deepPopulate);
 
 mongoose.model('Product', schema);
 
-var ipsum = "Bacon ipsum dolor amet pork ham hock pancetta cow t-bone ball tip, jerky strip steak bacon doner landjaeger tenderloin. Turkey spare ribs pork loin alcatra pork belly bresaola pig venison leberkas salami turducken. Kielbasa pork belly pancetta, capicola brisket pork loin ground round tongue swine turducken pastrami short loin. Brisket flank picanha pork belly, bacon capicola shankle alcatra. Bacon pork chop pork belly, jowl ham hock drumstick tri-tip capicola jerky turkey frankfurter pig swine pancetta brisket.\n\nCorned beef pork loin hamburger, jowl boudin shank brisket rump. Shoulder alcatra bresaola, brisket ground round prosciutto short loin pastrami. Pork chuck ground round strip steak drumstick doner jerky pastrami turkey alcatra landjaeger corned beef. Capicola short ribs swine pork loin cupim meatloaf pork sausage fatback, chuck picanha bacon. Boudin capicola flank, sausage corned beef hamburger meatball beef swine alcatra ground round tongue landjaeger shankle t-bone. Ham hock filet mignon ribeye swine landjaeger sirloin pork short ribs meatball."

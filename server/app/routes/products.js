@@ -1,11 +1,8 @@
 'use strict';
 var router = require('express').Router();
 module.exports = router;
-var mongoose = require('mongoose');
-var Promise = require('bluebird');
-var Product = mongoose.models.Product;
-var Review = mongoose.models.Review;
-var User = mongoose.models.User;
+var models = require('../../db/models');
+var Product = models.Product;
 
 
 // GET /api/products
@@ -39,9 +36,8 @@ router.param('id', function (req,res,next, id){
 });
 
 // GET /api/products/:id
-router.get('/:id', function (req, res, next) {
+router.get('/:id', function (req, res) {
     res.json(req.product);
-    // next();
 });
 
 // REMOVE /api/products/:id
