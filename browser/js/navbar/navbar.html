@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-sm-3 icons" id="icons-right">
                     <a ui-sref-active="active" ui-sref="home"><i class="icons material-icons">home</i></a>
-                    <a ui-sref-active="active" ng-show="cart.contents.length >0" ui-sref="cart"><i <i class="icons material-icons">shopping_cart</i></a>
+                    <a ui-sref-active="active" ui-sref="cart"><i <i class="icons material-icons">shopping_cart</i><span class="cart-counter">{{cart.contents.length}}</span></a>
                 </div><div class="col-sm-3 login">
                     <a id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="icons fa fa-sign-in"></i></a>
                     <a id="logout-btn" ng-show="user" ng-click="logout()"><span><i class="icons fa fa-sign-out"></i></span></a>

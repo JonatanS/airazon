@@ -30,17 +30,15 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             };
 
             var setUserAndCart = function () {
-                console.log("\n\nsetUserAndCart!!!")
                 AuthService.getLoggedInUser().then(function (user) {
                     if (user) {
-                        console.log("GOT USER!", user.email)
                         //get their cart contents:
                         UserFactory.getOne(user._id).then(function (populatedUser) {
                             scope.user = populatedUser;
                             scope.cart.contents = scope.user.orders.filter(function (o) {
-                                return o.status === 'cart';
+                                return o.status.current === 'cart';
                             });
-                            console.log(scope.user);
+                            console.log('scope with cart', scope);
                         });
                     }
                     else scope.user = null;
