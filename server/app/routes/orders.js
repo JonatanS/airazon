@@ -2,9 +2,8 @@
 var router = require('express').Router();
 module.exports = router;
 const mongoose = require('mongoose');
-var models = require('../../db/models');
-var Order =  mongoose.models.Order;
-var User =  mongoose.models.User;
+var Order = mongoose.models.Order;
+var User = mongoose.models.User;
 
 
 // GET /api/orders with optional status param
