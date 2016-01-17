@@ -20,7 +20,7 @@
                 </div><div class="col-sm-3 login">
                     <a id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="icons fa fa-sign-in"></i></a>
                     <a id="logout-btn" ng-show="user" ng-click="logout()"><span><i class="icons fa fa-sign-out"></i></span></a>
-                    <button id="profile-btn" ng-show="user" class="btn btn-default" ui-sref='profile'>
+                    <button id="profile-btn" ng-show="user" class="btn btn-default" ui-sref='user'>
                     {{ user.firstName + ' ' + user.lastName }}
                     </button>
                 </div>

@@ -22,6 +22,7 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
     };
 
     var setUser = function () {
+        console.log('setUser');
         AuthService.getLoggedInUser().then(function (user) {
             UserFactory.getOne(user._id).then(function (populatedUser) {
                 $scope.currentUser = populatedUser;
@@ -32,7 +33,7 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
     var removeUser = function () {
         $scope.currentUser = null;
     };
-    
+
     setUser();
 
     $rootScope.$on(AUTH_EVENTS.loginSuccess, setUser);

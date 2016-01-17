@@ -1,6 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
 var _ = require('lodash');
+var crypto = require('crypto');
 
 var Review = require('./reviews');
 var Order = require('./orders');
