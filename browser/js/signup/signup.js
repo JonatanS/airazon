@@ -14,10 +14,9 @@ app.controller('SignupCtrl', function ($scope, UserFactory, $state) {
     UserFactory.signup(signupInfo)
     .then(function(){
         $state.go('home');
-        }).catch(function () {
-            $scope.error = 'Invalid credentials.';
-        });
-
+    }).catch(function () {
+        $scope.error = 'Invalid credentials.';
+    });
   };
 
 });

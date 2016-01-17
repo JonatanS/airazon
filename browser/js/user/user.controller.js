@@ -1,5 +1,4 @@
 app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS, $state, UserFactory) {
-    //$scope.currentUser = Session.user;
     // fix this later.
     $scope.editUser = function () {
         $scope.hasSubmitted = true;
@@ -18,6 +17,16 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
             $scope.serverError = e.message || "Something went wrong!"
         });
     };
+    // FIX BACKEND ROUTES
+    $scope.addAddress = function (newAddress) {
+        console.log('new address!!!!!!!!', newAddress)
+        UserFactory.addAddress(newAddress)
+        .then(function (){
+            $state.go('user');
+        }).catch(function () {
+            $scope.error = 'Invalid credentials.';
+        });
+    }
 
     var setUser = function () {
         AuthService.getLoggedInUser().then(function (user) {

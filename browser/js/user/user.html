@@ -8,28 +8,45 @@
         <li>Password: {{ currentUser.password | password }}</li>
     </div>
     <div class="col-md-3 addresses">
-        <h4>Address(es)<span><a ui-sref-active="active" ui-sref="user-edit"><i class="material-icons">mode_edit</i></a></span></h4>
-        <ul ng-repeat='address in currentUser.addresses'>
-            <li>{{ address.firstName + ' ' + address.lastName }}</li>
-            <li>{{ address.street }}</li>
-            <li>{{ address.city + ', ' + address.state + ' ' + address.zipcode }}</li>
-        </ul>
+        <h4>Address(es)<span><a ui-sref-active="active" ui-sref="user-address-edit"><i class="material-icons">mode_edit</i></a></span></h4>
+        <div ng-show="currentUser.addresses.length === 0">
+            <li>No billing/shipping addresses available.</li>
+        </div>
+        <div ng-show="currentUser.addresses.length > 0">
+            <ul ng-repeat='address in currentUser.addresses'>
+                <li>{{ address.firstName + ' ' + address.lastName }}</li>
+                <li>{{ address.street }}</li>
+                <li>{{ address.city + ', ' + address.state + ' ' + address.zipcode }}</li>
+            </ul>
+        </div>
     </div>
     <div class="col-md-3 reviews">
-        <h4>Review(s)<span><a ui-sref-active="active" ui-sref="user-edit"><i class="material-icons">mode_edit</i></a></span></h4>
-        <ul ng-repeat='review in currentUser.reviews'>
-            <li style="font-weight:bold"><a ui-sref-active="active" ui-sref='viewOneProduct({productId: review.product})'>{{ review.title }}</a></li>
-            <li>{{ review.body }}</li>
-            <li>Rating: {{ review.rating }}</li>
-        </ul>
+        <h4>Review(s)<span><a ui-sref-active="active" ui-sref="products"><i class="material-icons">mode_edit</i></a></span></h4>
+        <div ng-show="currentUser.reviews.length === 0">
+            <li>Please review one of our products! &#x263A</li>
+        </div>
+        <div ng-show="currentUser.reviews.length > 0">
+            <ul ng-repeat='review in currentUser.reviews'>
+                <li style="font-weight:bold"><a ui-sref-active="active" ui-sref='viewOneProduct({productId: review.product})'>{{ review.title }}</a></li>
+                <li>{{ review.body }}</li>
+                <li>Date: {{ review.created_at | date:'MM/dd/yyyy' }}</li>
+                <li>Rating: {{ review.rating }}</li>
+            </ul>
+        </div>
     </div>
     <div class="col-md-3 orders">
         <h4>Order(s)</h4>
-        <ul ng-repeat='order in currentUser.orders'>
-            <li>{{ order }}</li>
-        </ul>
+        <div ng-show="currentUser.orders.length === 0">
+            <li>Your order history is empty. Click on the mason jar to check out our air products!</li>
+        </div>
+        <div ng-show="currentUser.orders.length > 0">
+            <ul ng-repeat='order in currentUser.orders'>
+                <li>Status: {{ order.status.current }}</li>
+                <li>Order Date: {{ order.status.updated_at | date:'MM/dd/yyyy @ h:mma'}}</li>
+                <li>Tracking #: {{ order.trackingNumber }}</li>
+            </ul>
+        </div>
     </div>
 </div>
 </div>
 
-{{currentUser.orders}}
