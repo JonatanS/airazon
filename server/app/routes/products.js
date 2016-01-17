@@ -7,7 +7,6 @@ var Product = mongoose.models.Product;
 // // GET /api/products
 router.get('/', function (req, res, next) {
     //use deep-populate to grab reviews and users thereof
-    console.log(Product);
     return Product.find({}).deepPopulate('reviews.user')
     .then( function (products) {
         res.status(200).send(products);
@@ -28,8 +27,6 @@ router.param('id', function (req,res,next, id){
     return Product.findById(id).deepPopulate('reviews.user')
     .then(function(product){
         req.product = product;
-        console.log(req.product);
-        console.log(product)
         next();
     })
     .then(null, next);

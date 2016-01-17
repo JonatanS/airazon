@@ -32,7 +32,6 @@ router.get('/', ensureAuthenticated,function (req, res, next) {
 
 // create new user WITHOUT address
 router.post('/signup', function (req,res,next){
-    console.log(req.body);
     return User.create(req.body)
     .then(function(result) {
     res.status(201).json(result);
@@ -81,7 +80,6 @@ router.post('/:id/addresses/', function (req, res, next) {
 
 //update user's address:
 router.put('/:id/addresses/:addressId',ensureAuthenticated, function (req,res,next){
-    console.log('addressID', req.params.addressId, req.body);
     return Address.findById(req.params.addressId)
     .then(function(address){
         var updatedAddress = _.merge(address, req.body);

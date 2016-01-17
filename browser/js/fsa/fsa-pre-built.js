@@ -51,7 +51,6 @@
     app.service('AuthService', function ($http, Session, $rootScope, AUTH_EVENTS, $q) {
 
         function onSuccessfulLogin(response) {
-            console.log("onSuccessfulLogin");
             var data = response.data;
             Session.create(data.id, data.user);
             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
@@ -61,12 +60,10 @@
         // Uses the session factory to see if an
         // authenticated user is currently registered.
         this.isAuthenticated = function () {
-            console.log('isAuthenticated', Session);
             return !!Session.user;
         };
 
         this.getLoggedInUser = function (fromServer) {
-            console.log('getLoggedInUser');
             // If an authenticated session exists, we
             // return the user attached to that session
             // with a promise. This ensures that we can
@@ -114,7 +111,7 @@
 
     });
 
-    app.service('Session', function ($rootScope, AUTH_EVENTS) {
+    app.service('Session', function ($rootScope, AUTH_EVENTS, UserFactory) {
 
         var self = this;
 
@@ -128,15 +125,24 @@
 
         this.id = null;
         this.user = null;
+        this.cart = null;
 
         this.create = function (sessionId, user) {
             this.id = sessionId;
             this.user = user;
+            UserFactory.getOne(user._id).then(function (populatedUser) {
+                console.log(self);
+                self.cart = populatedUser.orders.filter(function (o) {
+                    return o.status.current === 'cart';
+                })[0];
+                console.log('session with cart', self.cart);
+            });
         };
 
         this.destroy = function () {
             this.id = null;
             this.user = null;
+            this.cart = null;
         };
 
     });

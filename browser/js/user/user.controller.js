@@ -3,8 +3,6 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
     // fix this later.
     $scope.editUser = function () {
         $scope.hasSubmitted = true;
-        // console.log($scope.currentUser);
-        // console.log($scope.updatedUser);
         for (var prop in $scope.updatedUser) {
             if ($scope.updatedUser[prop]) {
                 $scope.currentUser[prop] = $scope.updatedUser[prop];
@@ -22,7 +20,6 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
     };
 
     var setUser = function () {
-        console.log('setUser');
         AuthService.getLoggedInUser().then(function (user) {
             UserFactory.getOne(user._id).then(function (populatedUser) {
                 $scope.currentUser = populatedUser;
