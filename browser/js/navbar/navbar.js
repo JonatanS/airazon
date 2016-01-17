@@ -33,6 +33,7 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                 console.log("\n\nsetUserAndCart!!!")
                 AuthService.getLoggedInUser().then(function (user) {
                     if (user) {
+                        console.log("GOT USER!", user.email)
                         //get their cart contents:
                         UserFactory.getOne(user._id).then(function (populatedUser) {
                             scope.user = populatedUser;

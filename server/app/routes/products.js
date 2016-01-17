@@ -1,13 +1,15 @@
 'use strict';
 var router = require('express').Router();
 module.exports = router;
+const mongoose = require('mongoose');
 var models = require('../../db/models');
-var Product = models.Product;
+var Product =  mongoose.models.Product;
 
 
-// GET /api/products
+// // GET /api/products
 router.get('/', function (req, res, next) {
     //use deep-populate to grab reviews and users thereof
+    console.log(Product);
     return Product.find({}).deepPopulate('reviews.user')
     .then( function (products) {
         res.status(200).send(products);
