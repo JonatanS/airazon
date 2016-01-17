@@ -1,4 +1,4 @@
-app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state) {
+app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state, Session) {
 
     return {
         restrict: 'E',
@@ -27,20 +27,26 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             };
 
             var setUserAndCart = function () {
-                AuthService.getLoggedInUser().then(function (user) {
-                    if (user) {
-                        //get their cart contents:
-                        UserFactory.getOne(user._id).then(function (populatedUser) {
-                            scope.user = populatedUser;
-                            scope.cart = scope.user.orders.filter(function (o) {
-                                return o.status.current === 'cart';
-                            })[0];
+                if(!scope.user) {
+                    AuthService.getLoggedInUser().then(function (user) {
+                        if (user) {
+                            //get their cart contents:
+                            UserFactory.getOne(user._id).then(function (populatedUser) {
+                                scope.user = populatedUser;
+                                scope.cart = scope.user.orders.filter(function (o) {
+                                    return o.status.current === 'cart';
+                                })[0];
 
-                            if (!scope.cart) scope.cart = {products:[], id: -1};
-                        });
-                    }
-                    else scope.user = null;
-                });
+                                if (!scope.cart) scope.cart = {products:[], id: -1};
+                            });
+                        }
+                        else scope.user = null;
+                    });
+                }
+            };
+
+            var updateCart = function () {
+                scope.cart = Session.cart
             };
 
             var removeUser = function () {
@@ -53,6 +59,8 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             $rootScope.$on(AUTH_EVENTS.loginSuccess, setUserAndCart);
             $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
             $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
+
+            $rootScope.$on('productAddedToCart', updateCart);
 
         }
 

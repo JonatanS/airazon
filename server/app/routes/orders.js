@@ -16,11 +16,9 @@ router.get('/', function (req, res, next) {
 
 // POST /api/orders
 router.post('/', function (req, res, next){
-    console.log(req.body);
     Order.create(req.body)
     .then( function (order) {
         if (order.user) {
-            console.log(order.user);
             //add to user.orders[]
             return User.findById(order.user)
             .then(function(userToUpdate){
