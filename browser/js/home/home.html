@@ -1,7 +1,31 @@
-<section id="home">
-    <div class="jumbotron">
-      <h1>WELCOME</h1>
-      <p>Fine air from all over the world</p>
-      <p><a class="btn btn-primary btn-lg" ui-sref='products' role="button">Browse Air Products</a></p>
-    </div>
-</section>
+<div class='home' ng-controller="CarouselCtrl">
+    <uib-carousel interval="myInterval" no-wrap="noWrapSlides">
+      <uib-slide>
+        <img ng-src="http://www.hdwallpapers.in/walls/swiss_night_sky-wide.jpg" style="margin:auto;">
+        <div class="carousel-caption">
+          <img id='masonjar' src='./js/home/home.png'>
+          <hr class="style2">
+          <h3 style="font-weight:bold;">Fine air from all over the world</h3>
+          <a ui-sref='products' role="button"><button style="color:white; font-weight:bold;">Browse Our Products</button></a>
+        </div>
+      </uib-slide>
+      <uib-slide>
+        <img ng-src="http://eskipaper.com/images/cool-nyc-wallpaper-1.jpg" style="margin:auto;">
+        <div class="carousel-caption">
+          <img id='masonjar' src='./js/home/home.png'>
+          <hr class="style2">
+          <h3 style="font-weight:bold;">Fine air from all over the world</h3>
+          <a ui-sref='products' role="button"><button style="color:white; font-weight:bold;">Browse Our Products</button></a>
+        </div>
+      </uib-slide>
+      <uib-slide>
+        <img ng-src="http://wallpapercave.com/wp/XAJ1p0G.jpg" style="margin:auto;">
+        <div class="carousel-caption">
+          <img id='masonjar' src='./js/home/home.png'>
+          <hr class="style2">
+          <h3 style="font-weight:bold;">Fine air from all over the world</h3>
+          <a ui-sref='products' role="button"><button style="color:white; font-weight:bold;">Browse Our Products</button></a>
+        </div>
+      </uib-slide>
+    </uib-carousel>
+</div>
