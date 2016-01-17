@@ -1,6 +1,10 @@
 'use strict';
-var mongoose = require('mongoose');
-var _ = require('lodash')
+const mongoose = require('mongoose');
+var _ = require('lodash');
+
+var models = require('../../db/models');
+var Review = models.Review;
+var Order = models.Order;
 
 var schema = new mongoose.Schema({
     firstName: {

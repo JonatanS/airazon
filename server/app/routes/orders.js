@@ -1,11 +1,10 @@
 'use strict';
 var router = require('express').Router();
 module.exports = router;
-var mongoose = require('mongoose');
+// var mongoose = require('mongoose');
 var models = require('../../db/models');
-var Promise = require('bluebird');
 var Order = models.Order;
-var User = mongoose.models.User;
+var User = models.User;
 
 
 // GET /api/orders with optional status param
@@ -39,7 +38,7 @@ router.param('id', function (req,res,next, id){
 });
 
 // GET /api/orders/:id
-router.get('/:id', function (req, res, next) {
+router.get('/:id', function (req, res) {
     res.json(req.order);
     // next();
 });
