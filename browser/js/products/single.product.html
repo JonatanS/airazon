@@ -22,8 +22,9 @@
         <div class="col-xl-6 col-lg-6 col-md-8 col-sm-10 col-xs-12">
             <h1>{{ oneProduct.name }}</h1>
             <h3>Product description</h3>
-            <p id="long-description">{{oneProduct.longDescription}}</p>
-        	<h3>Reviews</h3>
+            <p style="margin-left: 0px;" id="long-description">{{oneProduct.longDescription}}</p>
+        	<h3>Reviews</h3><span><button class='btn btn-info' ng-click='writeAReview(oneProduct._id)'>Write a review!</button></span>
+            <h4 ng-show='oneProduct.reviews.length === 0'>There are currently no reviews for this product.</h4>
         </div>
         <div class="row" ng-repeat="review in oneProduct.reviews">
             <review this-review="review"></review>
