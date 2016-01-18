@@ -9,28 +9,26 @@ app.config(function ($stateProvider) {
 app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, $q, $http) {
 
 	var renderProducts = function() {
-		console.log($scope.cart);
 		var products = $scope.cart.products.map(function(product) {
-			return $http.get('/api/products/'+product.product).then(res => res.data);
+			return $http.get('/api/products/'+product.product)
+            .then(function(populatedProduct) {
+                var retObj = populatedProduct.data;
+                retObj.quantity = product.quantity;
+                return retObj;
+            })
 		});
 		$q.all(products).then(function(products) {
-			//console.log(products);
 			$scope.productArr = products;
 		});
-		//console.log(products);
-	}
+	};
 
     var updateCartFromSession = function () {
         $scope.cart = Session.cart;
-		console.log(Session.cart);
 		renderProducts();
     };
 
     $rootScope.$on('productAddedToCart', updateCartFromSession);
-
-	$rootScope.$on('cart populated', function(emit, data) {
-		renderProducts();
-	});
+	$rootScope.$on('cart populated', renderProducts);
 
     updateCartFromSession();
 });

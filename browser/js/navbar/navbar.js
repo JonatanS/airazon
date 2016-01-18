@@ -35,45 +35,37 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                    $state.go('home');
                 });
             };
-
             var setUserAndCart = function () {
-                if(!scope.user) {
-                    AuthService.getLoggedInUser().then(function (user) {
-                        if (user) {
-                            //get their cart contents:
-                            UserFactory.getOne(user._id).then(function (populatedUser) {
-                                scope.user = populatedUser;
-                                scope.cart = scope.user.orders.filter(function (o) {
-                                    return o.status.current === 'cart';
-                                })[0];
-
-                                if (!scope.cart) scope.cart = {products:[], id: -1};
-                            });
-                        }
-                        else scope.user = null;
-                    });
-                }
+                console.log('Setting cart');
+                scope.cart = Session.cart;
+                scope.user = Session.user;
+                setTotalNumItems();
             };
 
             var updateCart = function () {
-                scope.cart = Session.cart
+                scope.cart = Session.cart;
+                setTotalNumItems();
             };
+
+            var setTotalNumItems = function() {
+                scope.numItems = scope.cart.products.reduce(function (val, prod){
+                        return val + prod.quantity;
+                },0);
+                console.log('MORE ITEMS:', scope.numItems);
+            }
 
             var removeUser = function () {
                 scope.user = null;
+                scope.cart = null;
             };
-
 
             setUserAndCart();
 
             $rootScope.$on(AUTH_EVENTS.loginSuccess, setUserAndCart);
             $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
             $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
-
             $rootScope.$on('productAddedToCart', updateCart);
-
+            $rootScope.$on('cart populated', updateCart);
         }
-
     };
-
 });
