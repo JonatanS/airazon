@@ -1,10 +1,26 @@
 #user {
 	* {
 		list-style: none;
+
 	}
+
+    .fullname {
+        text-align: center;
+        font-style: italic;
+    }
+
+    .avatar {
+        width: 125px;
+        height: 125px;
+        box-sizing: border-box;
+    }
 
     .material-icons {
         margin-left: 10px;
+    }
+
+    ul {
+        padding-left: 0px;
     }
 
     a {
@@ -23,6 +39,9 @@
     	}
     }
 
+    h4 {
+        color: #008cba;
+    }
 }
 
 #user-edit {

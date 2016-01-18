@@ -18,7 +18,6 @@ app.factory('UserFactory', function ($http) {
 		update: function (userObj) {
 			return $http.put('/api/users/' + userObj._id, userObj)
 			.then(function (user) {
-				console.log(userObj, user)
 				return user.data;
 			})
 		},
@@ -27,6 +26,13 @@ app.factory('UserFactory', function ($http) {
 			.then(function (user) {
 				return user.data;
 			});
+		},
+		// FIX BACKEND ROUTE FOR ADDRESS
+		addAddress: function (userObj, addressObj) {
+			return $http.post('/api/users/' + userObj._id + '/addaddress/', addressObj)
+			.then(function (address) {
+				return address.data;
+			})
 		}
 	}
-})
+});

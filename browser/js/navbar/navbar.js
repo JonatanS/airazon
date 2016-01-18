@@ -13,6 +13,16 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                 { label: 'Profile', state: 'loggedInUser', auth: true }
             ];
 
+			scope.emitInput = function(textArea) {
+				$rootScope.$broadcast('searching', textArea);
+			}
+
+			scope.goToAllProductsWithFilter = function(myEvent, textArea) {
+				if(myEvent.which === 13) {
+					$state.go('products', {filter: textArea});
+				}
+			}
+
             scope.user = null;
             scope.cart = null;
             //scope.cart.numProducts = null;

@@ -138,7 +138,9 @@
                         numProducts: Number(0)
                     }
                 }
-            });
+            }).then(function() {
+				$rootScope.$emit('cart populated', 'no need');
+			});
         };
 
         this.create = function (sessionId, user) {

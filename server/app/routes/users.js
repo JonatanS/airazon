@@ -20,7 +20,6 @@ var ensureAuthenticated = function (req, res, next) {
 //     if (req)
 // };
 
-
 // get all users (ADMIN only)
 router.get('/', ensureAuthenticated,function (req, res, next) {
 	return User.find({})
@@ -34,7 +33,7 @@ router.get('/', ensureAuthenticated,function (req, res, next) {
 router.post('/signup', function (req,res,next){
     return User.create(req.body)
     .then(function(result) {
-    res.status(201).json(result);
+        res.status(201).json(result);
     })
     .then(null, next);
 })
@@ -65,9 +64,10 @@ router.put('/:id', ensureAuthenticated,function (req, res, next) {
 	.then(null, next);
 });
 
-// add address to one user
-router.post('/:id/addresses/', function (req, res, next) {
-	Address.create(req.body.address)
+// add address to one user FIX THIS!
+router.post('/:id/addaddress', function (req, res, next) {
+    console.log(req.params)
+	return Address.create(req.body.address)
 	.then(function (newAddress) {
 		User.findById(req.params.id)
 		.then(function (user) {
@@ -79,7 +79,7 @@ router.post('/:id/addresses/', function (req, res, next) {
 });
 
 //update user's address:
-router.put('/:id/addresses/:addressId',ensureAuthenticated, function (req,res,next){
+router.put('/:id/addresses/:addressId', ensureAuthenticated, function (req,res,next){
     return Address.findById(req.params.addressId)
     .then(function(address){
         var updatedAddress = _.merge(address, req.body);
