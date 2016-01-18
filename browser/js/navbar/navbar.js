@@ -43,9 +43,12 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             }
             var setUserAndCart = function () {
                 console.log('Setting cart');
-                scope.cart = Session.cart;
-                scope.user = Session.user;
-                setTotalNumItems();
+                AuthService.getLoggedInUser().then(function(user){
+                    scope.user = user;
+                    scope.cart = Session.cart;
+                    setTotalNumItems();
+                });
+                //scope.user = Session.user;
             };
 
             var updateCart = function () {
