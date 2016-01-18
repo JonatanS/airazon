@@ -24,8 +24,6 @@ app.config(function ($urlRouterProvider, $locationProvider, localStorageServiceP
         .setStorageCookieDomain('')
         //.setStorageCookieDomain('<domain>');  //change this once depolyed
         .setNotify(true, true)
-
-
 });
 
 // This app.run is for controlling access to specific states.
