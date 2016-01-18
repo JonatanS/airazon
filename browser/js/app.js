@@ -1,6 +1,6 @@
 'use strict';
 
-window.app = angular.module('FullstackGeneratedApp', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate'])
+window.app = angular.module('FullstackGeneratedApp', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate','angularPayments', 'mm.foundation', 'angularSpinner','LocalStorageModule'])
 // allow DI for use in controllers, unit tests
 .constant('_', window._)
 // use in views, ng-repeat="x in _.range(3)"
@@ -8,8 +8,7 @@ window.app = angular.module('FullstackGeneratedApp', ['fsaPreBuilt', 'ui.router'
  $rootScope._ = window._;
 });
 
-app.config(function ($urlRouterProvider, $locationProvider) {
-
+app.config(function ($urlRouterProvider, $locationProvider, localStorageServiceProvider) {
 
     // This turns off hashbang urls (/#about) and changes it to something normal (/about)
     $locationProvider.html5Mode(true);
@@ -18,10 +17,17 @@ app.config(function ($urlRouterProvider, $locationProvider) {
         window.location.reload();
     });
     $urlRouterProvider.otherwise('/');// Allow auth requests
+
+    localStorageServiceProvider
+        .setPrefix('Airazon')
+        .setStorageType('sessionStorage')
+        .setStorageCookieDomain('')
+        //.setStorageCookieDomain('<domain>');  //change this once depolyed
+        .setNotify(true, true)
 });
 
 // This app.run is for controlling access to specific states.
-app.run(function ($rootScope, AuthService, $state) {
+app.run(function ($rootScope, AuthService, $state, Session) {
 
     // The given state requires an authenticated user.
     var destinationStateRequiresAuth = function (state) {
@@ -46,6 +52,8 @@ app.run(function ($rootScope, AuthService, $state) {
 
         // Cancel navigating to new state.
         event.preventDefault();
+
+        Session.init(); //create empty user and cart objects
 
         AuthService.getLoggedInUser().then(function (user) {
             // If a user is retrieved, then renavigate to the destination
