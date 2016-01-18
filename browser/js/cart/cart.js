@@ -6,7 +6,7 @@ app.config(function($stateProvider) {
     });
 });
 
-app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, $q, $http) {
+app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootScope, $q, $http) {
 
 	var renderProducts = function() {
 		var products = $scope.cart.products.map(function(product) {
@@ -33,6 +33,7 @@ app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, 
     var updateCartFromSession = function () {
         $scope.cart = Session.cart;
 		renderProducts();
+        localStorageService.set('cart', JSON.stringify($scope.cart));
     };
     var handler = StripeCheckout.configure({
         key: 'pk_test_oMYDVrtdqS4wggcGq8FO0XNo',
