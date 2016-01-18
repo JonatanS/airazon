@@ -124,18 +124,16 @@
         });
 
         var initCart = function () {
+            console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
             UserFactory.getOne(self.user._id).then(function (populatedUser) {
                 console.log(populatedUser);
                 _.merge(self.cart, populatedUser.orders.filter(function (o) {
                     return o.status.current === 'cart';
                 })[0]);
-                console.log('session with cart', self.cart);
                 if(!self.cart) {
                     self.cart = {
                         products: [],
-                        _id: -1,
-                        status:{current:'cart'},
-                        numProducts: Number(0)
+                        status:{current:'cart'}
                     }
                 }
             }).then(function() {
@@ -144,16 +142,9 @@
         };
 
         this.create = function (sessionId, user) {
-            console.log('creating session', user);
+            console.log('creating session for user:', user);
             self.id = sessionId;
             self.user = user;
-            self.cart = {
-                products: [],
-                hasBeenSaved: false,
-                _id: -1,
-                status:{current:'cart'},
-                numProducts: Number(0)
-            };
             initCart();
         };
 
@@ -163,25 +154,18 @@
             self.user = null;
             self.cart = {
                 products: [],
-                hasBeenSaved: false,
-                _id: -1,
-                status:{current:'cart'},
-                numProducts: Number(0)
+                status:{current:'cart'}
             };
         };
 
         var initSession = function() {
-            console.log('INITIALIZING SESSION');
             self.id = null;
             self.user = null;
             self.cart = {
                 products: [],
-                hasBeenSaved: false,
-                _id: -1,
-                status:{current:'cart'},
-                numProducts: Number(0)
+                status:{current:'cart'}
             };
-            console.log('SESSION:', self);
+            console.log('init empty session:', self);
         }
 
         initSession();
