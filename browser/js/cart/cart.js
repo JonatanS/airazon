@@ -31,10 +31,12 @@ app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootS
 	};
 
     var updateCartFromSession = function () {
+        console.log('Session', Session);
         $scope.cart = Session.cart;
 		renderProducts();
         localStorageService.set('cart', JSON.stringify($scope.cart));
     };
+
     var handler = StripeCheckout.configure({
         key: 'pk_test_oMYDVrtdqS4wggcGq8FO0XNo',
         image: 'http://i.imgur.com/CLCjB7h.png',
@@ -46,17 +48,14 @@ app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootS
         }
     });
 
-    var updateCartFromSession = function() {
-        $scope.cart = Session.cart;
-        renderProducts();
-    };
     $scope.showStripe = function() {
         handler.open({
             name: 'Airazon',
             description: "Get some fresh air",
             amount: Session.cart.totalPrice*100,
         });
-    }
+    };
+
     $rootScope.$on('productAddedToCart', updateCartFromSession);
 	$rootScope.$on('cart populated', renderProducts);
     updateCartFromSession();

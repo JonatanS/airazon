@@ -8,7 +8,7 @@ app.factory('beforeUnload', function (Session, $rootScope, $window) {
         if(Session.cart.products && Session.cart.products.length > 0){
             alert('There are unsaved items in the cart. Dont leave!!');
         }
-        debugger;
+        //debugger;
 
         var confirmation = {};
         var event = $rootScope.$broadcast('onBeforeUnload', confirmation);

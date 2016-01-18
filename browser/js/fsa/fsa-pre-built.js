@@ -51,6 +51,7 @@
     app.service('AuthService', function ($http, Session, $rootScope, AUTH_EVENTS, $q) {
         console.log("AUTHSERVICE");
         function onSuccessfulLogin(response) {
+            console.log('onSuccessfulLogin');
             var data = response.data;
             Session.create(data.id, data.user);
             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
@@ -60,10 +61,12 @@
         // Uses the session factory to see if an
         // authenticated user is currently registered.
         this.isAuthenticated = function () {
+           console.log('isAuthenticated - Session:', Session);
             return !!Session.user;
         };
 
         this.getLoggedInUser = function (fromServer) {
+           console.log('getLoggedInUser - Session:', Session);
             // If an authenticated session exists, we
             // return the user attached to that session
             // with a promise. This ensures that we can

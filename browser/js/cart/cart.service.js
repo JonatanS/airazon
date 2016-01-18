@@ -37,13 +37,12 @@ app.service('CartService', function ($rootScope, OrderFactory, Session) {
         }
     };
 
-    window.addEventListener("beforeunload", function (e) {
-        debugger;
-        console.log(Session);
-      var confirmationMessage = "\o/";
+    // window.addEventListener("beforeunload", function (e) {
+    //     console.log("beforeunload", Session);
+    //   var confirmationMessage = "\o/";
 
-      (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-      return confirmationMessage;                            //Webkit, Safari, Chrome
-    });
+    //   (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    //   return confirmationMessage;                            //Webkit, Safari, Chrome
+    // });
 
 });
