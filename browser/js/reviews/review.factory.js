@@ -1,4 +1,4 @@
-app.factory('ReviewFactory', function ($http, $rootScope, Session, UserFactory) {
+app.factory('ReviewFactory', function ($http) {
     return {
         getAll: function() {
             return $http.get('/api/reviews/')
