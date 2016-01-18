@@ -1,6 +1,6 @@
 'use strict';
 
-window.app = angular.module('FullstackGeneratedApp', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate'])
+window.app = angular.module('FullstackGeneratedApp', ['fsaPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate','angularPayments', 'mm.foundation', 'angularSpinner'])
 // allow DI for use in controllers, unit tests
 .constant('_', window._)
 // use in views, ng-repeat="x in _.range(3)"
