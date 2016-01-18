@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-md-6 searchbar">
                     <div class="input-group">
-                      <input type="text" class="form-control input-lg" placeholder="Find Air">
+                      <input type="text" ng-model='searchBar' class="form-control input-lg" placeholder="Find Air" ng-change='emitInput(searchBar)' ng-keydown='goToAllProductsWithFilter($event, searchBar)'>
                       <span class="input-group-addon" id="searchbar"><span class="glyphicon glyphicon-search"></span></span>
                     </div>
                 </div>
