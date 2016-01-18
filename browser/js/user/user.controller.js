@@ -32,6 +32,11 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
 		$state.go('vieworder', {id: orderId});
 	}
 
+	$scope.goToAllOrders = function() {
+		console.log('Going to all orders and i am an admin: '+$scope.currentUser.isAdmin);
+		$state.go('allorders', {isAdmin: $scope.currentUser.isAdmin});
+			}
+
     var setUser = function () {
         AuthService.getLoggedInUser().then(function (user) {
             UserFactory.getOne(user._id).then(function (populatedUser) {

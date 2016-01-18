@@ -18,6 +18,12 @@ app.factory('OrderFactory', function ($http, Session) {
 						   },
 							getById: function(id) {
 										 return $http.get('/api/orders/'+id).then(res => res.data);
-									 }
+									 },
+							getAll: function() {
+										return $http.get('/api/orders/').then(res => res.data);
+									},
+							deleteById: function(id) {
+											return $http.delete('/api/orders/'+id).then(res => res.data);
+										}
 								};
 });

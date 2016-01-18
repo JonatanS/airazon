@@ -52,11 +52,16 @@ router.get('/:id', function (req, res) {
 
 // REMOVE /api/orders/:id
 router.delete('/:id', function (req, res, next) {
+	console.log('removing an order');
+	console.log(req.order);
     req.order.remove()
-    .then(function() {
+    .then(function(what) {
+		console.log('deleted'+what);
         res.status(204).end();
-    })
-    .then(null, next);
+    }).then(null, function(err) {
+		console.error(err);
+		next(err);
+	});
 });
 
 // UPDATE /api/orders/:id

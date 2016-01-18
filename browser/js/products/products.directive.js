@@ -8,7 +8,8 @@ app.directive('product', function() {
 		}
 		,
 		templateUrl: 'js/products/products.directive.html',
-		// link: function(scope, element) {
-		// }
+		 link: function(scope, element) {
+			 //console.log(scope.thisProduct);
+		 }
 	}
 });
