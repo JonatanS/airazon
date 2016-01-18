@@ -19,10 +19,6 @@
         margin-left: 10px;
     }
 
-    ul {
-        padding-left: 0px;
-    }
-
     a {
     	text-decoration: none;
     	color: black;
@@ -49,4 +45,10 @@
 		margin-top: 30px;
     	width:80%
 	}
+}
+
+.borderbox-me-pls {
+	border: 1px solid black;
+	margin-right: 20px;
+	padding: 5px;
 }

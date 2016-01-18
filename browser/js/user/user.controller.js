@@ -27,6 +27,10 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
             $scope.error = 'Invalid credentials.';
         });
     }
+	$scope.viewOrder = function(orderId) {
+		console.log('viewing order: '+orderId);
+		$state.go('vieworder', {id: orderId});
+	}
 
     var setUser = function () {
         AuthService.getLoggedInUser().then(function (user) {
