@@ -1,9 +1,24 @@
+.home {
+  background-image: no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 #masonjar {
   height: 250px;
+  margin-top: 70px;
 }
 
 .carousel-caption {
-  margin-bottom: 200px;
+	position: absolute;
+	-webkit-box-align: center;
+	-moz-box-align: center;
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	align-items: center;
+	height: 100%;
 }
 
 button {
@@ -17,4 +32,10 @@ button {
 hr.style2 {
   border-top: 7px double white;
   width: 40%;
+}
+
+h3.style3 {
+	font-weight: bold;
+	margin-top: 20px;
+    margin-bottom: 20px;
 }
