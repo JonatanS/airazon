@@ -1,5 +1,5 @@
 module.exports = {
-  "DATABASE_URI": "mongodb://localhost:27017/stackstore",
+  "DATABASE_URI": "mongodb://admin:stackstorepassword@ds043605.mongolab.com:43605/stackstore",
   "SESSION_SECRET": "Optimus Prime is my real dad",
   "TWITTER": {
     "consumerKey": "INSERT_TWITTER_CONSUMER_KEY_HERE",
