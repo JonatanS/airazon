@@ -35,6 +35,12 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                    $state.go('home');
                 });
             };
+
+            var setTotalNumItems = function() {
+                scope.numItems = scope.cart.products.reduce(function (val, prod){
+                        return val + prod.quantity;
+                },0);
+            }
             var setUserAndCart = function () {
                 console.log('Setting cart');
                 scope.cart = Session.cart;
@@ -47,12 +53,6 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                 setTotalNumItems();
             };
 
-            var setTotalNumItems = function() {
-                scope.numItems = scope.cart.products.reduce(function (val, prod){
-                        return val + prod.quantity;
-                },0);
-                console.log('MORE ITEMS:', scope.numItems);
-            }
 
             var removeUser = function () {
                 scope.user = null;
