@@ -1,7 +1,7 @@
-<div ng-controller="SingleReviewCtrl" >
+<div ng-controller="ReviewCtrl" >
     <div class="review col-xl-6 col-lg-6 col-md-8 col-sm-10 col-xs-12">
        	<div>
-       	<h4><span id="title"><b>{{thisReview.title}}</b></span><span id="name">{{thisReview.user.firstName}} {{thisReview.user.lastName[0]}}.</span></h4><br>
+       	<h4><span id="title"><b>{{thisReview.title}}</b></span><span id="name" ng-show='thisReview.user'>{{thisReview.user.firstName}} {{thisReview.user.lastName[0]}}.</span><span id="name" ng-show='thisReview.user === null'>Anon</span></h4><br>
         </div>
         <div id="review-body">
         <p>{{thisReview.body}}</p>

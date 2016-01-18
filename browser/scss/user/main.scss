@@ -46,7 +46,20 @@
 
 #user-edit {
 	.form-group {
-		margin-top: 30px;
-    	width:80%
-	}
+        margin-top: 30px;
+    }
+    label {
+        font-weight: bold;
+        font-size: 16px;
+    }
+}
+
+#user-add-address {
+    .form-group {
+        margin-top: 30px;
+    }
+    label {
+        font-weight: bold;
+        font-size: 16px;
+    }
 }

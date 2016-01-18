@@ -1,4 +1,4 @@
-app.controller('ViewSingleProductCtrl', function ($scope,CartService, ProductFactory, $stateParams) {
+app.controller('ViewSingleProductCtrl', function ($scope, $state, CartService, ProductFactory, $stateParams) {
 	ProductFactory.getOne($stateParams.productId)
 	.then(function (product) {
 		//console.log(product)
@@ -11,4 +11,9 @@ app.controller('ViewSingleProductCtrl', function ($scope,CartService, ProductFac
             CartService.addProductToCart(product);
         };
 	});
+
+	$scope.writeAReview = function (productId) {
+		$state.go('add-review', { productId: productId });
+	}
+
 })
