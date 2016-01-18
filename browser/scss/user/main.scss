@@ -1,0 +1,52 @@
+#user {
+	* {
+		list-style: none;
+
+	}
+
+    .fullname {
+        text-align: center;
+        font-style: italic;
+    }
+
+    .avatar {
+        width: 125px;
+        height: 125px;
+        box-sizing: border-box;
+    }
+
+    .material-icons {
+        margin-left: 10px;
+    }
+
+    ul {
+        padding-left: 0px;
+    }
+
+    a {
+    	text-decoration: none;
+    	color: black;
+    	cursor: pointer;
+    	&.active {
+    	  color: #008cba;
+    	}
+    	&:hover {
+    	  background: none;
+    	  color: #008cba;
+    	}
+    	&:focus {
+    	  background: none;
+    	}
+    }
+
+    h4 {
+        color: #008cba;
+    }
+}
+
+#user-edit {
+	.form-group {
+		margin-top: 30px;
+    	width:80%
+	}
+}

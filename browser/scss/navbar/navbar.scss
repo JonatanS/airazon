@@ -32,6 +32,14 @@ navbar {
       background: none;
     }
   }
+
+  .cart-counter {
+    border-radius: 20px;
+    background-color: #7DCEDC;
+    padding: 0px 5px;
+    float: right;
+    z-index: 1;
+  }
 /*
   .login-button {
     float: right;

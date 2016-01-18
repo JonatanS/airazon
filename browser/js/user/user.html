@@ -1,0 +1,57 @@
+<div id="user">
+<h1 class='fullname'>{{ currentUser.firstName + ' ' + currentUser.lastName }}'s Profile</h1>
+<hr>
+<div class='user-info'>
+    <div class="col-sm-3">
+        <span><h4>Your Profile<a ui-sref-active="active" ui-sref="user-edit"><i class="material-icons">mode_edit</i></a></h4></span>
+        <img class='avatar' src='http://i1.wp.com/www.techrepublic.com/bundles/techrepubliccore/images/icons/standard/icon-user-default.png'>
+        <li ng-show="currentUser.isAdmin === true" style="font-weight:bold">ADMIN</li>
+        <li>Name: {{ currentUser.firstName + ' ' + currentUser.lastName }}</li>
+        <li>Email: {{ currentUser.email }}</li>
+        <li>Password: {{ currentUser.password | password }}</li>
+    </div>
+    <div class="col-sm-3">
+        <div class='address'>
+            <h4>Address(es)<span><a ui-sref-active="active" ui-sref="user-add-address"><i class="material-icons">mode_edit</i></a></span></h4>
+            <div ng-show="currentUser.addresses.length === 0">
+                <li>No billing/shipping addresses available.</li>
+            </div>
+            <div ng-show="currentUser.addresses.length > 0">
+                <ul ng-repeat='address in currentUser.addresses'>
+                    <li>{{ address.firstName + ' ' + address.lastName }}</li>
+                    <li>{{ address.street }}</li>
+                    <li>{{ address.city + ', ' + address.state + ' ' + address.zipcode }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <h4>Review(s)<span><a ui-sref-active="active" ui-sref="products"><i class="material-icons">mode_edit</i></a></span></h4>
+        <div ng-show="currentUser.reviews.length === 0">
+            <li>Please review one of our products! &#x263A</li>
+        </div>
+        <div ng-show="currentUser.reviews.length > 0">
+            <ul ng-repeat='review in currentUser.reviews'>
+                <li style="font-weight:bold"><a ui-sref-active="active" ui-sref='viewOneProduct({productId: review.product})'>{{ review.title }}</a></li>
+                <li>{{ review.body }}</li>
+                <li>Date: {{ review.created_at | date:'MM/dd/yyyy' }}</li>
+                <li>Rating: {{ review.rating }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <h4>Order History</h4>
+        <div ng-show="currentUser.orders.length === 0">
+            <li>Your order history is empty. Click on the mason jar to check out our air products!</li>
+        </div>
+        <div ng-show="currentUser.orders.length > 0">
+            <ul ng-repeat='order in currentUser.orders'>
+                <li>Status: {{ order.status.current }}</li>
+                <li>Order Date: {{ order.status.updated_at | date:'MM/dd/yyyy @ h:mma'}}</li>
+                <li>Tracking #: {{ order.trackingNumber }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div>
+

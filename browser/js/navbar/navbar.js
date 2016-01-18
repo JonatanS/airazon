@@ -1,4 +1,4 @@
-app.directive('navbar', function ($rootScope, AuthService,ProfileFactory, AUTH_EVENTS, $state) {
+app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state, Session) {
 
     return {
         restrict: 'E',
@@ -10,14 +10,21 @@ app.directive('navbar', function ($rootScope, AuthService,ProfileFactory, AUTH_E
                 { label: 'Home', state: 'home' },
                 { label: 'Products', state: 'products' },
                 { label: 'Cart', state: 'cart' },
-                // { label: 'Members Only', state: 'membersOnly', auth: true }
                 { label: 'Profile', state: 'loggedInUser', auth: true }
             ];
 
+			scope.emitInput = function(textArea) {
+				$rootScope.$broadcast('searching', textArea);
+			}
+
+			scope.goToAllProductsWithFilter = function(myEvent, textArea) {
+				if(myEvent.which === 13) {
+					$state.go('products', {filter: textArea});
+				}
+			}
+
             scope.user = null;
-            scope.cart = {
-                contents : []
-            };
+            scope.cart = null;
 
             scope.isLoggedIn = function () {
                 return AuthService.isAuthenticated();
@@ -29,36 +36,39 @@ app.directive('navbar', function ($rootScope, AuthService,ProfileFactory, AUTH_E
                 });
             };
 
+            var setTotalNumItems = function() {
+                scope.numItems = scope.cart.products.reduce(function (val, prod){
+                        return val + prod.quantity;
+                },0);
+            }
             var setUserAndCart = function () {
-                console.log("\n\nsetUserAndCart!!!")
-                AuthService.getLoggedInUser().then(function (user) {
-                    if (user) {
-                        //get their cart contents:
-                        ProfileFactory.getOne(user._id).then(function (populatedUser) {
-                            scope.user = populatedUser;
-                            scope.cart.contents = scope.user.orders.filter(function (o) {
-                                return o.status === 'cart';
-                            });
-                            console.log(scope.user);
-                        });
-                    }
-                    else scope.user = null;
+                console.log('Setting cart');
+                AuthService.getLoggedInUser().then(function(user){
+                    scope.user = user;
+                    scope.cart = Session.cart;
+                    setTotalNumItems();
                 });
+                //scope.user = Session.user;
             };
+
+            var updateCart = function () {
+                scope.cart = Session.cart;
+                setTotalNumItems();
+            };
+
 
             var removeUser = function () {
                 scope.user = null;
+                scope.cart = null;
             };
-
 
             setUserAndCart();
 
             $rootScope.$on(AUTH_EVENTS.loginSuccess, setUserAndCart);
             $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
             $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
-
+            $rootScope.$on('productAddedToCart', updateCart);
+            $rootScope.$on('cart populated', updateCart);
         }
-
     };
-
 });

@@ -1,37 +1,44 @@
 'use strict';
 var router = require('express').Router();
 module.exports = router;
-var mongoose = require('mongoose');
-var models = require('../../db/models');
-var Promise = require('bluebird');
-var Order = models.Order;
+const mongoose = require('mongoose');
+var Order = mongoose.models.Order;
 var User = mongoose.models.User;
 
 
 // GET /api/orders with optional status param
 router.get('/', function (req, res, next) {
     return Order.find({}).populate('user')
-    .then( function (orders) {
+    .then(function (orders) {
         res.status(200).send(orders);
-    }).then(null, next);
+    })
+    .then(null, next);
 });
 
 // POST /api/orders
 router.post('/', function (req, res, next){
     Order.create(req.body)
-    .then( function (order) {
+    .then(function (order) {
         if (order.user) {
             //add to user.orders[]
-            User.addOrder(order);
+            return User.findById(order.user)
+            .then(function(userToUpdate){
+                userToUpdate.orders.push(order._id);
+                //{$push:order._id})
+                return userToUpdate.save()
+                .then(function (){
+                    res.status(201).json(order);
+                });
+            });
         }
-        res.status(201).json(order);
+        else(console.error("THIS ORDER HAS NO USER", order._id));
     })
     .then(null, next);
 });
 
 router.param('id', function (req,res,next, id){
     return Order.findById(id).populate('user')
-    .then(function(order){
+    .then(function (order){
         req.order = order;
         next();
     })
@@ -39,9 +46,8 @@ router.param('id', function (req,res,next, id){
 });
 
 // GET /api/orders/:id
-router.get('/:id', function (req, res, next) {
+router.get('/:id', function (req, res) {
     res.json(req.order);
-    // next();
 });
 
 // REMOVE /api/orders/:id

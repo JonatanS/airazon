@@ -49,8 +49,8 @@
     });
 
     app.service('AuthService', function ($http, Session, $rootScope, AUTH_EVENTS, $q) {
-
         function onSuccessfulLogin(response) {
+            console.log('onSuccessfulLogin');
             var data = response.data;
             Session.create(data.id, data.user);
             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
@@ -64,7 +64,6 @@
         };
 
         this.getLoggedInUser = function (fromServer) {
-
             // If an authenticated session exists, we
             // return the user attached to that session
             // with a promise. This ensures that we can
@@ -80,7 +79,8 @@
             // Make request GET /session.
             // If it returns a user, call onSuccessfulLogin with the response.
             // If it returns a 401 response, we catch it and instead resolve to null.
-            return $http.get('/session').then(onSuccessfulLogin).catch(function () {
+            return $http.get('/session').then(onSuccessfulLogin).catch(function (err) {
+                if(err) console.log(err, err.status, err.statusText);
                 return null;
             });
 
@@ -111,7 +111,7 @@
 
     });
 
-    app.service('Session', function ($rootScope, AUTH_EVENTS) {
+    app.service('Session', function ($rootScope, AUTH_EVENTS, UserFactory) {
 
         var self = this;
 
@@ -122,19 +122,55 @@
         $rootScope.$on(AUTH_EVENTS.sessionTimeout, function () {
             self.destroy();
         });
-
         this.id = null;
         this.user = null;
 
+        var initCart = function () {
+            console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
+            UserFactory.getOne(self.user._id).then(function (populatedUser) {
+                console.log(populatedUser);
+                _.merge(self.cart, populatedUser.orders.filter(function (o) {
+                    return o.status.current === 'cart';
+                })[0]);
+                if(!self.cart) {
+                    self.cart = {
+                        products: [],
+                        status:{current:'cart'}
+                    }
+                }
+            }).then(function() {
+				$rootScope.$emit('cart populated', 'no need');
+			});
+        };
+
         this.create = function (sessionId, user) {
-            this.id = sessionId;
-            this.user = user;
+            console.log('creating session for user:', user);
+            self.id = sessionId;
+            self.user = user;
+            initCart();
         };
 
         this.destroy = function () {
-            this.id = null;
-            this.user = null;
+            console.log('Destroying Session:', self)
+            self.id = null;
+            self.user = null;
+            self.cart = {
+                products: [],
+                status:{current:'cart'}
+            };
         };
+
+        var initSession = function() {
+            self.id = null;
+            self.user = null;
+            self.cart = {
+                products: [],
+                status:{current:'cart'}
+            };
+            console.log('init empty session:', self);
+        }
+
+        initSession();
 
     });
 

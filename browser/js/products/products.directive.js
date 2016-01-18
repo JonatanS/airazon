@@ -1,11 +1,14 @@
 app.directive('product', function() {
 	return {
 		restrict: 'E',
-		scope: { 
-			thisProduct: '=' }
+		scope: {
+			thisProduct: '=',
+			onCartPage: '=',
+            quantity: '='
+		}
 		,
 		templateUrl: 'js/products/products.directive.html',
-		link: function(scope, element, attr) {
-		}
+		// link: function(scope, element) {
+		// }
 	}
 });
