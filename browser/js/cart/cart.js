@@ -13,6 +13,7 @@ app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, 
 			return $http.get('/api/products/'+product.product)
             .then(function(populatedProduct) {
                 var retObj = populatedProduct.data;
+                retObj.quantity = product.quantity;
                 return retObj;
             })
 		});
@@ -46,7 +47,6 @@ app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, 
 
     var updateCartFromSession = function() {
         $scope.cart = Session.cart;
-
         renderProducts();
     };
     $scope.showStripe = function() {
