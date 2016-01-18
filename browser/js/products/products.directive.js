@@ -3,7 +3,8 @@ app.directive('product', function() {
 		restrict: 'E',
 		scope: {
 			thisProduct: '=',
-			onCartPage: '='
+			onCartPage: '=',
+            quantity: '='
 		}
 		,
 		templateUrl: 'js/products/products.directive.html',

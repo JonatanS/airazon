@@ -21,7 +21,7 @@ app.config(function ($urlRouterProvider, $locationProvider) {
 });
 
 // This app.run is for controlling access to specific states.
-app.run(function ($rootScope, AuthService, $state) {
+app.run(function ($rootScope, AuthService, $state, Session) {
 
     // The given state requires an authenticated user.
     var destinationStateRequiresAuth = function (state) {
@@ -46,6 +46,8 @@ app.run(function ($rootScope, AuthService, $state) {
 
         // Cancel navigating to new state.
         event.preventDefault();
+
+        Session.init(); //create empty user and cart objects
 
         AuthService.getLoggedInUser().then(function (user) {
             // If a user is retrieved, then renavigate to the destination
