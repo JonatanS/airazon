@@ -49,7 +49,7 @@
     });
 
     app.service('AuthService', function ($http, Session, $rootScope, AUTH_EVENTS, $q) {
-
+        console.log("AUTHSERVICE");
         function onSuccessfulLogin(response) {
             var data = response.data;
             Session.create(data.id, data.user);
@@ -80,7 +80,7 @@
             // If it returns a user, call onSuccessfulLogin with the response.
             // If it returns a 401 response, we catch it and instead resolve to null.
             return $http.get('/session').then(onSuccessfulLogin).catch(function (err) {
-                console.log(err.status, err.statusText);
+                if(err) console.log(err, err.status, err.statusText);
                 return null;
             });
 
@@ -123,16 +123,8 @@
             self.destroy();
         });
 
-        this.id = null;
-        this.user = null;
-        this.cart = {
-            products: [],
-            hasBeenSaved: false,
-            id: -1
-        };
-
-        this.initCart = function () {
-            UserFactory.getOne(this.user._id).then(function (populatedUser) {
+        var initCart = function () {
+            UserFactory.getOne(self.user._id).then(function (populatedUser) {
                 console.log(populatedUser);
                 _.merge(self.cart, populatedUser.orders.filter(function (o) {
                     return o.status.current === 'cart';
@@ -141,23 +133,56 @@
                 if(!self.cart) {
                     self.cart = {
                         products: [],
-                        id: -1
+                        _id: -1,
+                        status:{current:'cart'},
+                        numProducts: Number(0)
                     }
                 }
             });
         };
 
         this.create = function (sessionId, user) {
-            this.id = sessionId;
-            this.user = user;
-            this.initCart();
+            console.log('creating session', user);
+            self.id = sessionId;
+            self.user = user;
+            self.cart = {
+                products: [],
+                hasBeenSaved: false,
+                _id: -1,
+                status:{current:'cart'},
+                numProducts: Number(0)
+            };
+            initCart();
         };
 
         this.destroy = function () {
-            this.id = null;
-            this.user = null;
-            this.cart = null;
+            console.log('Destroying Session:', self)
+            self.id = null;
+            self.user = null;
+            self.cart = {
+                products: [],
+                hasBeenSaved: false,
+                _id: -1,
+                status:{current:'cart'},
+                numProducts: Number(0)
+            };
         };
+
+        var initSession = function() {
+            console.log('INITIALIZING SESSION');
+            self.id = null;
+            self.user = null;
+            self.cart = {
+                products: [],
+                hasBeenSaved: false,
+                _id: -1,
+                status:{current:'cart'},
+                numProducts: Number(0)
+            };
+            console.log('SESSION:', self);
+        }
+
+        initSession();
 
     });
 
