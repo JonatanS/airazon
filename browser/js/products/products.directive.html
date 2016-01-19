@@ -5,7 +5,12 @@
 	<div class="text-center">
 		{{thisProduct.name}}
 		<br>
-		<span ng-repeat="t in ratingArr track by $index"><i class='material-icons stars md-dark'>star_rate</i></span><span ng-repeat="t in remainder track by $index"><i class='material-icons stars white'>star_rate</i></span>
+		<div>
+			<span ng-show='isAdmin' class='deletebtn'>
+				<button class='btn btn-danger' ng-click='deleteProduct(thisProduct._id)'>Delete</button>
+			</span>
+			<span ng-repeat="t in ratingArr track by $index"><i class='material-icons stars md-dark'>star_rate</i></span><span ng-repeat="t in remainder track by $index"><i class='material-icons stars white'>star_rate</i></span>
+		</div>
 	</div>
 	<div ng-show='thisProduct.quantityOrdered > 0'>
 		You ordered {{thisProduct.quantityOrdered}} containers of {{thisProduct.name}}. <br>

@@ -4,7 +4,8 @@ app.directive('product', function() {
 		scope: {
 			thisProduct: '=',
 			onCartPage: '=',
-            quantity: '='
+            quantity: '=',
+			isAdmin: '='
 		}
 		,
 		templateUrl: 'js/products/products.directive.html',
