@@ -14,10 +14,7 @@
 
 #left-bar{
 	float: left;
-	position: fixed;
 	overflow-y: scroll;
-	border-right: 2px solid;
-	height: 100vh
 }
 
 #carousel-images {
@@ -27,7 +24,7 @@
 
 #right-bar {
 	float: right;
-
+	border-left: 2px solid;
 }
 
 .product-info{

@@ -6,9 +6,10 @@ app.config(function($stateProvider) {
     });
 });
 
-app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, $q, $http) {
-
-	var renderProducts = function() {
+app.controller('CartCtrl', function ($scope, Session, StripeFactory, OrderFactory, $rootScope, $q, $http) {
+    var orderId = "569ad18c78ae327f1e82ddcd"
+	console.log("CART",Session.cart)
+    var renderProducts = function() {
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
             .then(function(populatedProduct) {
@@ -23,7 +24,7 @@ app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, 
                 return product.name
             });
             $scope.namesString = Session.cart.populatedProductNames.join(", ")
-
+            console.log("CART",Session.cart)
             Session.cart.totalPrice = $scope.cart.products.reduce(function(prev, product) {
                 return prev + product.pricePaid
             }, 0)
@@ -40,8 +41,7 @@ app.controller('CartCtrl', function ($scope, Session, OrderFactory, $rootScope, 
         locale: 'auto',
         billingAddress: true,
         token: function(token) {
-            // Use the token to create the charge with a server-side script.
-            // You can access the token ID with `token.id`
+            StripeFactory.postStripeToken(token, orderId);
         }
     });
 

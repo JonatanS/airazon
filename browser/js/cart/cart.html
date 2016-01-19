@@ -4,7 +4,7 @@
     <div ng-repeat='product in productArr'>
         <product this-product=product on-cart-page=true quantity=product.quantity></product>
     </div>
-    <div id="checkout">
-        <button ng-click="showStripe()">Checkout</button>
+    <div  id="checkout">
+        <button ng-hide="productArr.length === 0" ng-click="showStripe()">Checkout</button>
     </div>
 </section>
