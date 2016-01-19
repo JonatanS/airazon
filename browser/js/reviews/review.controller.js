@@ -6,6 +6,7 @@ app.controller('ReviewCtrl', function ($scope, $rootScope, Session, $stateParams
 	
 	$scope.submitReview = function (reviewData) {
 		reviewData.user = Session.user._id;
+		console.log(reviewData.user)
 		reviewData.product = $state.params.productId;
 		ReviewFactory.add(reviewData)
 		.then(function () {
