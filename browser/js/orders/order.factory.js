@@ -24,6 +24,9 @@ app.factory('OrderFactory', function ($http, Session) {
 									},
 							deleteById: function(id) {
 											return $http.delete('/api/orders/'+id).then(res => res.data);
-										}
+										},
+							updateStatusById: function(id, newStatus) {
+											return $http.put('/api/orders/'+id, {status: {current: newStatus}}).then(res => res.data);
+											  }
 								};
 });

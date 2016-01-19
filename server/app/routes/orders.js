@@ -69,6 +69,7 @@ router.put('/:id', function (req, res, next) {
     req.order.set(req.body);
     req.order.save()
     .then( function () {
+		console.log('successful update');
         res.json(req.order);
     })
     .then(null, next);

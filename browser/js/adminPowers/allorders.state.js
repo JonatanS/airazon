@@ -1,6 +1,6 @@
 app.config(function ($stateProvider) {
 	$stateProvider.state('allorders', {
-		url: '/allProducts',
+		url: '/allOrders',
 		templateUrl: 'js/adminPowers/allorders.html',
 		params: {
 			isAdmin: false
