@@ -5,8 +5,13 @@ app.directive('product', function (CartService) {
 			thisProduct: '=',
 			onCartPage: '=',
             quantity: '=',
-            update: '&'
-		},
-		templateUrl: 'js/products/products.directive.html'
+            update: '&',
+			isAdmin: '='
+		}
+		,
+		templateUrl: 'js/products/products.directive.html',
+		 link: function(scope, element) {
+			 //console.log(scope.thisProduct);
+		 }
 	}
 });

@@ -1,6 +1,5 @@
 'use strict';
 var mongoose = require('mongoose');
-var User = require('./users');
 
 
 var schema = new mongoose.Schema({
@@ -74,12 +73,13 @@ schema.pre('save', function(next) {
 });
 
 schema.pre('remove', function(next) {
-    User.findById(this.user).then(function(user) {
-        user.orders.pull({
-            _id: this._id
-        });
+	console.log('hitting pre-remove');
+	var that = this;
+	var User = mongoose.model('User');
+    User.findById(this.user).then(function (user) {
+        user.orders.pull(that._id);
         next();
-    });
+    }).then(null, console.error);
 });
 
 mongoose.model('Order', schema);
