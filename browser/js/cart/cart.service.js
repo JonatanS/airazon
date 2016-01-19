@@ -6,12 +6,26 @@
 
 app.service('CartService', function ($rootScope,localStorageService, $q) {
 
+    var setCartInLocalStorage = function(cart) {
+        localStorageService.set('cart', JSON.stringify(cart));
+    };
+
     return {
+        findIdx: function(pid){
+            var productIdx = -1;
+            var curCart = this.getCurrentCart();
+            for(var i = 0; i < curCart.products.length; i ++) {
+                if (curCart.products[i].product._id === pid) return i;
+            }
+            return productIdx;
+        },
+
         addProductToCart: function (productToAdd, quantity) {
             var numProducts = quantity || 1;
+            var curCart = this.getCurrentCart();
 
             //check if product already exists and update quantity:
-            var productIdx = this.findIdx();
+            var productIdx = this.findIdx(productToAdd);
 
             if(productIdx === -1) {
                 curCart.products.push({product:productToAdd._id, quantity:numProducts, pricePaid: productToAdd.price});
@@ -67,17 +81,6 @@ app.service('CartService', function ($rootScope,localStorageService, $q) {
             });
         }
     };
-    var findIdx = function(pid){
-        var productIdx = -1;
-        var curCart = this.getCurrentCart();
-        for(var i = 0; i < curCart.products.length; i ++) {
-            if (curCart.products[i].product._id === pid) return i;
-        }
-        return productIdx;
-    };
 
-    var setCartInLocalStorage = function(cart) {
-        localStorageService.set('cart', JSON.stringify(cart));
-    }
 
 });
