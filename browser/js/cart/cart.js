@@ -3,18 +3,21 @@ app.config(function($stateProvider) {
         url: '/cart',
         controller: 'CartCtrl',
         templateUrl: 'js/cart/cart.html',
-        resolve: {
-            currentCart: function(CartService) {
-                console.log("getting current cart in RESOLVE");
-                return CartService.getFromCookieOrCreateInCookie().$promise;
-            }
-        }
+        // resolve: {
+        //     currentCart: function(CartService) {
+        //         console.log("getting current cart in RESOLVE");
+        //         return CartService.getFromCookieOrCreateInCookie().$promise;
+        //     }
+        //}
     });
 });
 
-app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootScope, $q, $http) {
-    console.log(Session.cart);
-	var renderProducts = function() {
+
+app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService, Session) {
+    var orderId = "569ad18c78ae327f1e82ddcd"
+
+    //TODO: no dependeny on session
+    var renderProducts = function() {
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
             .then(function(populatedProduct) {
@@ -23,24 +26,24 @@ app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootS
                 return retObj;
             })
 		});
+
 		$q.all(products).then(function(products) {
 			$scope.productArr = products;
             Session.cart.populatedProductNames = products.map(function(product){
-                return product.name
+                return product.name;
             });
             $scope.namesString = Session.cart.populatedProductNames.join(", ")
-
+            console.log("CART",Session.cart)
             Session.cart.totalPrice = $scope.cart.products.reduce(function(prev, product) {
-                return prev + product.pricePaid
+                return prev + product.pricePaid;
             }, 0)
 		});
 	};
 
-    var updateCartFromSession = function () {
-        console.log('Session', Session);
-        $scope.cart = Session.cart;
-		renderProducts();
-        localStorageService.set('cart', JSON.stringify($scope.cart));
+    var setCart = function () {
+        $scope.cart = CartService.getCurrentCart();
+        renderProducts();
+        console.log('Cart set in CartCtrl:', $scope.cart);
     };
 
     var handler = StripeCheckout.configure({
@@ -49,8 +52,7 @@ app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootS
         locale: 'auto',
         billingAddress: true,
         token: function(token) {
-            // Use the token to create the charge with a server-side script.
-            // You can access the token ID with `token.id`
+            StripeFactory.postStripeToken(token, orderId);
         }
     });
 
@@ -62,7 +64,7 @@ app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootS
         });
     };
 
-    $rootScope.$on('productAddedToCart', updateCartFromSession);
+    $rootScope.$on('productAddedToCart', setCart);
 	$rootScope.$on('cart populated', renderProducts);
-    //updateCartFromSession();
+    setCart();
 });

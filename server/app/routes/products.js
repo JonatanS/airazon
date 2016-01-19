@@ -15,9 +15,9 @@ router.get('/', function (req, res, next) {
 
 // POST /api/products
 router.post('/', function (req, res, next){
-    Product.create(req.body)
+    Product.create(req.body.product)
     .then(function (product) {
-        res.status(201).json(product);
+        return product;
     })
     .then(null, next);
 });

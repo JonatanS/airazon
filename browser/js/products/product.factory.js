@@ -22,9 +22,7 @@ app.factory('ProductFactory', function ($http) {
                 })
         },
         add: function(productObj) {
-            return $http.post('/api/products', {
-                    product: productObj
-                })
+            return $http.post('/api/products', { product: productObj })
                 .then(function(product) {
                     return product.data;
                 });

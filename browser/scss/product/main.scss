@@ -14,10 +14,7 @@
 
 #left-bar{
 	float: left;
-	position: fixed;
 	overflow-y: scroll;
-	border-right: 2px solid;
-	height: 100vh
 }
 
 #carousel-images {
@@ -27,7 +24,7 @@
 
 #right-bar {
 	float: right;
-
+	border-left: 2px solid;
 }
 
 .product-info{
@@ -92,4 +89,38 @@
 .add-to-cart {
 	background-color:#5B9147;
 	color: #FFF
+}
+
+h3 {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.glyphicon.glyphicon-plus {
+	margin-left: 10px;
+	text-decoration: none;
+	cursor: pointer;
+	color: black;
+	transition: color 0.2s;
+	&:hover {
+	  background: none;
+	  color: #2956B2;
+	}
+}
+
+#add-review {
+	margin-top: 30px;
+
+	.col-xs-4.selectContainer {
+		padding: 0;
+	}
+
+	.col-sm-2.control-label {
+	    font-weight: bold;
+	    font-size: 16px;
+	}
+
+	col-md-1 {
+		font-weight: bold;
+	}
 }

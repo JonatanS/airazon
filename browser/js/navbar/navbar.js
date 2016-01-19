@@ -1,4 +1,4 @@
-app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state, Session, CartService) {
+app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state, CartService) {
 
     return {
         restrict: 'E',
@@ -37,28 +37,22 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             };
 
             var setTotalNumItems = function() {
-                console.dir(scope.cart);
                 scope.numItems = scope.cart.products.reduce(function (val, prod){
                         return val + prod.quantity;
                 },0);
+                console.log('setTotalNumItems', scope.numItems );
             }
-            var setUserAndCart = function () {
+            var setUser = function () {
                 console.log('Setting cart');
                 AuthService.getLoggedInUser().then(function(user){
                     scope.user = user;
-                    if (Session.cart) scope.cart = Session.cart;
-                    else scope.cart = CartService.getFromCookieOrCreateInCookie();
-                    console.log(Session, scope);
-                    if(scope.cart) setTotalNumItems();
-                    //$rootScope.$emit('cart populated', 'perhaps');
-                    console.log(scope.cart);
                 });
             };
 
-        //NOT SURE THIS IS STILL NEEDED
-            var updateCart = function () {
-                scope.cart = Session.cart;
+            var setCart = function () {
+                scope.cart = CartService.getCurrentCart();
                 if(scope.cart) setTotalNumItems();
+                console.log('Cart set in navbar:', scope.cart);
             };
 
             var removeUser = function () {
@@ -66,13 +60,14 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                 scope.cart = null;
             };
 
-            setUserAndCart();
+            setUser();
+            setCart();
 
-            $rootScope.$on(AUTH_EVENTS.loginSuccess, setUserAndCart);
+            $rootScope.$on(AUTH_EVENTS.loginSuccess, setUser);
             $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
             $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
-            $rootScope.$on('productAddedToCart', updateCart);
-            //$rootScope.$on('cart populated', updateCart);
+            $rootScope.$on('productAddedToCart', setCart);
+            //$rootScope.$on('cart populated', setCart);
         }
     };
 });

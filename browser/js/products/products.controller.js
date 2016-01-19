@@ -1,4 +1,4 @@
-app.controller('ProductCtrl', function ($scope, $state, ProductFactory) {
+app.controller('ProductCtrl', function ($scope, $state, AuthService, UserFactory, ProductFactory) {
 	ProductFactory.getAll()
 	.then(function (products) {
 		$scope.productArr = products;
@@ -10,4 +10,5 @@ app.controller('ProductCtrl', function ($scope, $state, ProductFactory) {
 	$scope.$on('searching', function(emit, filter) {
 		$scope.filterParam = filter;
 	});
+
 });
