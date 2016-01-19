@@ -6,6 +6,14 @@ var Review = mongoose.models.Review;
 var User = mongoose.models.User;
 var Product = mongoose.models.Product;
 
+var ensureAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.status(401).end();
+    }
+};
+
 // GET /api/reviews
 router.get('/', function (req, res, next) {
     return Review.find({}).populate('user')
@@ -30,8 +38,7 @@ router.get('/:id', function (req, res) {
 });
 
 // POST /api/reviews
-router.post('/', function (req, res, next) {
-    console.log(req.body)
+router.post('/', ensureAuthenticated, function (req, res, next) {
     Review.create(req.body.review)
     .then(function (review) {
         return User.findById(req.body.review.user)
