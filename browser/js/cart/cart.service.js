@@ -4,46 +4,57 @@
 *
 */
 
-app.service('CartService', function ($rootScope, OrderFactory, Session) {
-    console.log("Init CartService Sessions", Session);
+app.service('CartService', function ($rootScope,localStorageService, $q) {
+
     return {
         addProductToCart: function (productToAdd, quantity) {
-            console.log("CART:", Session);
             var numProducts = quantity || 1;
-            //update cart in session:
-            if(!Session.cart.status) Session.cart.status = {current:'cart'};
 
             //check if product already exists and update quantity:
             var productIdx = -1;
-            for(var i = 0; i < Session.cart.products.length; i ++) {
-                if (Session.cart.products[i].product.toString() === productToAdd._id.toString())
+            var curCart = this.getCurrentCart();
+            for(var i = 0; i < curCart.products.length; i ++) {
+                if (curCart.products[i].product.toString() === productToAdd._id.toString())
                     productIdx = i;
             }
 
             if(productIdx === -1) {
-                Session.cart.products.push({product:productToAdd._id, quantity:numProducts, pricePaid: productToAdd.price});
+                curCart.products.push({product:productToAdd._id, quantity:numProducts, pricePaid: productToAdd.price});
             }
             else {
-                Session.cart.products[productIdx].quantity = Session.cart.products[productIdx].quantity + numProducts;
+                curCart.products[productIdx].quantity += numProducts;
             }
 
+            //update cart in local Storage:
+            localStorageService.set('cart', JSON.stringify(curCart));
+
+
             //add to orders DB if user is logged in:
-            if(Session.user) OrderFactory.addProductToOrder(productToAdd);
 
             //let the navbar know:
             $rootScope.$emit('productAddedToCart', {
                 product: productToAdd
             });
+        },
+
+        getCurrentCart: function() {
+            var cartToReturn = null;
+            console.log("getCurrentCart");
+            //check in cookie:
+            if(localStorageService.isSupported) {
+                var lsKeys = localStorageService.keys();
+                if(lsKeys.indexOf('cart')!== -1) {
+                    //found existing cart! grab it!
+                    cartToReturn = JSON.parse(localStorageService.get('cart'));
+                    console.log('got cart from local storage:', cartToReturn);
+                }
+                else {
+                    var newCart = {products:[], dateCookieCreated: new Date()};
+                    localStorageService.set('cart', JSON.stringify(newCart));
+                }
+            }
+            return cartToReturn || {products:[], dateCookieCreated: new Date()};
         }
     };
-
-    window.addEventListener("beforeunload", function (e) {
-        debugger;
-        console.log(Session);
-      var confirmationMessage = "\o/";
-
-      (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-      return confirmationMessage;                            //Webkit, Safari, Chrome
-    });
 
 });

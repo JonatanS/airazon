@@ -10,5 +10,5 @@ app.factory("StripeFactory", function($http){
 				console.log(res)
 			})
 		}
-	}
-})
+	};
+});
