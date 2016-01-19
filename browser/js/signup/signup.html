@@ -1,6 +1,6 @@
 <div  class="loginForm">
     <h2>Sign up</h2>
-    <form name="signupForm" ng-submit="signupForm.$valid && sendSignup(signup)">
+    <form id="signup-form" name="signupForm" ng-submit="signupForm.$valid && sendSignup(signup)">
 
         <alert type="danger" ng-show="error">
             {{ error }}

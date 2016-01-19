@@ -28,8 +28,9 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
         });
     }
 
-    var setUser = function () {
+    var populateUser = function () {
         AuthService.getLoggedInUser().then(function (user) {
+            //console.log(loggedInUser);
             UserFactory.getOne(user._id).then(function (populatedUser) {
                 $scope.currentUser = populatedUser;
             });
@@ -40,9 +41,9 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
         $scope.currentUser = null;
     };
 
-    setUser();
+    populateUser();
 
-    $rootScope.$on(AUTH_EVENTS.loginSuccess, setUser);
+    $rootScope.$on(AUTH_EVENTS.loginSuccess, populateUser);
     $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
     $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
 });
