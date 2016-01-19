@@ -1,32 +1,27 @@
 <nav class="navbar navbar-static-top">
     <div class="container">
-        <div class="navbar-header">
+        <!-- <div class="navbar-brand">
             <fullstack-logo></fullstack-logo>
-        </div>
+        </div> -->
         <ul class="nav navbar-nav">
             <div class="row">
-                <div class="col-sm-3 icons" id="icons-left">
-                    <a ui-sref='products' class="navbar-brand" id='brand'><img src='http://i.imgur.com/CLCjB7h.png'></a>
+                <div class="col-sm-1 icons">
+                    <a ui-sref='products' class="navbar-brand" ><img src='http://i.imgur.com/CLCjB7h.png'></a>
                 </div>
-                <div class="col-md-6 searchbar">
+                <div class="col-md-5 searchbar">
                     <div class="input-group">
                       <input type="text" ng-model='searchBar' class="form-control input-lg" placeholder="Find Air" ng-change='emitInput(searchBar)' ng-keydown='goToAllProductsWithFilter($event, searchBar)'>
-                      <span class="input-group-addon" id="searchbar"><span class="glyphicon glyphicon-search"></span></span>
+                      <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
                     </div>
                 </div>
-                <div class="col-sm-3 icons" id="icons-right">
+                <div class="col-sm-6 icons">
                     <a ui-sref-active="active" ui-sref="home"><i class="icons material-icons">home</i></a>
-                    <a ui-sref-active="active" ui-sref="cart"><i <i class="icons material-icons">shopping_cart</i><span class="cart-counter">{{numItems}}</span></a>
-                </div><div class="col-sm-3 login">
-                    <a id="login-btn" ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="icons fa fa-sign-in"></i></a>
-                    <a id="logout-btn" ng-show="user" ng-click="logout()"><span><i class="icons fa fa-sign-out"></i></span></a>
-                    <button id="profile-btn" ng-show="user" class="btn btn-default" ui-sref='user'>
-                    {{ user.firstName + ' ' + user.lastName }}
-                    </button>
+                    <a ui-sref-active="active" ui-sref="cart"><i <i class="icons material-icons">shopping_cart</i></a><span class="cart-counter">{{numItems}}</span>
+                    <a ng-show="!user" ui-sref="login" ui-sref-active="active" ui-sref="home"><i class="icons fa fa-sign-in"></i></a>
+                    <a ng-show="user" ng-click="logout()"><i class="icons fa fa-sign-out"></i></a>
+                    <button id="profile-btn" ng-show="user" class="btn btn-default" ui-sref='user'>{{ user.firstName + ' ' + user.lastName }}</button>
                 </div>
             </div>
-
         </ul>
-
     </div>
 </nav>
