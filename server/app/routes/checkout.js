@@ -11,6 +11,7 @@ var emailToUser = fs.readFileSync("email_to_user.html","utf8");
 var emailToAdmin = fs.readFileSync("email_to_admin.html","utf8");
 const mongoose = require('mongoose');
 var Order = mongoose.models.Order;
+var Product = mongoose.models.Product;
 
 
 
@@ -18,7 +19,11 @@ module.exports = router;
 router.use("/", function(req, res, next) {
     var orderId = req.body.orderId;
     var stripeToken = req.body.token.stripeToken;
-    console.log(orderId)
+    var productData = req.body.productData;
+    var namesOfProducts = productData.names;
+    var productIds = productData.productIds;
+    var totalPrice = productData.price;
+    var productQuantities = productData.productQuantities;
 
     var charge = stripe.charges.create({
         amount: 1000, // amount in cents, again
@@ -30,31 +35,65 @@ router.use("/", function(req, res, next) {
             // The card has been declined
             res.status(500).send("ERROR")
         } else{
-            Order.findByIdAndUpdate(orderId, { status: {current: "processing", updated_at: Date.now()}, billingZip: req.body.token.card.address_zip})
-            .then(function(order){
-                var toName = req.body.token.card.name.slice(0,req.body.token.card.name.indexOf(' '));
-                var emailToUserTemplate = ejs.render(emailToUser, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
-                {
-                    name:toName,
-                    orderId: req.body.orderId
+            var promises = productIds.map(function(productId){
+                return Product.findById(productId)
+            })
+            Promise.all(promises).then(function(productArr){
+                console.log("PRODUCT ARR", productArr)
+                var allInStock = productArr.reduce(function(prev, product, index){
+                    return prev && product.stock >= productQuantities[index]
+                },true)
+                if(allInStock){
+                    console.log("ALL IN STOCK")
+                    var productPromises = productArr.map(function(product, index){
+                        product.stock-=productQuantities[index];
+                        return product.save()
+                    })
+                    Promise.all(productPromises)
+                    .then(function(){
+                        console.log("ALL STOCKS UPDATED")
+                        Order.findByIdAndUpdate(orderId, { status: {current: "processing", updated_at: Date.now()}, billingZip: req.body.token.card.address_zip})
+                        .then(function(order){
+                            console.log("FOUND AND UPDATED ORDER")
+                            var toName = req.body.token.card.name.slice(0,req.body.token.card.name.indexOf(' '));
+                            var emailToUserTemplate = ejs.render(emailToUser, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
+                            {
+                                name:toName,
+                                orderId: req.body.orderId,
+                                productIds: productIds,
+                                totalPrice: totalPrice,
+                                namesOfProducts: namesOfProducts
+                            });
+                            var emailToAdminTemplate = ejs.render(emailToAdmin, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
+                            {
+                                user_order_name: req.body.token.card.name,
+                                orderId: req.body.orderId,
+                                productIds: productIds,
+                                totalPrice: totalPrice,
+                                namesOfProducts: namesOfProducts
+                            });
+                            console.log("EMAILS ABOUT TO BE SENT")
+                            sendEmail(toName, req.body.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", emailToUserTemplate);
+                            sendEmail("Admin", "ldthorne@brandeis.edu", "Airazon Orders", "orders@airazon.com", "New order placed!", emailToAdminTemplate);
+                            console.log("SENT EMAILs")
+                            res.status(200).send("SUCCESS")
+                        }).catch(function(err){
+                            console.error(err);
+                            res.status(500).send(err)
+                        })
+                    })
 
-                });
-                var emailToAdminTemplate = ejs.render(emailToAdmin, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
-                {
-                    user_order_name: req.body.token.card.name,
-                    orderId: req.body.orderId
-                });
-                sendEmail(toName, req.body.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", emailToUserTemplate);
-                sendEmail("Admin", "ldthorne@brandeis.edu", "Airazon Orders", "orders@airazon.com", "New order placed!", emailToAdminTemplate);
-                res.status(200).send("SUCCESS")
-            }).then(null, next)
+                }else{
+                    res.status(500).send("Not all items were in stock");
+                }
+            })
         }
     });
 })
 
 
 function sendEmail(to_name, to_email, from_name, from_email, subject, message_html){ //send email function. Taken from Scott's example file
-    console.log(arguments)
+    // console.log(arguments)
     var message = {
         "html": message_html,
         "subject": subject,
@@ -74,7 +113,7 @@ function sendEmail(to_name, to_email, from_name, from_email, subject, message_ht
     var async = false;
     var ip_pool = "Main Pool";
     mandrill_client.messages.send({"message": message, "async": async, "ip_pool": ip_pool}, function(result) {
-        console.log(result)
+        // console.log(result)
     }, function(e) {
         // Mandrill returns the error as an object with name and message keys
         console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
