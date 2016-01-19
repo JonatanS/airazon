@@ -5,10 +5,7 @@ app.directive('product', function() {
 			thisProduct: '=',
 			onCartPage: '=',
             quantity: '='
-		}
-		,
-		templateUrl: 'js/products/products.directive.html',
-		// link: function(scope, element) {
-		// }
+		},
+		templateUrl: 'js/products/products.directive.html'
 	}
 });

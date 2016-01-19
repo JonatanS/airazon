@@ -14,15 +14,15 @@ router.get('/', function (req, res, next) {
 });
 
 // POST /api/products
-router.post('/', function (req, res, next){
+router.post('/', function (req, res, next) {
     Product.create(req.body.product)
     .then(function (product) {
-        return product;
+        res.send(product);
     })
     .then(null, next);
 });
 
-router.param('id', function (req,res,next, id){
+router.param('id', function (req,res,next, id) {
     //use deep-populate to grab reviews and users thereof
     return Product.findById(id).deepPopulate('reviews.user')
     .then(function(product){
