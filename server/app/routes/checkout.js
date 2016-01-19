@@ -12,7 +12,7 @@ var emailToAdmin = fs.readFileSync("email_to_admin.html", "utf8");
 const mongoose = require('mongoose');
 var Order = mongoose.models.Order;
 var Product = mongoose.models.Product;
-var Address = mongoose.models.Product;
+var Address = mongoose.models.Address;
 
 var orderId, stripeToken, productData, namesOfProducts, productIds, totalPrice, productQuantities, productPrices;
 module.exports = router;
@@ -51,67 +51,67 @@ router.use("/", function(req, res, next) {
                         return product.save()
                     })
                     Promise.all(productPromises)
-                        .then(function() {
-                            console.log("ALL STOCKS UPDATED")
-                            if (orderId) {
-                                Order.findByIdAndUpdate(orderId, {
-                                        status: {
-                                            current: "processing",
-                                            updated_at: Date.now()
-                                        },
-                                        billingZip: req.body.token.card.address_zip
-                                    })
-                                    .then(function(order) {
-                                        startSendingEmail(req.body)
-                                    }).catch(function(err) {
-                                        console.error(err);
-                                        res.status(500).send(err)
-                                    })
-                            } else {
-                                console.log("ELSE HIT")
-                                var address = req.body.token.card.address_line1 + ' ';
+                    .then(function() {
+                        console.log("ALL STOCKS UPDATED")
+                        if (orderId) {
+                            Order.findByIdAndUpdate(orderId, {
+                                status: {
+                                    current: "processing",
+                                    updated_at: Date.now()
+                                },
+                                billingZip: req.body.token.card.address_zip
+                            })
+                            .then(function(order) {
+                                startSendingEmail(req.body)
+                            }).catch(function(err) {
+                                console.error(err);
+                                res.status(500).send(err)
+                            })
+                        } else {
+                            //if no order id
 
-                                if (eq.body.token.card.address_line2) {
-                                    address += eq.body.token.card.address_line2;
-                                }
-                                var addressInfo = {
-                                    firstName: req.body.token.card.name.slice(0, req.body.token.card.name.indexOf(' ')),
-                                    lastName: req.body.token.card.name.slice(req.body.token.card.name.indexOf(' ') + 1),
-                                    street: address,
-                                    city: req.body.token.card.address_city,
-                                    state: req.body.token.card.address_state,
-                                    zipcode: req.body.token.card.address_zip
-                                }
-                                Address.create(addressInfo)
-                                    .then(function(address) {
-                                        var productsArr = [];
-                                        productIds.forEach(function(product, index) {
-                                            productsArr.push({
-                                                quantity: productQuantities[index],
-                                                pricePaid: productPrices[index],
-                                                product: product
-                                            })
-                                        });
-                                        var status = {
-                                            current: "processing",
-                                            updated_at: Date.now()
-                                        }
-                                        var billingZip = req.body.token.card.address_zip
-
-                                        var orderData = {
-                                            address: address._id,
-                                            products: productArr,
-                                            status: status,
-                                            billingZip: billingZip
-                                        }
-                                        Order.create(orderData)
-                                            .then(function(order) {
-                                                req.body.orderId = order._id
-                                                startSendingEmail(req.body)
-                                            })
-                                    })
+                            var address = req.body.token.card.address_line1 + '';
+                            if (req.body.token.card.address_line2) {
+                                address += eq.body.token.card.address_line2;
                             }
-                        })
+                            var addressInfo = {
+                                firstName: req.body.token.card.name.slice(0, req.body.token.card.name.indexOf(' ')),
+                                lastName: req.body.token.card.name.slice(req.body.token.card.name.indexOf(' ') + 1),
+                                street: address,
+                                city: req.body.token.card.address_city,
+                                state: req.body.token.card.address_state,
+                                zipcode: req.body.token.card.address_zip
+                            }
+                            Address.create(addressInfo)
+                            .then(function(createdAddress) {
+                                console.log("ADDRESS DOC",createdAddress)
+                                var productsArr = [];
+                                productIds.forEach(function(product, index) {
+                                    productsArr.push({
+                                        quantity: productQuantities[index],
+                                        pricePaid: productPrices[index],
+                                        product: product
+                                    })
+                                });
+                                var status = {
+                                    current: "processing",
+                                    updated_at: Date.now()
+                                }
+                                var billingZip = req.body.token.card.address_zip
+                                var orderData = {
+                                    address: createdAddress._id,
+                                    products: productsArr,
+                                    status: status,
+                                    billingZip: billingZip
+                                }
+                                Order.create(orderData)
+                                .then(function(createdOrder) {
+                                    req.body.orderId = createdOrder._id
+                                    startSendingEmail(req.body)
+                                }).catch(console.error)
+                            })
+                        }   
+                    })
 
                 } else {
                     res.status(500).send("Not all items were in stock");

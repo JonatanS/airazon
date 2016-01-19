@@ -60,12 +60,17 @@ schema.virtual('total').get(function() {
 });
 
 schema.pre('save', function(next) {
-    var now = new Date();
-    this.status.updated_at = now;
-    if (this.status === 'processing') this.created_at = now;
-    if (!this.trackingNumber)
-        this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
-    next();
+    try{
+        console.log('saving')
+        var now = new Date();
+        this.status.updated_at = now;
+        if (this.status === 'processing') this.created_at = now;
+        if (!this.trackingNumber)
+            this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
+        next();
+    }catch(e){
+        console.error(e)
+    }
 });
 
 schema.pre('remove', function(next) {
