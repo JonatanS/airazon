@@ -13,10 +13,10 @@ app.config(function($stateProvider) {
 });
 
 
-app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService, Session) {
-    var orderId = "569ad18c78ae327f1e82ddcd"
+app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService) {
+    var orderId = "569ad18c78ae327f1e82ddcf"
+    var namesString, totalPrice, productIds, productQuantities, productData;
 
-    //TODO: no dependeny on session
     var renderProducts = function() {
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
@@ -29,14 +29,29 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
 
 		$q.all(products).then(function(products) {
 			$scope.productArr = products;
-            Session.cart.populatedProductNames = products.map(function(product){
+            namesString = products.map(function(product){
                 return product.name;
             });
-            $scope.namesString = Session.cart.populatedProductNames.join(", ")
-            console.log("CART",Session.cart)
-            Session.cart.totalPrice = $scope.cart.products.reduce(function(prev, product) {
-                return prev + product.pricePaid;
-            }, 0)
+            totalPrice = $scope.cart.products.reduce(function(prev, product) {
+                return prev + (product.quantity*product.pricePaid);
+            }, 0);
+            productIds = products.map(function(product){
+                console.log(product)
+                return product._id
+            })
+            productQuantities = products.map(function(product){
+                return product.quantity
+            })
+
+            console.log("PRODUCT IDS:",productIds)
+            console.log("TOTAL PRICE:", totalPrice)
+            console.log("NAMES STRING", namesString)
+            productData = {
+                names: namesString,
+                price: totalPrice,
+                productIds: productIds,
+                productQuantities: productQuantities
+            }
 		});
 	};
 
@@ -52,7 +67,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         locale: 'auto',
         billingAddress: true,
         token: function(token) {
-            StripeFactory.postStripeToken(token, orderId);
+            StripeFactory.postStripeToken(token, orderId, productData);
         }
     });
 
@@ -60,7 +75,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         handler.open({
             name: 'Airazon',
             description: "Get some fresh air",
-            amount: Session.cart.totalPrice*100,
+            amount: totalPrice*100,
         });
     };
 
