@@ -32,8 +32,8 @@ router.get('/', ensureAuthenticated,function (req, res, next) {
 // create new user WITHOUT address
 router.post('/signup', function (req,res,next){
     return User.create(req.body)
-    .then(function(result) {
-        res.status(201).json(result);
+    .then(function(newUser) {
+        res.status(201).send(newUser);
     })
     .then(null, next);
 })

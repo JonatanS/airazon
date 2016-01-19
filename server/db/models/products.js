@@ -64,7 +64,7 @@ var schema = new mongoose.Schema({
 
 schema.virtual('shortDescription').get(function() {
     //TODO: Write more stuff here
-    return this.name + " is from " + this.source.latitude + ", " + this.source.longitude + ", a place known for " + this.category;
+    return this.name + " is from " + this.source.latitude + ", " + this.source.longitude + ", a place known for " + this.category + '...';
 });
 schema.set('toJSON', {
    virtuals: true
