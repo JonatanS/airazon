@@ -79,7 +79,11 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         });
     };
 
-    $rootScope.$on('productAddedToCart', setCart);
-	$rootScope.$on('cart populated', renderProducts);
+    $scope.updateProductCountInCart = function() {
+        //get productId and quantity and call cart service
+    }
+
+    $rootScope.$on('cartUpdated', setCart);
+	//$rootScope.$on('cart populated', renderProducts);
     setCart();
 });

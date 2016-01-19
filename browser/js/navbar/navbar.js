@@ -66,8 +66,7 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             $rootScope.$on(AUTH_EVENTS.loginSuccess, setUser);
             $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
             $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
-            $rootScope.$on('productAddedToCart', setCart);
-            //$rootScope.$on('cart populated', setCart);
+            $rootScope.$on('cartUpdated', setCart);
         }
     };
 });

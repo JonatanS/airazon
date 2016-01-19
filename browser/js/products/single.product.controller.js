@@ -20,7 +20,11 @@ app.controller('SingleProductCtrl', function ($scope, $state, AuthService, UserF
 
     $scope.submitProduct = function (productData) {
     	productData.tags = productData.tags.split(' ');
-    	productData.images = productData.images.split(' ');
+    	if (!productData.images) {
+    		productData.images = ['http://i.imgur.com/xF6OPcr.png'];
+    	} else {
+    		productData.images = productData.images.split(' ');
+    	}
 		ProductFactory.add(productData)
 		.then(function () {
 			console.log('New product added!');
