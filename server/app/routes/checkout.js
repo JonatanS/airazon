@@ -7,7 +7,8 @@ var mandrill_client = new mandrill.Mandrill(mandrillKey);
 var stripe = require("stripe")(stripeTestSecretKey);
 var ejs = require('ejs');
 var fs = require('fs');
-var htmlFile = fs.readFileSync("email_template.html","utf8");
+var emailToUser = fs.readFileSync("email_to_user.html","utf8");
+var emailToAdmin = fs.readFileSync("email_to_admin.html","utf8");
 const mongoose = require('mongoose');
 var Order = mongoose.models.Order;
 
@@ -30,14 +31,22 @@ router.use("/", function(req, res, next) {
             console.log("goodbye")
             res.status(500).send("ERROR")
         } else{
-            Order.findByIdAndUpdate(orderId, { status: {current: "processing", updated_at: Date.now()}})
+            Order.findByIdAndUpdate(orderId, { status: {current: "processing", updated_at: Date.now()}, billingZip: req.body.token.card.address_zip})
             .then(function(order){
                 var toName = req.body.token.card.name.slice(0,req.body.token.card.name.indexOf(' '));
-                var newTemplate = ejs.render(htmlFile, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
+                var emailToUserTemplate = ejs.render(emailToUser, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
                 {
-                    name:toName
+                    name:toName,
+                    orderId: req.body.orderId
+
                 });
-                sendEmail(toName, req.body.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", newTemplate);
+                var emailToAdminTemplate = ejs.render(emailToAdmin, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
+                {
+                    user_order_name: req.body.token.card.name,
+                    orderId: req.body.orderId
+                });
+                sendEmail(toName, req.body.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", emailToUserTemplate);
+                sendEmail("Admin", "ldthorne@brandeis.edu", "Airazon Orders", "orders@airazon.com", "New order placed!", emailToAdminTemplate);
                 res.status(200).send("SUCCESS")
             }).then(null, next)
         }
