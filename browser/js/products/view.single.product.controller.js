@@ -1,4 +1,4 @@
-app.controller('ViewSingleProductCtrl', function ($scope, $state, CartService, ProductFactory, $stateParams) {
+app.controller('ViewSingleProductCtrl', function ($scope, Session, $state, CartService, ProductFactory, $stateParams) {
 	ProductFactory.getOne($stateParams.productId)
 	.then(function (product) {
 		//console.log(product)
@@ -13,7 +13,10 @@ app.controller('ViewSingleProductCtrl', function ($scope, $state, CartService, P
 	});
 
 	$scope.writeAReview = function (productId) {
-		$state.go('add-review', { productId: productId });
+		if (Session.user) {
+			$state.go('add-review', { productId: productId });
+		} else {
+			console.log('Please Sign In To Write A Review!');
+		}
 	}
-
-})
+});

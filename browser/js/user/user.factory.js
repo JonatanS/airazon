@@ -22,7 +22,7 @@ app.factory('UserFactory', function ($http) {
 			})
 		},
 		signup: function (userObj) {
-			return $http.post('/api/users/signup', userObj)
+			return $http.post('/api/users/signup', { user: userObj })
 			.then(function (user) {
 				return user.data;
 			});

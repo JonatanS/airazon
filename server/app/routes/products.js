@@ -3,6 +3,16 @@ var router = require('express').Router();
 module.exports = router;
 const mongoose = require('mongoose');
 var Product = mongoose.models.Product;
+var User = mongoose.models.User;
+
+
+var ensureAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.status(401).end();
+    }
+};
 
 // // GET /api/products
 router.get('/', function (req, res, next) {
@@ -14,12 +24,17 @@ router.get('/', function (req, res, next) {
 });
 
 // POST /api/products
-router.post('/', function (req, res, next) {
-    Product.create(req.body.product)
-    .then(function (product) {
-        res.send(product);
+router.post('/', ensureAuthenticated, function (req, res, next) {
+    User.find({ isAdmin: true })
+    .then(function () {
+        Product.create(req.body.product)
+        .then(function (product) {
+            res.send(product);
+        })
+        .then(null, next);
     })
     .then(null, next);
+
 });
 
 router.param('id', function (req,res,next, id) {
