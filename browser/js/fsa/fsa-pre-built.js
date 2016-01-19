@@ -166,6 +166,7 @@
         };
 
         var initSession = function() {
+            console.log("INIT SESSION");
             self.id = null;
             self.user = null;
             self.cart = null;

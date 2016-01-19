@@ -13,11 +13,11 @@ app.config(function($stateProvider) {
 });
 
 
-app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService, Session) {
+app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService) {
     var orderId = "569ad18c78ae327f1e82ddcd"
 
-    //TODO: no dependeny on session
     var renderProducts = function() {
+        console.log($scope.cart);
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
             .then(function(populatedProduct) {
@@ -29,12 +29,12 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
 
 		$q.all(products).then(function(products) {
 			$scope.productArr = products;
-            Session.cart.populatedProductNames = products.map(function(product){
+            $scope.cart.populatedProductNames = products.map(function(product){
                 return product.name;
             });
-            $scope.namesString = Session.cart.populatedProductNames.join(", ")
-            console.log("CART",Session.cart)
-            Session.cart.totalPrice = $scope.cart.products.reduce(function(prev, product) {
+            $scope.namesString = $scope.cart.populatedProductNames.join(", ")
+            console.log("CART",$scope.cart)
+            $scope.cart.totalPrice = $scope.cart.products.reduce(function(prev, product) {
                 return prev + product.pricePaid;
             }, 0)
 		});
@@ -60,7 +60,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         handler.open({
             name: 'Airazon',
             description: "Get some fresh air",
-            amount: Session.cart.totalPrice*100,
+            amount: $scope.cart.totalPrice*100,
         });
     };
 
