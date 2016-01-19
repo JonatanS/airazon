@@ -21,7 +21,7 @@ var ensureAuthenticated = function (req, res, next) {
 // };
 
 // get all users (ADMIN only)
-router.get('/', ensureAuthenticated,function (req, res, next) {
+router.get('/', ensureAuthenticated, function (req, res, next) {
 	return User.find({})
 	.then(function (users) {
 		res.send(users);
@@ -49,13 +49,13 @@ router.param('id', function (req,res,next, id){
 });
 
 
-router.get('/:id', ensureAuthenticated,function (req, res) {
+router.get('/:id', ensureAuthenticated, function (req, res) {
     res.status(200).json(req.user);
 });
 
 
 // update one user: only signed in user and ADMIN have access
-router.put('/:id', ensureAuthenticated,function (req, res, next) {
+router.put('/:id', ensureAuthenticated, function (req, res, next) {
     req.user.set(req.body);
     return req.user.save()
 	.then(function (updatedUser) {
@@ -65,7 +65,7 @@ router.put('/:id', ensureAuthenticated,function (req, res, next) {
 });
 
 // add address to one user FIX THIS!
-router.post('/:id/addaddress', function (req, res, next) {
+router.post('/:id/addaddress', ensureAuthenticated, function (req, res, next) {
     console.log(req.params)
 	return Address.create(req.body.address)
 	.then(function (newAddress) {
@@ -91,7 +91,7 @@ router.put('/:id/addresses/:addressId', ensureAuthenticated, function (req,res,n
 	.then(null, next);
 });
 
-router.delete('/:id/addresses/:addressId',ensureAuthenticated, function(req, res, next) {
+router.delete('/:id/addresses/:addressId', ensureAuthenticated, function(req, res, next) {
     var rmAddress = Address.findByIdAndRemove(req.params.addressId, req.body);
     var updateUser = req.user.addresses.pull({_id:req.params.addressId});
     Promise.all([rmAddress, updateUser])
