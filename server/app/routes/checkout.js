@@ -28,7 +28,6 @@ router.use("/", function(req, res, next) {
     }, function(err, charge) {
         if (err && err.type === 'StripeCardError') {
             // The card has been declined
-            console.log("goodbye")
             res.status(500).send("ERROR")
         } else{
             Order.findByIdAndUpdate(orderId, { status: {current: "processing", updated_at: Date.now()}, billingZip: req.body.token.card.address_zip})

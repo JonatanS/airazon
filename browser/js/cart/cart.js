@@ -7,7 +7,7 @@ app.config(function($stateProvider) {
 });
 
 app.controller('CartCtrl', function ($scope, Session, StripeFactory, OrderFactory, $rootScope, $q, $http) {
-    var orderId = "569ad18c78ae327f1e82ddcd"
+    var orderId = "569ad18c78ae327f1e82ddcf"
 	console.log("CART",Session.cart)
     var renderProducts = function() {
 		var products = $scope.cart.products.map(function(product) {
