@@ -1,10 +1,11 @@
-app.directive('product', function() {
+app.directive('product', function (CartService) {
 	return {
 		restrict: 'E',
 		scope: {
 			thisProduct: '=',
 			onCartPage: '=',
-            quantity: '='
+            quantity: '=',
+            update: '&'
 		},
 		templateUrl: 'js/products/products.directive.html'
 	}

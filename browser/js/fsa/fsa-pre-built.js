@@ -148,8 +148,8 @@
             //grab cart from browser's storage. if there is none, create one using CartService
             console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
             self.cart = CartService.getCurrentCart();
-            if(!self.cart) alert("No acart in browser");
-            $rootScope.$emit('cart populated', 'perhaps');
+            if(!self.cart) alert("No cart in browser. Tell Jonatan!");
+            $rootScope.$emit('cartUpdated', 'perhaps');
         };
 
         this.create = function (sessionId, user) {

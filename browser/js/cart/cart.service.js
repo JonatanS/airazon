@@ -11,12 +11,7 @@ app.service('CartService', function ($rootScope,localStorageService, $q) {
             var numProducts = quantity || 1;
 
             //check if product already exists and update quantity:
-            var productIdx = -1;
-            var curCart = this.getCurrentCart();
-            for(var i = 0; i < curCart.products.length; i ++) {
-                if (curCart.products[i].product.toString() === productToAdd._id.toString())
-                    productIdx = i;
-            }
+            var productIdx = this.findIdx();
 
             if(productIdx === -1) {
                 curCart.products.push({product:productToAdd._id, quantity:numProducts, pricePaid: productToAdd.price});
@@ -32,7 +27,7 @@ app.service('CartService', function ($rootScope,localStorageService, $q) {
             //add to orders DB if user is logged in:
 
             //let the navbar know:
-            $rootScope.$emit('productAddedToCart', {
+            $rootScope.$emit('cartUpdated', {
                 product: productToAdd
             });
         },
@@ -45,24 +40,44 @@ app.service('CartService', function ($rootScope,localStorageService, $q) {
                 var lsKeys = localStorageService.keys();
                 if(lsKeys.indexOf('cart')!== -1) {
                     //found existing cart! grab it!
-                    cartToReturn = JSON.parse(localStorageService.get('cart'));
-                    console.log('got cart from local storage:', cartToReturn);
+                    return JSON.parse(localStorageService.get('cart'));
                 }
                 else {
                     var newCart = {products:[], dateCookieCreated: new Date()};
-                    localStorageService.set('cart', JSON.stringify(newCart));
+                    setCartInLocalStorage(newCart);
+                    return newCart;
                 }
             }
-            return cartToReturn || {products:[], dateCookieCreated: new Date()};
         },
 
         updatePricePaid: function() {
 
         },
 
-        updateProductCountInCart: function() {
+        updateProductCountInCart: function(productToEdit, quantity) {
+            var curCart = this.getCurrentCart();
+            var productIdx = this.findIdx();
             //should delete if quantity is 0
+            if(quantity === 0) curCart.products.splice(productIdx, 1);
+            else curCart.products[productIdx].quantity = quantity;
+            this.setCartInLocalStorage(curCart);
+            //let the navbar know:
+            $rootScope.$emit('cartUpdated', {
+                product: productToEdit
+            });
         }
     };
+    var findIdx = function(pid){
+        var productIdx = -1;
+        var curCart = this.getCurrentCart();
+        for(var i = 0; i < curCart.products.length; i ++) {
+            if (curCart.products[i].product._id === pid) return i;
+        }
+        return productIdx;
+    };
+
+    var setCartInLocalStorage = function(cart) {
+        localStorageService.set('cart', JSON.stringify(cart));
+    }
 
 });
