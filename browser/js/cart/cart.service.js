@@ -54,6 +54,14 @@ app.service('CartService', function ($rootScope,localStorageService, $q) {
                 }
             }
             return cartToReturn || {products:[], dateCookieCreated: new Date()};
+        },
+
+        updatePricePaid: function() {
+
+        },
+
+        updateProductCountInCart: function() {
+            //should delete if quantity is 0
         }
     };
 
