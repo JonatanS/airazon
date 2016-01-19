@@ -11,7 +11,8 @@
     <div class="form-group" required>
       <label class="col-sm-2 control-label">Review</label>
       <div class="col-sm-6">
-        <textarea id="review" type="review" placeholder="Write a review" ng-model='newReview.body' class="form-control" rows="3" id="comment"></textarea>
+        <span>* must be at least 20 characters</span>
+        <textarea id="review" class="form-control" ng-model='newReview.body' placeholder="Write a review" ng-minlength="20" type="review" placeholder="Write a review" rows="3"></textarea>
       </div>
     </div>
 

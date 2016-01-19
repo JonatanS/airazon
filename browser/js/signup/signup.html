@@ -1,24 +1,27 @@
 <div  class="loginForm">
     <h2>Sign up</h2>
-    <form name="signupForm" ng-submit="signupForm.$valid && sendSignup(signup)">
+    <form id="signup-form" name="signupForm" ng-submit="signupForm.$valid && sendSignup(signup)">
 
         <alert type="danger" ng-show="error">
             {{ error }}
         </alert>
         <div class="form-group">
             <label for="firstName">First Name</label>
-            <input type="text" ng-model="signup.firstName" class="form-control" id="email" placeholder="Enter email">
-        </div>    <div class="form-group">
+
+            <input type="text" ng-model="signup.firstName" class="form-control" id="email" placeholder="First Name" required>
+        </div>
+        <div class="form-group">
             <label for="lastName">Last Name</label>
-            <input type="text" ng-model="signup.lastName" class="form-control" id="lastName" placeholder="Last Name">
+            <input type="text" ng-model="signup.lastName" class="form-control" id="lastName" placeholder="Last Name" required>
         </div>
         <div class="form-group">
             <label for="email">Email address</label>
-            <input type="text" ng-model="signup.email" class="form-control" id="email" placeholder="Email">
+            <input type="email" ng-model="signup.email" class="form-control" id="email" placeholder="Email" required >
+
         </div>
         <div class="form-group">
             <label for="signup-password">Password</label>
-            <input type="password" ng-model="signup.password" class="form-control" id="signup-password" placeholder="Password">
+            <input type="password" ng-model="signup.password" class="form-control" id="signup-password" placeholder="Password" required>
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
     </form>

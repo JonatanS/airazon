@@ -2,13 +2,21 @@ app.config(function($stateProvider) {
     $stateProvider.state('cart', {
         url: '/cart',
         controller: 'CartCtrl',
-        templateUrl: 'js/cart/cart.html'
+        templateUrl: 'js/cart/cart.html',
+        // resolve: {
+        //     currentCart: function(CartService) {
+        //         console.log("getting current cart in RESOLVE");
+        //         return CartService.getFromCookieOrCreateInCookie().$promise;
+        //     }
+        //}
     });
 });
 
-app.controller('CartCtrl', function ($scope, Session, StripeFactory, OrderFactory, $rootScope, $q, $http) {
-    var orderId = "569ad18c78ae327f1e82ddcd"
-	console.log("CART",Session.cart)
+
+app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService) {
+    var orderId = "569ad18c78ae327f1e82ddcf"
+    var namesString, totalPrice, productIds, productQuantities, productData;
+
     var renderProducts = function() {
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
@@ -18,46 +26,64 @@ app.controller('CartCtrl', function ($scope, Session, StripeFactory, OrderFactor
                 return retObj;
             })
 		});
+
 		$q.all(products).then(function(products) {
 			$scope.productArr = products;
-            Session.cart.populatedProductNames = products.map(function(product){
-                return product.name
+            namesString = products.map(function(product){
+                return product.name;
             });
-            $scope.namesString = Session.cart.populatedProductNames.join(", ")
-            console.log("CART",Session.cart)
-            Session.cart.totalPrice = $scope.cart.products.reduce(function(prev, product) {
-                return prev + product.pricePaid
-            }, 0)
+            totalPrice = $scope.cart.products.reduce(function(prev, product) {
+                return prev + (product.quantity*product.pricePaid);
+            }, 0);
+            productIds = products.map(function(product){
+                console.log(product)
+                return product._id
+            })
+            productQuantities = products.map(function(product){
+                return product.quantity
+            })
+
+            console.log("PRODUCT IDS:",productIds)
+            console.log("TOTAL PRICE:", totalPrice)
+            console.log("NAMES STRING", namesString)
+            productData = {
+                names: namesString,
+                price: totalPrice,
+                productIds: productIds,
+                productQuantities: productQuantities
+            }
 		});
 	};
 
-    var updateCartFromSession = function () {
-        $scope.cart = Session.cart;
-		renderProducts();
-        localStorageService.set('cart', JSON.stringify($scope.cart));
+    var setCart = function () {
+        $scope.cart = CartService.getCurrentCart();
+        renderProducts();
+        console.log('Cart set in CartCtrl:', $scope.cart);
     };
+
     var handler = StripeCheckout.configure({
         key: 'pk_test_oMYDVrtdqS4wggcGq8FO0XNo',
         image: 'http://i.imgur.com/CLCjB7h.png',
         locale: 'auto',
         billingAddress: true,
         token: function(token) {
-            StripeFactory.postStripeToken(token, orderId);
+            StripeFactory.postStripeToken(token, orderId, productData);
         }
     });
 
-    var updateCartFromSession = function() {
-        $scope.cart = Session.cart;
-        renderProducts();
-    };
     $scope.showStripe = function() {
         handler.open({
             name: 'Airazon',
             description: "Get some fresh air",
-            amount: Session.cart.totalPrice*100,
+            amount: totalPrice*100,
         });
+    };
+
+    $scope.updateProductCountInCart = function() {
+        //get productId and quantity and call cart service
     }
-    $rootScope.$on('productAddedToCart', updateCartFromSession);
-	$rootScope.$on('cart populated', renderProducts);
-    updateCartFromSession();
+
+    $rootScope.$on('cartUpdated', setCart);
+	//$rootScope.$on('cart populated', renderProducts);
+    setCart();
 });

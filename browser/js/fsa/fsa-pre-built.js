@@ -49,8 +49,8 @@
     });
 
     app.service('AuthService', function ($http, Session, $rootScope, AUTH_EVENTS, $q) {
-        console.log("AUTHSERVICE");
         function onSuccessfulLogin(response) {
+            console.log('onSuccessfulLogin');
             var data = response.data;
             Session.create(data.id, data.user);
             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
@@ -64,6 +64,7 @@
         };
 
         this.getLoggedInUser = function (fromServer) {
+            console.log('getLoggedInUser');
             // If an authenticated session exists, we
             // return the user attached to that session
             // with a promise. This ensures that we can
@@ -81,7 +82,7 @@
             // If it returns a 401 response, we catch it and instead resolve to null.
             return $http.get('/session').then(onSuccessfulLogin).catch(function (err) {
                 if(err) console.log(err, err.status, err.statusText);
-                return null;
+                    return null;
             });
 
         };
@@ -111,7 +112,7 @@
 
     });
 
-    app.service('Session', function ($rootScope, AUTH_EVENTS, UserFactory) {
+    app.service('Session', function ($rootScope, AUTH_EVENTS, UserFactory, CartService) {
 
         var self = this;
 
@@ -122,49 +123,54 @@
         $rootScope.$on(AUTH_EVENTS.sessionTimeout, function () {
             self.destroy();
         });
+        this.id = null;
+        this.user = null;
+        this.cart = null;
+
+   //      var initCart = function () {
+   //          //grab cart from browser's storage. if there is none, create one using CartService
+   //          console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
+   //          UserFactory.getOne(self.user._id).then(function (populatedUser) {
+   //              console.log(populatedUser);
+   //              _.merge(self.cart, populatedUser.orders.filter(function (o) {
+   //                  return o.status.current === 'cart';
+   //              })[0]);
+   //              if(!self.cart) {
+   //                  //tough luck. We'll use the cart factory to create an empty one.
+   //                  self.cart = CartService.getCurrentCart();
+   //              }
+   //          }).then(function() {
+   //              if(self.cart) $rootScope.$emit('cart populated', 'perhaps');
+			// });
+   //      };
 
         var initCart = function () {
+            //grab cart from browser's storage. if there is none, create one using CartService
             console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
-            UserFactory.getOne(self.user._id).then(function (populatedUser) {
-                console.log(populatedUser);
-                _.merge(self.cart, populatedUser.orders.filter(function (o) {
-                    return o.status.current === 'cart';
-                })[0]);
-                if(!self.cart) {
-                    self.cart = {
-                        products: [],
-                        status:{current:'cart'}
-                    }
-                }
-            }).then(function() {
-				$rootScope.$emit('cart populated', 'no need');
-			});
+            self.cart = CartService.getCurrentCart();
+            if(!self.cart) alert("No cart in browser. Tell Jonatan!");
+            $rootScope.$emit('cartUpdated', 'perhaps');
         };
 
         this.create = function (sessionId, user) {
             console.log('creating session for user:', user);
             self.id = sessionId;
             self.user = user;
-            initCart();
         };
 
         this.destroy = function () {
             console.log('Destroying Session:', self)
             self.id = null;
             self.user = null;
-            self.cart = {
-                products: [],
-                status:{current:'cart'}
-            };
+            self.cart = null;
         };
 
         var initSession = function() {
             self.id = null;
             self.user = null;
-            self.cart = {
-                products: [],
-                status:{current:'cart'}
-            };
+            self.cart = null;
+            initCart();
+            console.log(self.cart);
             console.log('init empty session:', self);
         }
 
