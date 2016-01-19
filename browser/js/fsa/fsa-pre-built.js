@@ -64,6 +64,7 @@
         };
 
         this.getLoggedInUser = function (fromServer) {
+            console.log('getLoggedInUser');
             // If an authenticated session exists, we
             // return the user attached to that session
             // with a promise. This ensures that we can
@@ -81,7 +82,7 @@
             // If it returns a 401 response, we catch it and instead resolve to null.
             return $http.get('/session').then(onSuccessfulLogin).catch(function (err) {
                 if(err) console.log(err, err.status, err.statusText);
-                return null;
+                    return null;
             });
 
         };
@@ -124,6 +125,7 @@
         });
         this.id = null;
         this.user = null;
+        this.cart = null;
 
         var initCart = function () {
             console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
@@ -133,13 +135,10 @@
                     return o.status.current === 'cart';
                 })[0]);
                 if(!self.cart) {
-                    self.cart = {
-                        products: [],
-                        status:{current:'cart'}
-                    }
+                    //tough luck. We'll use the cart factory to create an empty one.
                 }
             }).then(function() {
-				$rootScope.$emit('cart populated', 'no need');
+                if(self.cart) $rootScope.$emit('cart populated', 'perhaps');
 			});
         };
 
@@ -148,25 +147,28 @@
             self.id = sessionId;
             self.user = user;
             initCart();
+            console.log(self.cart);
         };
 
         this.destroy = function () {
             console.log('Destroying Session:', self)
             self.id = null;
             self.user = null;
-            self.cart = {
-                products: [],
-                status:{current:'cart'}
-            };
+            self.cart = null;
+            // self.cart = {
+            //     products: [],
+            //     status:{current:'cart'}
+            // };
         };
 
         var initSession = function() {
             self.id = null;
             self.user = null;
-            self.cart = {
-                products: [],
-                status:{current:'cart'}
-            };
+            self.cart = null;
+            // self.cart = {
+            //     products: [],
+            //     status:{current:'cart'}
+            // };
             console.log('init empty session:', self);
         }
 

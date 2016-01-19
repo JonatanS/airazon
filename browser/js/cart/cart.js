@@ -2,12 +2,18 @@ app.config(function($stateProvider) {
     $stateProvider.state('cart', {
         url: '/cart',
         controller: 'CartCtrl',
-        templateUrl: 'js/cart/cart.html'
+        templateUrl: 'js/cart/cart.html',
+        resolve: {
+            currentCart: function(CartService) {
+                console.log("getting current cart in RESOLVE");
+                return CartService.getFromCookieOrCreateInCookie().$promise;
+            }
+        }
     });
 });
 
 app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootScope, $q, $http) {
-
+    console.log(Session.cart);
 	var renderProducts = function() {
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
@@ -58,5 +64,5 @@ app.controller('CartCtrl', function ($scope, Session,localStorageService, $rootS
 
     $rootScope.$on('productAddedToCart', updateCartFromSession);
 	$rootScope.$on('cart populated', renderProducts);
-    updateCartFromSession();
+    //updateCartFromSession();
 });

@@ -1,4 +1,4 @@
-app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state, Session) {
+app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVENTS, $state, Session, CartService) {
 
     return {
         restrict: 'E',
@@ -37,6 +37,7 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             };
 
             var setTotalNumItems = function() {
+                console.dir(scope.cart);
                 scope.numItems = scope.cart.products.reduce(function (val, prod){
                         return val + prod.quantity;
                 },0);
@@ -45,17 +46,20 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                 console.log('Setting cart');
                 AuthService.getLoggedInUser().then(function(user){
                     scope.user = user;
-                    scope.cart = Session.cart;
-                    setTotalNumItems();
+                    if (Session.cart) scope.cart = Session.cart;
+                    else scope.cart = CartService.getFromCookieOrCreateInCookie();
+                    console.log(Session, scope);
+                    if(scope.cart) setTotalNumItems();
+                    //$rootScope.$emit('cart populated', 'perhaps');
+                    console.log(scope.cart);
                 });
-                //scope.user = Session.user;
             };
 
+        //NOT SURE THIS IS STILL NEEDED
             var updateCart = function () {
                 scope.cart = Session.cart;
-                setTotalNumItems();
+                if(scope.cart) setTotalNumItems();
             };
-
 
             var removeUser = function () {
                 scope.user = null;
@@ -68,7 +72,7 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             $rootScope.$on(AUTH_EVENTS.logoutSuccess, removeUser);
             $rootScope.$on(AUTH_EVENTS.sessionTimeout, removeUser);
             $rootScope.$on('productAddedToCart', updateCart);
-            $rootScope.$on('cart populated', updateCart);
+            //$rootScope.$on('cart populated', updateCart);
         }
     };
 });

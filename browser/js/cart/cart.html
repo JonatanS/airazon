@@ -1,6 +1,7 @@
 <section id="cart">
-    <h2><span>Your cart contains {{cart.products.length}} product</span><span ng-show="cart.products.length != 1">s</span>. <span ng-show="cart.products.length === 0"> Go get some fresh air!</span></h2>
-    <h4>Your cart was created on {{cart.created_at | date : 'short'}}</h4>
+    <h2><span>Your cart contains {{cart.products}} product</span><span ng-show="cart.products.length != 1">s</span>. <span ng-show="cart.products.length === 0"> Go get some fresh air!</span></h2>
+
+    <h4 ng-show="cart.created_at">Your cart was created on {{cart.created_at | date : 'short'}}</h4>
     <div ng-repeat='product in productArr'>
         <product this-product=product on-cart-page=true quantity=product.quantity></product>
     </div>

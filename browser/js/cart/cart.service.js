@@ -4,7 +4,7 @@
 *
 */
 
-app.service('CartService', function ($rootScope, OrderFactory, Session) {
+app.service('CartService', function ($rootScope,localStorageService, OrderFactory, Session, $q) {
     console.log("Init CartService Sessions", Session);
     return {
         addProductToCart: function (productToAdd, quantity) {
@@ -34,15 +34,29 @@ app.service('CartService', function ($rootScope, OrderFactory, Session) {
             $rootScope.$emit('productAddedToCart', {
                 product: productToAdd
             });
-        }
+        },
+
+        getFromCookieOrCreateInCookie: function() {
+            var cartToReturn = null;
+            console.log("getCartFromCookieOrCreate");
+            //check in cookie:
+            if(localStorageService.isSupported) {
+                var lsKeys = localStorageService.keys();
+                if(lsKeys.indexOf('cart')!== -1) {
+                    //found existing cart! grab it!
+                    cartToReturn = JSON.parse(localStorageService.get('cart'));
+                    console.log('got cart from local storage:', cartToReturn);
+                }
+                else {
+                    localStorageService.set('cart', {products:[], dateCookieCreated: new Date()});
+                }
+            }
+            return cartToReturn || {products:[], dateCookieCreated: new Date()};
+        },
+
+        // createEmptyCart: function() {
+
+        // }
     };
-
-    // window.addEventListener("beforeunload", function (e) {
-    //     console.log("beforeunload", Session);
-    //   var confirmationMessage = "\o/";
-
-    //   (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-    //   return confirmationMessage;                            //Webkit, Safari, Chrome
-    // });
 
 });
