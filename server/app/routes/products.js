@@ -39,6 +39,7 @@ router.get('/:id', function (req, res) {
 
 // REMOVE /api/products/:id
 router.delete('/:id', function (req, res, next) {
+	if(!req.user || !req.user.isAdmin) res.status(401).send('admin only');
     req.product.remove()
     .then(function() {
         res.status(204).end()

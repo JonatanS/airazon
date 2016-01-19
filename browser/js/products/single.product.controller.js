@@ -11,7 +11,6 @@ app.controller('SingleProductCtrl', function ($scope, $state, ProductFactory) {
 		if(newVal) { calcArrs(); }
 	}, true);
 	$scope.deleteProduct = function(productId) {
-		console.log('about to delete');
 		ProductFactory.remove(productId).then(res => {
 			console.log('deleted ', res);
 			ProductFactory.getAll()
