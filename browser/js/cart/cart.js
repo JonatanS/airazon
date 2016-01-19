@@ -34,6 +34,7 @@ app.controller('CartCtrl', function ($scope, Session, StripeFactory, OrderFactor
     var updateCartFromSession = function () {
         $scope.cart = Session.cart;
 		renderProducts();
+        localStorageService.set('cart', JSON.stringify($scope.cart));
     };
     var handler = StripeCheckout.configure({
         key: 'pk_test_oMYDVrtdqS4wggcGq8FO0XNo',
