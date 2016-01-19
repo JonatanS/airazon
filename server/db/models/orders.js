@@ -2,8 +2,6 @@
 var mongoose = require('mongoose');
 var User = require('./users');
 
-//var User = mongoose.model('User');
-console.log(mongoose.model);
 
 var schema = new mongoose.Schema({
     address: {
@@ -12,7 +10,8 @@ var schema = new mongoose.Schema({
     },
     created_at: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
+        required: true
     },
     products: [{
         quantity: {
@@ -37,7 +36,9 @@ var schema = new mongoose.Schema({
             enum: ['transit', 'delivered', 'processing', 'cart', 'cancelled']
         },
         updated_at: {
-            type: Date
+            type: Date,
+            required: true,
+            default: Date.now()
         }
     },
     trackingNumber: Number,
@@ -47,8 +48,8 @@ var schema = new mongoose.Schema({
     },
     billingZip: {
         type: Number,
-        min: 5,
-        max: 5
+        minlength: 5,
+        maxlength: 5
     }
 });
 

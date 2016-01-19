@@ -29,6 +29,7 @@ var schema = new mongoose.Schema({
     zipcode: {
         type: String,
         required: true,
+        minlength: 1,
         maxlength: 5
     }
 });

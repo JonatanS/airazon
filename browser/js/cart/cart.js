@@ -13,49 +13,53 @@ app.config(function($stateProvider) {
 });
 
 
-app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService) {
-    var orderId = "569ad18c78ae327f1e82ddcf"
-    var namesString, totalPrice, productIds, productQuantities, productData;
-
+app.controller('CartCtrl', function($scope, StripeFactory, localStorageService, $rootScope, $q, $http, CartService) {
+    // var orderId = "569ad18c78ae327f1e82ddcf"
+    var namesString, productPrices, totalPrice, productIds, productQuantities, productData;
+    var orderId;
     var renderProducts = function() {
-		var products = $scope.cart.products.map(function(product) {
-			return $http.get('/api/products/'+product.product)
-            .then(function(populatedProduct) {
-                var retObj = populatedProduct.data;
-                retObj.quantity = product.quantity;
-                return retObj;
-            })
-		});
+        var products = $scope.cart.products.map(function(product) {
+            return $http.get('/api/products/' + product.product)
+                .then(function(populatedProduct) {
+                    var retObj = populatedProduct.data;
+                    retObj.quantity = product.quantity;
+                    return retObj;
+                })
+        });
 
-		$q.all(products).then(function(products) {
-			$scope.productArr = products;
-            namesString = products.map(function(product){
+        $q.all(products).then(function(products) {
+            $scope.productArr = products;
+            namesString = products.map(function(product) {
                 return product.name;
             });
             totalPrice = $scope.cart.products.reduce(function(prev, product) {
-                return prev + (product.quantity*product.pricePaid);
+                return prev + (product.quantity * product.pricePaid);
             }, 0);
-            productIds = products.map(function(product){
+            productIds = products.map(function(product) {
                 console.log(product)
                 return product._id
             })
-            productQuantities = products.map(function(product){
+            productQuantities = products.map(function(product) {
                 return product.quantity
             })
+            productPrices = products.map(function(product) {
+                return product.price
+            })
 
-            console.log("PRODUCT IDS:",productIds)
+            console.log("PRODUCT IDS:", productIds)
             console.log("TOTAL PRICE:", totalPrice)
             console.log("NAMES STRING", namesString)
             productData = {
                 names: namesString,
                 price: totalPrice,
                 productIds: productIds,
-                productQuantities: productQuantities
+                productQuantities: productQuantities,
+                productPrices: productPrices
             }
-		});
-	};
+        });
+    };
 
-    var setCart = function () {
+    var setCart = function() {
         $scope.cart = CartService.getCurrentCart();
         renderProducts();
         console.log('Cart set in CartCtrl:', $scope.cart);
@@ -68,6 +72,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         billingAddress: true,
         token: function(token) {
             StripeFactory.postStripeToken(token, orderId, productData);
+
         }
     });
 
@@ -75,7 +80,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         handler.open({
             name: 'Airazon',
             description: "Get some fresh air",
-            amount: totalPrice*100,
+            amount: totalPrice * 100,
         });
     };
 
@@ -84,6 +89,6 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
     }
 
     $rootScope.$on('cartUpdated', setCart);
-	//$rootScope.$on('cart populated', renderProducts);
+    //$rootScope.$on('cart populated', renderProducts);
     setCart();
 });

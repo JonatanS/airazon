@@ -112,7 +112,7 @@
 
     });
 
-    app.service('Session', function ($rootScope, AUTH_EVENTS, UserFactory, CartService) {
+    app.service('Session', function ($rootScope, AUTH_EVENTS, UserFactory) {
 
         var self = this;
 
@@ -141,16 +141,16 @@
    //              }
    //          }).then(function() {
    //              if(self.cart) $rootScope.$emit('cart populated', 'perhaps');
-			// });
+            // });
    //      };
 
-        var initCart = function () {
-            //grab cart from browser's storage. if there is none, create one using CartService
-            console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
-            self.cart = CartService.getCurrentCart();
-            if(!self.cart) alert("No cart in browser. Tell Jonatan!");
-            $rootScope.$emit('cartUpdated', 'perhaps');
-        };
+        // var initCart = function () {
+        //     //grab cart from browser's storage. if there is none, create one using CartService
+        //     console.log('INITIATION CART IN SESSION. SHOULD RETREIVE CART FROM COOKIE:');
+        //     self.cart = CartService.getCurrentCart();
+        //     if(!self.cart) alert("No cart in browser. Tell Jonatan!");
+        //     $rootScope.$emit('cartUpdated', 'perhaps');
+        // };
 
         this.create = function (sessionId, user) {
             console.log('creating session for user:', user);
@@ -169,9 +169,9 @@
             self.id = null;
             self.user = null;
             self.cart = null;
-            initCart();
-            console.log(self.cart);
-            console.log('init empty session:', self);
+            // initCart();
+            // console.log(self.cart);
+            // console.log('init empty session:', self);
         }
 
         initSession();
