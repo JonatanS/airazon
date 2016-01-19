@@ -18,8 +18,6 @@ app.controller('SingleProductCtrl', function ($scope, $state, AuthService, UserF
         });
     };
 
-    setUser();
-    
     $scope.submitProduct = function (productData) {
     	productData.tags = productData.tags.split(' ');
     	productData.images = productData.images.split(' ');
@@ -30,4 +28,5 @@ app.controller('SingleProductCtrl', function ($scope, $state, AuthService, UserF
 		});
 	}
 
+    setUser();
 });
