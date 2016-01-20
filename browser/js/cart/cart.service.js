@@ -1,26 +1,13 @@
 /*
 * CARTSERVICE:
 * use this file to handle ordering of products, and to manage retreiving cart contents
+Logic:
+if cart exists in local, store it session.
+if user logs in:
+    if cart exists in local: save it to db and clear local.
+    if no cart exists: in local: findOrCreate cart in db
 
-    Scenario1: user logs in before adding carts to product:
-        - check local for existing cart of user and write to cart in backend
-        - when user shops: add items to cart in backend
-
-    Scenario2: user shops without logging in:
-        - check local for exsiting cart and set to cart in session
-        - when user shops: add items to cart in session
-
-    Scenario3: user shops before logging in (hence cart exists in session):
-        - when user shops: add items to cart in session
-
-    Logic:
-    if cart exists in local, store it session.
-    if user logs in:
-        if cart exists in local: save it to db and clear local.
-        if no cart exists: in local: findOrCreate cart in db
-
-        store everything in DB and not in local.
-
+    store everything in Session.
 *
 */
 
@@ -49,17 +36,15 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     };
 
     function getCartFromLocalStorage() {
-        console.log("GETTING FROM LOCAL");
+        console.log("GETTING CART FROM LOCAL STORAGE");
         if(localStorageService.isSupported) {   //might have been disabled by user
             var lsKeys = localStorageService.keys();
             if(lsKeys.indexOf('cart')!== -1) {
                 //found existing cart! grab it!
-                console.log("FOUND EXISTING IN LOCAL");
                 return JSON.parse(localStorageService.get('cart'));
             }
             else {
-
-                console.log("STORING NEW IN LOCAL")
+                console.log("NO CART FOUND > INITIATING NEW IN LOCAL")
                 var newCart = {products:[], dateCookieCreated: new Date()};
                 setCartInLocalStorage(newCart);
                 return newCart;
@@ -79,9 +64,12 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
                 var userCart = populatedUser.orders.filter(function (o) {
                     return o.status.current === 'cart';
                 })[0];
-                if (userCart) return userCart;
+                if (userCart) {
+                    console.log("FOUND CART BY USER", userCart, populatedUser);
+                    return userCart;
+                }
                 else {
-                    console.log('creating empty cart on backend');
+                    console.log('NO CART FOUND> creating empty cart on backend');
                     //create a new one on backend:
                     return OrderFactory.createCart({products:[]})
                     .then(function(newCart){
@@ -96,13 +84,11 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
         var newCart = {products:[], dateCookieCreated: new Date()};
         //if user is logged in:
         if (cartId) {
-            console.log("user should be logged in; clearing cart")
             return OrderFactory.createCart(newCart)
             .then(function(emptyCart){
                 updateCurrentCart(emptyCart)
             })
         }else{
-            console.log("user should NOT be logged in; clearing cart")
             updateCurrentCart(newCart);
         }
     }
@@ -118,31 +104,29 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
 	}
 
     function updateCurrentCart(cartData) {
+        Session.cart = cartData;
         console.log(cartData);
-        return self.getCurrentCart()    //remove this
-        .then(function(curCart){
-            if(Session.user) {
-                console.log("UPDATE CART ON BACKEND");
-                //update on the backend
-                OrderFactory.updateCart(cartData)
-                .then(function(updatedCart) {
-                    //let the navbar know:
-                    $rootScope.$emit('cartUpdated','updated Cart');
-                });
-            }
-            else {
-
-                console.log("UPDATE CART ON FRONTEND");
-                //update in the frontend:
-                setCartInLocalStorage(cartData);
+        if(Session.user) {
+            console.log("UPDATE CART ON BACKEND");
+            //update on the backend
+            return OrderFactory.updateCart(cartData)
+            .then(function(updatedCart) {
                 //let the navbar know:
-                $rootScope.$emit('cartUpdated', 'updated Cart');
-    
-            }
-        });
+                $rootScope.$emit('cartUpdated','updated Cart');
+            });
+        }
+        else {
+            console.log("UPDATE CART ON FRONTEND");
+            //update in the frontend:
+            return $q.when(setCartInLocalStorage(cartData));
+            //let the navbar know:
+            $rootScope.$emit('cartUpdated', 'updated Cart');
+
+        }
     };
 
     this.findOrCreateCartAfterLogin = function() {
+        console.log('THIS IS BEING HIT');
         return getCartByUser()
         .then(function(cartFromDb){
             //move cart from storage to backend
@@ -150,31 +134,31 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
             if(cartInLocal && cartInLocal.products.length > 0) {
                 cartInLocal.user = Session.user._id;
                 cartInLocal._id = cartFromDb._id;
+                console.log("GRABBING CART AFTER LOGIN: CHECK ID", cartInLocal);
+                Session.cart = cartInLocal;
                 //update cart on server with products from local:
-                OrderFactory.updateCart(cartInLocal)
+                return OrderFactory.updateCart(cartInLocal)
                 .then(function(updatedCart) {
                     //let the navbar know:
-                    $rootScope.$emit('cartUpdated', 'Switched To backend');
                     Session.cart = updatedCart;
+                    $rootScope.$emit('cartUpdated', 'Switched To backend');
+                    //remove storage cart
+                    removeCartFromLocalStorage();
+                    console.log('SWITCHED TO BACKEND FOR CART AFTER LOGIN');
                 });
-                //remove storage cart
-                removeCartFromLocalStorage();
-                console.log('SWITCHED TO BACKEND FOR CART AFTER LOGIN');
             }
             else{
                 //return cart from backend:
-                return self.getCurrentCart()
-                .then(function(cartFromDb){
-                    Session.cart = cartFromDb;  //todo: remove this
-                    $rootScope.$emit('cart populated', 'perhaps');  //todo: remove this
-                    $rootScope.$emit('cartUpdated', 'switched to backend');  //todo: remove this
-                })
+                Session.cart = cartFromDb;
+                $rootScope.$emit('cart populated', 'perhaps');  //todo: remove this
+                $rootScope.$emit('cartUpdated', 'switched to backend');  //todo: remove this
+                return $q.when(cartFromDb);
             }
         });
     };
 
     this.addProductToCart= function (productToAdd, quantity) {
-        if(!quantity) console.log("NO quantity SPECIFIED, just adding 1!", productToAdd);
+        //if(!quantity) console.log("NO quantity SPECIFIED, just adding 1!", productToAdd);
 
         var numProducts = quantity || 1;
 
@@ -203,43 +187,34 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
 
         //always need to call this as a promise (.then)
         this.getCurrentCart= function() {
-            var cartInLocal = getCartFromLocalStorage();
-            console.log("getCurrentCart");
-            //get from DB if logged in.
-            if(Session.user) {
-                return getCartByUser().then(function(cartByUser){
-                    console.log('returning: ', cartByUser)
-                    return cartByUser;
-                });
+            if (Session.cart) {
+                return $q.when(Session.cart);
             }
-            //else get from local
             else {
-                console.log('returning:', cartInLocal)
-                return $q.when(cartInLocal);
+                var cartInLocal = getCartFromLocalStorage();
+                //get from DB if logged in.
+                if(Session.user) {
+                    return getCartByUser().then(function(cartByUser){
+                        Session.cart = cartByUser;
+                        return cartByUser;
+                    });
+                }
+                //else get from local
+                else {
+                    Session.cart = cartInLocal;
+                    return $q.when(cartInLocal);
+                }
             }
         };
 
-        // this.updatePricePaid = function() {
-
-        // };
-
-        // this.updateProductCountInCart= function(productToEdit, quantity) {
-        //     return self.getCurrentCart()
-        //     .then(function(curCart){
-        //         var productIdx = findIdx(productToEdit._id);
-        //         //should delete if quantity is 0
-        //         if(quantity === 0) curCart.products.splice(productIdx, 1);
-        //         else curCart.products[productIdx].quantity = quantity;
-        //         updateCurrentCart(curCart).then(function(){
-        //             //let the navbar know:
-        //             $rootScope.$emit('cartUpdated', {
-        //                 product: productToEdit
-        //             });
-        //         });
-        //     });
-        // };
-
         $rootScope.$on(AUTH_EVENTS.loginSuccess, function(){
             self.findOrCreateCartAfterLogin();
+        });
+
+        $rootScope.$on(AUTH_EVENTS.logoutSuccess, function(){
+            Session.cart = null;
+            //return self.getCurrentCart();
+            //let the navbar know:
+            $rootScope.$emit('cartUpdated', 'updated Cart');
         });
     });

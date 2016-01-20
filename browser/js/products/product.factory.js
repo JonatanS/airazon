@@ -7,6 +7,7 @@ app.factory('ProductFactory', function ($http) {
                 });
         },
         getOne: function(id) {
+            console.log("FETHING PRODUCT ID", id);
             return $http.get('/api/products/' + id)
                 .then(function(product) {
                     return product.data;
@@ -31,9 +32,9 @@ app.factory('ProductFactory', function ($http) {
             if (!array.length) {
                 return 0;
             } else {
-                return array.reduce(function(previous, review) {
+                return Math.floor(array.reduce(function(previous, review) {
                     return review.rating + previous
-                }, 0) / array.length
+                }, 0) / array.length +.5)
             }
         }
 	}
