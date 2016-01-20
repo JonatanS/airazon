@@ -52,11 +52,16 @@ router.get('/:id', function (req, res) {
 
 // REMOVE /api/orders/:id
 router.delete('/:id', function (req, res, next) {
+	console.log('removing an order');
+	console.log(req.order);
     req.order.remove()
-    .then(function() {
+    .then(function(what) {
+		console.log('deleted'+what);
         res.status(204).end();
-    })
-    .then(null, next);
+    }).then(null, function(err) {
+		console.error(err);
+		next(err);
+	});
 });
 
 // UPDATE /api/orders/:id
@@ -64,6 +69,7 @@ router.put('/:id', function (req, res, next) {
     req.order.set(req.body);
     req.order.save()
     .then( function () {
+		console.log('successful update');
         res.json(req.order);
     })
     .then(null, next);

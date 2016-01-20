@@ -1,8 +1,6 @@
 'use strict';
 const mongoose = require('mongoose');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
-var Review = require('./reviews');
-
 
 var atLeastOne = function (val) {
     return val.length > 0;
@@ -79,6 +77,7 @@ schema.virtual('longDescription').get(function() {
 });
 
 schema.pre('remove', function(next) {
+	var Review = mongoose.model('Review');
     Review.find({
         product: this._id
     }).remove();

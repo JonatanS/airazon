@@ -1,14 +1,14 @@
-app.factory("StripeFactory", function($http){
+app.factory("StripeFactory", function($http, CartService){
 	return {
 		postStripeToken: function(token, orderId, productData){
-			console.log();
 			var data = {
 				token: token,
 				orderId: orderId,
 				productData: productData
 			}
-			$http.post("/api/checkout", data).then(function(res){
-				console.log(res)
+			$http.post("/api/checkout", data)
+			.then(function(){
+				CartService.setEmptyCart(orderId);
 			})
 		}
 	};
