@@ -4,6 +4,8 @@ module.exports = router;
 const mongoose = require('mongoose');
 var Order = mongoose.models.Order;
 var User = mongoose.models.User;
+var Address = mongoose.models.Address;
+
 
 
 // GET /api/orders with optional status param
@@ -37,7 +39,7 @@ router.post('/', function (req, res, next){
 });
 
 router.param('id', function (req,res,next, id){
-    return Order.findById(id).populate('user')
+    return Order.findById(id).populate('user address')
     .then(function (order){
         req.order = order;
         next();
