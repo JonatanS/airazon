@@ -17,6 +17,7 @@ var Address = mongoose.models.Address;
 var orderId, stripeToken, productData, namesOfProducts, productIds, totalPrice, productQuantities, productPrices;
 module.exports = router;
 router.post("/", function(req, res, next) {
+    console.log(req.body)
     orderId = req.body.orderId;
     stripeToken = req.body.token.stripeToken;
     productData = req.body.productData;
@@ -51,6 +52,8 @@ router.post("/", function(req, res, next) {
                     Promise.all(productPromises)
                     .then(function() {
                         if (orderId) {
+                            console.log("there was an order id; there is no need to create an order")
+                            console.log("id is", orderId)
                             Order.findByIdAndUpdate(orderId, {
                                 status: {
                                     current: "processing",
@@ -59,13 +62,16 @@ router.post("/", function(req, res, next) {
                                 billingZip: req.body.token.card.address_zip
                             })
                             .then(function(order) {
-                                startSendingEmail(req.body)
+                                var orderDataFromFunc = startSendingEmail(req.body)
+                                res.status(200).send(orderDataFromFunc);
                             }).catch(function(err) {
                                 console.error(err);
                                 res.status(500).send(err)
                             })
                         } else {
                             //if no order id
+                            console.log("there was not an order id; need to create an order")
+
                             var address = req.body.token.card.address_line1 + '';
                             if (req.body.token.card.address_line2) {
                                 address += eq.body.token.card.address_line2;
@@ -104,7 +110,8 @@ router.post("/", function(req, res, next) {
                                 Order.create(orderData)
                                 .then(function(createdOrder) {
                                     req.body.orderId = createdOrder._id
-                                    startSendingEmail(req.body)
+                                    var orderDataFromFunc = startSendingEmail(req.body)
+                                    res.status(200).send(orderDataFromFunc);
                                 }).catch(console.error)
                             })
                         }   
@@ -140,7 +147,7 @@ function startSendingEmail(orderData) {
     sendEmail(toName, orderData.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", emailToUserTemplate);
     sendEmail("Admin", "ldthorne@brandeis.edu", "Airazon Orders", "orders@airazon.com", "New order placed!", emailToAdminTemplate);
     console.log("SENT EMAILS")
-    res.status(200).send("SUCCESS")
+    return orderData;
 }
 
 
@@ -169,7 +176,7 @@ function sendEmail(to_name, to_email, from_name, from_email, subject, message_ht
         "async": async,
         "ip_pool": ip_pool
     }, function(result) {
-        // console.log(result)
+        console.log(result)
     }, function(e) {
         // Mandrill returns the error as an object with name and message keys
         console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);

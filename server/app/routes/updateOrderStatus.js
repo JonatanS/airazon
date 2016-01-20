@@ -19,23 +19,27 @@ router.post("/", function(req, res, next){
 	var newOrderStatus = req.body.status.current;
 	var trackingNum = req.body.trackingNumber;
 	var orderId = req.body._id;
-
+	console.log(req.body)
 	var userInfo, toEmail, toName;
 	if(newOrderStatus==="transit"){
+		console.log("the transit email should be deployed")
 		if(req.body.user){
-			userInfo = req.body.user
-			toEmail = userInfo.email;
-			toName = userInfo.firstName;
+			console.log("this should be for an authenticated user")
+			var userInfo = req.body.user
+			var toEmail = userInfo.email;
+			var toName = userInfo.firstName;
+			console.log(userInfo, toEmail, toName, newOrderStatus, orderId, trackingNum)
 			var emailToUserTemplate = ejs.render(emailToAuthenticatedUserOnShip, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
 		        {
 		            name: toName,
 		            orderId: orderId,
 		            trackingNum: trackingNum
 		        });
-			sendEmail(toName, toEmail, "Airazon Orders", "orders@airazon.com", "Your order has shipped!", emailToAuthenticatedUserOnShip);
+			sendEmail(toName, toEmail, "Airazon Orders", "orders@airazon.com", "Your order has shipped!", emailToUserTemplate);
 			console.log("authenticated user, emails should've been sent")
 
 		}else{
+			console.log("this should be for an unauthenticated user")
 			toEmail = req.body.email;
 			var emailToUserTemplate = ejs.render(emailToUnauthenticatedUserOnShip, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
 		        {
@@ -46,7 +50,9 @@ router.post("/", function(req, res, next){
 			console.log("unauthenticated user, emails should've been sent")
 		}
 	}else{
+		console.log("the non-transit email should be deployed")
 		if(req.body.user){
+			console.log("this should be for an authenticated user")
 			userInfo = req.body.user
 			toEmail = userInfo.email;
 			toName = userInfo.firstName;
@@ -56,17 +62,18 @@ router.post("/", function(req, res, next){
 		            orderId: orderId,
 		            newOrderStatus: newOrderStatus
 		        });
-			sendEmail(toName, toEmail, "Airazon Orders", "orders@airazon.com", "Your order has shipped!", emailToAuthenticatedUserOnShip);
+			sendEmail(toName, toEmail, "Airazon Orders", "orders@airazon.com", "Your order has a new status!", emailToUserTemplate);
 			console.log("authenticated user, emails should've been sent")
 
 		}else{
+			console.log("this should be for an unauthenticated user")
 			toEmail = req.body.email;
 			var emailToUserTemplate = ejs.render(emailToUnauthenticatedUserOnStatusUpdate, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
 		        {
 		            orderId: orderId,
 		            newOrderStatus: newOrderStatus
 		        });
-			sendEmail("User", toEmail, "Airazon Orders", "orders@airazon.com", "Your order has shipped!", emailToUserTemplate);
+			sendEmail("User", toEmail, "Airazon Orders", "orders@airazon.com", "Your order has a new status!", emailToUserTemplate);
 			console.log("unauthenticated user, emails should've been sent")
 		}
 	}

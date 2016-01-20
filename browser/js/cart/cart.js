@@ -3,12 +3,6 @@ app.config(function($stateProvider) {
         url: '/cart',
         controller: 'CartCtrl',
         templateUrl: 'js/cart/cart.html',
-        // resolve: {
-        //     currentCart: function(CartService) {
-        //         console.log("getting current cart in RESOLVE");
-        //         return CartService.getFromCookieOrCreateInCookie().$promise;
-        //     }
-        //}
     });
 });
 
@@ -65,6 +59,12 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         return CartService.getCurrentCart()
         .then(function(curCart) {
             $scope.cart = curCart
+            if(curCart._id){
+                console.log("THERE IS AN ORDER ID")
+                orderId = curCart._id
+            }else{
+                console.log("THERE IS NOT AN ORDER ID")
+            }
             renderProducts();
             //console.log('Cart set in CartCtrl:', $scope.cart);
         });

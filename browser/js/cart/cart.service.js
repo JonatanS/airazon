@@ -43,6 +43,7 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
         localStorageService.set('cart', JSON.stringify(cart));
     };
 
+
     function removeCartFromLocalStorage() {
         localStorageService.remove('cart');
     };
@@ -91,6 +92,21 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
         });
     };
 
+    this.setEmptyCart = function(cartId) {
+        var newCart = {products:[], dateCookieCreated: new Date()};
+        //if user is logged in:
+        if (cartId) {
+            console.log("user should be logged in; clearing cart")
+            return OrderFactory.createCart(newCart)
+            .then(function(emptyCart){
+                updateCurrentCart(emptyCart)
+            })
+        }else{
+            console.log("user should NOT be logged in; clearing cart")
+            updateCurrentCart(newCart);
+        }
+    }
+
     function updateCurrentCart(cartData) {
         console.log(cartData);
         return self.getCurrentCart()    //remove this
@@ -111,6 +127,7 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
                 setCartInLocalStorage(cartData);
                 //let the navbar know:
                 $rootScope.$emit('cartUpdated', 'updated Cart');
+    
             }
         });
     };

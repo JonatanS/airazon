@@ -17,7 +17,7 @@ app.factory('OrderFactory', function($http, Session) {
             }).then(res => res.data);
         },
         sendEmail: function(orderData){
-        	console.log("HELLO");
+        	console.log(orderData);
         	$http.post("/api/updateOrderStatus", orderData)
         	.then(function(response){
         		console.log(response.data)
