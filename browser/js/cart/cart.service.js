@@ -36,7 +36,6 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     };
 
     function getCartFromLocalStorage() {
-        console.log("GETTING CART FROM LOCAL STORAGE");
         if(localStorageService.isSupported) {   //might have been disabled by user
             var lsKeys = localStorageService.keys();
             if(lsKeys.indexOf('cart')!== -1) {
@@ -44,7 +43,6 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
                 return JSON.parse(localStorageService.get('cart'));
             }
             else {
-                console.log("NO CART FOUND > INITIATING NEW IN LOCAL")
                 var newCart = {products:[], dateCookieCreated: new Date()};
                 setCartInLocalStorage(newCart);
                 return newCart;
@@ -65,11 +63,9 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
                     return o.status.current === 'cart';
                 })[0];
                 if (userCart) {
-                    console.log("FOUND CART BY USER", userCart, populatedUser);
                     return userCart;
                 }
                 else {
-                    console.log('NO CART FOUND> creating empty cart on backend');
                     //create a new one on backend:
                     return OrderFactory.createCart({products:[]})
                     .then(function(newCart){
@@ -94,6 +90,7 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     }
 
 	this.updateProductCount = function(productId, count) {
+        if(count === 0) return self.deleteProductFromCart(productId);
 		return findIdx(productId).then(function(idx) {
 			return self.getCurrentCart()
 				.then(function(curCart) {
@@ -103,11 +100,21 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
 		});
 	}
 
+    this.deleteProductFromCart = function(productId) {
+        return findIdx(productId).then(function(idx) {
+            if(idx != -1) {
+                return self.getCurrentCart()
+                .then(function(curCart) {
+                    curCart.products.splice(idx, 1);
+                    return updateCurrentCart(curCart);
+                });
+            }
+        });
+    }
+
     function updateCurrentCart(cartData) {
         Session.cart = cartData;
-        console.log(cartData);
         if(Session.user) {
-            console.log("UPDATE CART ON BACKEND");
             //update on the backend
             return OrderFactory.updateCart(cartData)
             .then(function(updatedCart) {
@@ -116,17 +123,17 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
             });
         }
         else {
-            console.log("UPDATE CART ON FRONTEND");
             //update in the frontend:
-            return $q.when(setCartInLocalStorage(cartData));
-            //let the navbar know:
-            $rootScope.$emit('cartUpdated', 'updated Cart');
+            return $q.when(setCartInLocalStorage(cartData))
+            .then(function(){
+                //let the navbar know:
+                $rootScope.$emit('cartUpdated', 'updated Cart');
+            });
 
         }
     };
 
     this.findOrCreateCartAfterLogin = function() {
-        console.log('THIS IS BEING HIT');
         return getCartByUser()
         .then(function(cartFromDb){
             //move cart from storage to backend
@@ -134,7 +141,6 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
             if(cartInLocal && cartInLocal.products.length > 0) {
                 cartInLocal.user = Session.user._id;
                 cartInLocal._id = cartFromDb._id;
-                console.log("GRABBING CART AFTER LOGIN: CHECK ID", cartInLocal);
                 Session.cart = cartInLocal;
                 //update cart on server with products from local:
                 return OrderFactory.updateCart(cartInLocal)
@@ -158,7 +164,6 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     };
 
     this.addProductToCart= function (productToAdd, quantity) {
-        //if(!quantity) console.log("NO quantity SPECIFIED, just adding 1!", productToAdd);
 
         var numProducts = quantity || 1;
 
