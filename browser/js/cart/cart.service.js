@@ -1,26 +1,13 @@
 /*
 * CARTSERVICE:
 * use this file to handle ordering of products, and to manage retreiving cart contents
+Logic:
+if cart exists in local, store it session.
+if user logs in:
+    if cart exists in local: save it to db and clear local.
+    if no cart exists: in local: findOrCreate cart in db
 
-    Scenario1: user logs in before adding carts to product:
-        - check local for existing cart of user and write to cart in backend
-        - when user shops: add items to cart in backend
-
-    Scenario2: user shops without logging in:
-        - check local for exsiting cart and set to cart in session
-        - when user shops: add items to cart in session
-
-    Scenario3: user shops before logging in (hence cart exists in session):
-        - when user shops: add items to cart in session
-
-    Logic:
-    if cart exists in local, store it session.
-    if user logs in:
-        if cart exists in local: save it to db and clear local.
-        if no cart exists: in local: findOrCreate cart in db
-
-        store everything in DB and not in local.
-
+    store everything in Session.
 *
 */
 
@@ -221,27 +208,14 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
             }
         };
 
-        // this.updatePricePaid = function() {
-
-        // };
-
-        // this.updateProductCountInCart= function(productToEdit, quantity) {
-        //     return self.getCurrentCart()
-        //     .then(function(curCart){
-        //         var productIdx = findIdx(productToEdit._id);
-        //         //should delete if quantity is 0
-        //         if(quantity === 0) curCart.products.splice(productIdx, 1);
-        //         else curCart.products[productIdx].quantity = quantity;
-        //         updateCurrentCart(curCart).then(function(){
-        //             //let the navbar know:
-        //             $rootScope.$emit('cartUpdated', {
-        //                 product: productToEdit
-        //             });
-        //         });
-        //     });
-        // };
-
         $rootScope.$on(AUTH_EVENTS.loginSuccess, function(){
             self.findOrCreateCartAfterLogin();
+        });
+
+        $rootScope.$on(AUTH_EVENTS.logoutSuccess, function(){
+            Session.cart = null;
+            //return self.getCurrentCart();
+            //let the navbar know:
+            $rootScope.$emit('cartUpdated', 'updated Cart');
         });
     });
