@@ -118,28 +118,25 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
 	}
 
     function updateCurrentCart(cartData) {
+        Session.cart = cartData;
         console.log(cartData);
-        return self.getCurrentCart()    //remove this
-        .then(function(curCart){
-            if(Session.user) {
-                console.log("UPDATE CART ON BACKEND");
-                //update on the backend
-                OrderFactory.updateCart(cartData)
-                .then(function(updatedCart) {
-                    //let the navbar know:
-                    $rootScope.$emit('cartUpdated','updated Cart');
-                });
-            }
-            else {
-
-                console.log("UPDATE CART ON FRONTEND");
-                //update in the frontend:
-                setCartInLocalStorage(cartData);
+        if(Session.user) {
+            console.log("UPDATE CART ON BACKEND");
+            //update on the backend
+            return OrderFactory.updateCart(cartData)
+            .then(function(updatedCart) {
                 //let the navbar know:
-                $rootScope.$emit('cartUpdated', 'updated Cart');
-    
-            }
-        });
+                $rootScope.$emit('cartUpdated','updated Cart');
+            });
+        }
+        else {
+            console.log("UPDATE CART ON FRONTEND");
+            //update in the frontend:
+            return $q.when(setCartInLocalStorage(cartData));
+            //let the navbar know:
+            $rootScope.$emit('cartUpdated', 'updated Cart');
+
+        }
     };
 
     this.findOrCreateCartAfterLogin = function() {
@@ -203,19 +200,24 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
 
         //always need to call this as a promise (.then)
         this.getCurrentCart= function() {
-            var cartInLocal = getCartFromLocalStorage();
-            console.log("getCurrentCart");
-            //get from DB if logged in.
-            if(Session.user) {
-                return getCartByUser().then(function(cartByUser){
-                    console.log('returning: ', cartByUser)
-                    return cartByUser;
-                });
+            if (Session.cart) {
+                return $q.when(Session.cart);
             }
-            //else get from local
             else {
-                console.log('returning:', cartInLocal)
-                return $q.when(cartInLocal);
+                var cartInLocal = getCartFromLocalStorage();
+                console.log("getCurrentCart");
+                //get from DB if logged in.
+                if(Session.user) {
+                    return getCartByUser().then(function(cartByUser){
+                        console.log('returning: ', cartByUser)
+                        return cartByUser;
+                    });
+                }
+                //else get from local
+                else {
+                    console.log('returning:', cartInLocal)
+                    return $q.when(cartInLocal);
+                }
             }
         };
 
