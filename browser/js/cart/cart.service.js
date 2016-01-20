@@ -94,7 +94,9 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     }
 
 	this.updateProductCount = function(productId, count) {
+        if(count === 0) return self.deleteProductFromCart(productId);
 		return findIdx(productId).then(function(idx) {
+            console.log("INDEX TO UPDATE:", idx)
 			return self.getCurrentCart()
 				.then(function(curCart) {
 				curCart.products[idx].quantity = count;
@@ -102,6 +104,18 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
 			});
 		});
 	}
+
+    this.deleteProductFromCart = function(productId) {
+        return findIdx(productId).then(function(idx) {
+            if(idx != -1) {
+                return self.getCurrentCart()
+                .then(function(curCart) {
+                    curCart.products.splice(idx, 1);
+                    return updateCurrentCart(curCart);
+                });
+            }
+        });
+    }
 
     function updateCurrentCart(cartData) {
         Session.cart = cartData;
@@ -118,9 +132,11 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
         else {
             console.log("UPDATE CART ON FRONTEND");
             //update in the frontend:
-            return $q.when(setCartInLocalStorage(cartData));
-            //let the navbar know:
-            $rootScope.$emit('cartUpdated', 'updated Cart');
+            return $q.when(setCartInLocalStorage(cartData))
+            .then(function(){
+                //let the navbar know:
+                $rootScope.$emit('cartUpdated', 'updated Cart');
+            });
 
         }
     };
