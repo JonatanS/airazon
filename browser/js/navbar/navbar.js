@@ -37,6 +37,7 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             };
 
             var setTotalNumItems = function() {
+                console.log(scope);
                 scope.numItems = scope.cart.products.reduce(function (val, prod){
                         return val + prod.quantity;
                 },0);
@@ -49,9 +50,11 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
             };
 
             var setCart = function () {
-                scope.cart = CartService.getCurrentCart();
-                if(scope.cart) setTotalNumItems();
-                console.log('Cart set in navbar:', scope.cart);
+                CartService.getCurrentCart().then(function(curCart){
+                    scope.cart = curCart;
+                    if(scope.cart) setTotalNumItems();
+                    console.log('Cart set in navbar:', scope.cart);
+                });
             };
 
             var removeUser = function () {
