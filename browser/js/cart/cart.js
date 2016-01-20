@@ -14,10 +14,11 @@ app.config(function($stateProvider) {
 
 
 app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService) {
-    var orderId = "569ad18c78ae327f1e82ddcf"
+
     var namesString, totalPrice, productIds, productQuantities, productData;
 
     var renderProducts = function() {
+        //console.log($scope.cart);
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
             .then(function(populatedProduct) {
@@ -56,9 +57,12 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
 	};
 
     var setCart = function () {
-        $scope.cart = CartService.getCurrentCart();
-        renderProducts();
-        console.log('Cart set in CartCtrl:', $scope.cart);
+        return CartService.getCurrentCart()
+        .then(function(curCart) {
+            $scope.cart = curCart
+            renderProducts();
+            //console.log('Cart set in CartCtrl:', $scope.cart);
+        });
     };
 
     var handler = StripeCheckout.configure({
@@ -78,10 +82,6 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
             amount: totalPrice*100,
         });
     };
-
-    $scope.updateProductCountInCart = function() {
-        //get productId and quantity and call cart service
-    }
 
     $rootScope.$on('cartUpdated', setCart);
 	//$rootScope.$on('cart populated', renderProducts);
