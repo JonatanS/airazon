@@ -1,28 +1,5 @@
 app.factory('OrderFactory', function($http, Session) {
     return {
-        addProductToOrder: function(product) {
-            //if order exists.
-            if (Session.cart.id && Session.cart.id !== -1) {
-                return $http.put('/api/orders', {
-                        user: Session.user,
-                        products: Session.cart.products,
-                        status: Session.cart.status
-                    })
-                    .then(function(products) {
-                        return products.data;
-                    });
-            } else {
-                //create new order
-                return $http.post('/api/orders', {
-                        user: Session.user._id,
-                        products: Session.cart.products,
-                        status: Session.cart.status
-                    })
-                    .then(function(products) {
-                        return products.data;
-                    });
-            }
-        },
         getById: function(id) {
             return $http.get('/api/orders/' + id).then(res => res.data);
         },
@@ -45,6 +22,22 @@ app.factory('OrderFactory', function($http, Session) {
         	.then(function(response){
         		console.log(response.data)
         	})
+        },
+        updateCart: function (cartData) {
+            console.log('UPDATING CART WITH', cartData);
+            return $http.put('/api/orders/'+ cartData._id, {products: cartData.products})
+            .then(function(updatedCart) {
+                return updatedCart.data;
+            });
+        },
+
+        createCart: function(cartData) {
+            //create new order
+            console.log("CREATING CART!!!");
+            return $http.post('/api/orders', {user: Session.user._id ,products: cartData.products, status: {current:'cart'}})
+            .then(function(newCart) {
+                return newCart.data;
+            });
         }
     };
 });

@@ -12,20 +12,21 @@ app.config(function($stateProvider) {
     });
 });
 
+app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService) {
 
-app.controller('CartCtrl', function($scope, StripeFactory, localStorageService, $rootScope, $q, $http, CartService) {
-    // var orderId = "569ad18c78ae327f1e82ddcf"
     var namesString, productPrices, totalPrice, productIds, productQuantities, productData;
     var orderId;
+
     var renderProducts = function() {
-        var products = $scope.cart.products.map(function(product) {
-            return $http.get('/api/products/' + product.product)
-                .then(function(populatedProduct) {
-                    var retObj = populatedProduct.data;
-                    retObj.quantity = product.quantity;
-                    return retObj;
-                })
-        });
+        //console.log($scope.cart);
+		var products = $scope.cart.products.map(function(product) {
+			return $http.get('/api/products/'+product.product)
+            .then(function(populatedProduct) {
+                var retObj = populatedProduct.data;
+                retObj.quantity = product.quantity;
+                return retObj;
+            })
+		});
 
         $q.all(products).then(function(products) {
             $scope.productArr = products;
@@ -59,10 +60,14 @@ app.controller('CartCtrl', function($scope, StripeFactory, localStorageService, 
         });
     };
 
-    var setCart = function() {
-        $scope.cart = CartService.getCurrentCart();
-        renderProducts();
-        console.log('Cart set in CartCtrl:', $scope.cart);
+
+    var setCart = function () {
+        return CartService.getCurrentCart()
+        .then(function(curCart) {
+            $scope.cart = curCart
+            renderProducts();
+            //console.log('Cart set in CartCtrl:', $scope.cart);
+        });
     };
 
     var handler = StripeCheckout.configure({
@@ -83,10 +88,6 @@ app.controller('CartCtrl', function($scope, StripeFactory, localStorageService, 
             amount: totalPrice * 100,
         });
     };
-
-    $scope.updateProductCountInCart = function() {
-        //get productId and quantity and call cart service
-    }
 
     $rootScope.$on('cartUpdated', setCart);
     //$rootScope.$on('cart populated', renderProducts);
