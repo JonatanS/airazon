@@ -11,6 +11,10 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
     var namesString, productPrices, totalPrice, productIds, productQuantities, productData;
     var orderId;
 
+	$rootScope.$on('navbar update', function(emit, data) {
+		$scope.cartSize = data;
+	});
+
     var renderProducts = function() {
         //console.log($scope.cart);
 		var products = $scope.cart.products.map(function(product) {

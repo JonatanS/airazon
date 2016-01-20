@@ -23,7 +23,7 @@
 					<label for="quantiy">Quantity</label>
 					<input type="number" ng-model="reviseProduct.quantity" class="form-control input-sm" id="quantity" min="0" max="10" value={{thisProduct.quantity}}>
 				</div>
-				<button ng-disabled="reviseProduct.quantity === thisProduct.quantity" type="submit" class="btn btn-default btn-sm">Update</button>
+				<button ng-disabled="reviseProduct.quantity === thisProduct.quantity" type="submit" class="btn btn-default btn-sm" ng-click='updateCart(reviseProduct.quantity, thisProduct._id)'>Update</button>
 
 			</form>
 		</div>
