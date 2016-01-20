@@ -16,12 +16,11 @@ app.factory('OrderFactory', function($http, Session) {
                 }
             }).then(res => res.data);
         },
-        sendEmail: function(orderData){
+        sendEmail: function(orderData, next){
         	console.log(orderData);
         	$http.post("/api/updateOrderStatus", orderData)
-        	.then(function(response){
-        		console.log(response.data)
-        	})
+        	.then()
+        	.then(null,next)
         },
         updateCart: function (cartData) {
             console.log('UPDATING CART WITH', cartData);
@@ -33,7 +32,6 @@ app.factory('OrderFactory', function($http, Session) {
 
         createCart: function(cartData) {
             //create new order
-            console.log("CREATING CART!!!");
             return $http.post('/api/orders', {user: Session.user._id ,products: cartData.products, status: {current:'cart'}})
             .then(function(newCart) {
                 return newCart.data;

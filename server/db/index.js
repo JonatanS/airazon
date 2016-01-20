@@ -1,9 +1,7 @@
 'use strict';
 var Promise = require('bluebird');
-var path = require('path');
 var chalk = require('chalk');
 
-var DATABASE_URI = require(path.join(__dirname, '../env')).DATABASE_URI;
 
 var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://admin:stackstorepassword@ds043605.mongolab.com:43605/stackstore').connection;
