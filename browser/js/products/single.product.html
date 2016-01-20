@@ -13,17 +13,14 @@
             <span ng-repeat="t in ratingArr track by $index"><i class='material-icons stars md-dark'>star_rate</i></span><span ng-repeat="t in remainder track by $index"><i class='material-icons stars white'>star_rate</i></span>
             <h3 id="price">{{oneProduct.price | currency}}</h3>
             <div>
-            <button ng-click="addToCart()" type="button" class="btn add-to-cart" ng-show="oneProduct.stock>0">Add to Cart</button>
+            <button ng-click="addToCart()" type="button" class="btn btn-info" ng-show="oneProduct.stock>0">Add to Cart</button>
             </div>
-            <span>{{ oneProduct.category }}</span>
             <h4>{{oneProduct.shortDescription}}</h4>
         </div>
     </div>
     <div class="col-xs-8" id="right-bar">
         <div class="col-xl-6 col-lg-6 col-md-8 col-sm-10 col-xs-12">
             <h1>{{ oneProduct.name }}</h1>
-            <!-- UISREF TO ALL PRODUCTS WITH SAME CATEGORY -->
-            <a ui-sref='products'>{{ oneProduct.category }} air</a>
             <h3>Product description</h3>
             <p style="margin-left: 0px;" id="long-description">{{oneProduct.longDescription}}</p>
         	<h3>Reviews</h3><span><button class='btn btn-info' ng-click='writeAReview(oneProduct._id)'>Write a review!</button></span>
