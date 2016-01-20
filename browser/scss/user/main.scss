@@ -11,6 +11,7 @@
         width: 125px;
         height: 125px;
         box-sizing: border-box;
+        margin-bottom: 10px;
     }
     .material-icons {
         margin-left: 10px;
@@ -38,8 +39,25 @@
             background: none;
         }
     }
+    #order {
+        margin-top: 20px;
+    }
     h4 {
-        color: #008cba;
+        margin-left: 40px;
+    }
+    #your {
+        margin-left: 0px;
+    }
+    .admin {
+        margin-bottom: 15px;
+    }
+    .prof {
+        border-style: solid;
+        border-width: 1px;
+        padding: 10px 0px 10px 10px;
+    }
+    .col-sm-3 {
+        border-left-width: 1px;
     }
 }
 
