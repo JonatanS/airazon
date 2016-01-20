@@ -66,13 +66,17 @@
 }
 
 .single-product-view {
-/*    border-style: solid;
-    border-color: grey;
-    border-width: 1px;*/
-    border-radius: 10px;
-    background-color: #d3fdff;
+    border-radius: 1.5%;
+    background-color: #f7f9ff;
+    box-shadow: 1px 2px 2px 1px #6b6b6b;
     padding: 10px;
     margin: 5px 4%;
+}
+
+.darken-on-hover {
+    background-color: #464545 !important;
+    color: white;
+    box-shadow: 1px 2px 1px 1px #6b6b6b;
 }
 
 #long-description{
