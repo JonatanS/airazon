@@ -23,6 +23,8 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
             UserFactory.update(user)
             .then(function () {
                 console.log('Admin status changed!')
+            }).then(function () {
+                $state.go('user');
             })
         })
 
