@@ -22,7 +22,9 @@ app.controller('ManageOrdersCtrl', function ($scope, $state, OrderFactory) {
 	$scope.changeStatus = function(orderId, newStatus) {
 		console.log('changing satus of '+orderId+' to '+newStatus);
 		OrderFactory.updateStatusById(orderId, newStatus).then(res => {
-			console.log('successfully update, '+res);
+			console.log('successfully update..')
+			OrderFactory.sendEmail(res)
+
 			OrderFactory.getAll().then(res => {
 				$scope.orders = res;
 				console.log($scope.orders);

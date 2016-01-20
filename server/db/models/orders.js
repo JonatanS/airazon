@@ -49,6 +49,9 @@ var schema = new mongoose.Schema({
         type: Number,
         minlength: 5,
         maxlength: 5
+    },
+    email: {
+        type: String
     }
 });
 

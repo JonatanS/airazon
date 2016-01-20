@@ -16,7 +16,7 @@ var Address = mongoose.models.Address;
 
 var orderId, stripeToken, productData, namesOfProducts, productIds, totalPrice, productQuantities, productPrices;
 module.exports = router;
-router.use("/", function(req, res, next) {
+router.post("/", function(req, res, next) {
     orderId = req.body.orderId;
     stripeToken = req.body.token.stripeToken;
     productData = req.body.productData;
@@ -40,19 +40,16 @@ router.use("/", function(req, res, next) {
                 return Product.findById(productId)
             })
             Promise.all(promises).then(function(productArr) {
-                console.log("PRODUCT ARR", productArr)
                 var allInStock = productArr.reduce(function(prev, product, index) {
                     return prev && product.stock >= productQuantities[index]
                 }, true)
                 if (allInStock) {
-                    console.log("ALL IN STOCK")
                     var productPromises = productArr.map(function(product, index) {
                         product.stock -= productQuantities[index];
                         return product.save()
                     })
                     Promise.all(productPromises)
                     .then(function() {
-                        console.log("ALL STOCKS UPDATED")
                         if (orderId) {
                             Order.findByIdAndUpdate(orderId, {
                                 status: {
@@ -69,7 +66,6 @@ router.use("/", function(req, res, next) {
                             })
                         } else {
                             //if no order id
-
                             var address = req.body.token.card.address_line1 + '';
                             if (req.body.token.card.address_line2) {
                                 address += eq.body.token.card.address_line2;
@@ -84,7 +80,7 @@ router.use("/", function(req, res, next) {
                             }
                             Address.create(addressInfo)
                             .then(function(createdAddress) {
-                                console.log("ADDRESS DOC",createdAddress)
+                                var email = req.body.token.email
                                 var productsArr = [];
                                 productIds.forEach(function(product, index) {
                                     productsArr.push({
@@ -102,6 +98,7 @@ router.use("/", function(req, res, next) {
                                     address: createdAddress._id,
                                     products: productsArr,
                                     status: status,
+                                    email: email,
                                     billingZip: billingZip
                                 }
                                 Order.create(orderData)
@@ -123,7 +120,6 @@ router.use("/", function(req, res, next) {
 
 function startSendingEmail(orderData) {
     console.log("FOUND AND UPDATED ORDER")
-    console.log(orderData)
     var toName = orderData.token.card.name.slice(0, orderData.token.card.name.indexOf(' '));
     var emailToUserTemplate = ejs.render(emailToUser, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
         {
@@ -133,8 +129,6 @@ function startSendingEmail(orderData) {
             totalPrice: totalPrice,
             namesOfProducts: namesOfProducts
         });
-    console.log(toName);
-    console.log()
     var emailToAdminTemplate = ejs.render(emailToAdmin, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
         {
             user_order_name: orderData.token.card.name,
@@ -143,10 +137,9 @@ function startSendingEmail(orderData) {
             totalPrice: totalPrice,
             namesOfProducts: namesOfProducts
         });
-    console.log("EMAILS ABOUT TO BE SENT")
     sendEmail(toName, orderData.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", emailToUserTemplate);
     sendEmail("Admin", "ldthorne@brandeis.edu", "Airazon Orders", "orders@airazon.com", "New order placed!", emailToAdminTemplate);
-    console.log("SENT EMAILs")
+    console.log("SENT EMAILS")
     res.status(200).send("SUCCESS")
 }
 
