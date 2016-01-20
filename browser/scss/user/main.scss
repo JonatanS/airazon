@@ -1,8 +1,8 @@
 #user {
-	* {
-		list-style: none;
+    * {
+        list-style: none;
 
-	}
+    }
 
     .fullname {
         text-align: center;
@@ -24,19 +24,19 @@
     }
 
     a {
-    	text-decoration: none;
-    	color: black;
-    	cursor: pointer;
-    	&.active {
-    	  color: #008cba;
-    	}
-    	&:hover {
-    	  background: none;
-    	  color: #008cba;
-    	}
-    	&:focus {
-    	  background: none;
-    	}
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+        &.active {
+          color: #008cba;
+        }
+        &:hover {
+          background: none;
+          color: #008cba;
+        }
+        &:focus {
+          background: none;
+        }
     }
 
     h4 {
@@ -45,7 +45,7 @@
 }
 
 #user-edit {
-	.form-group {
+    .form-group {
         margin-top: 30px;
     }
     label {
@@ -59,8 +59,10 @@
         list-style: none;
     }
     .col-md-3 {
-        margin: 10px 10px 10px 10px;
+        margin-left: 50px;
+        margin-top: 30px;
         border: 1px solid black;
+        padding: 10px;
     }
 }
 

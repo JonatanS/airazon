@@ -18,6 +18,16 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
         });
     };
 
+    $scope.changeStatus = function () {
+        $scope.allUsers.forEach(function (user) {
+            UserFactory.update(user)
+            .then(function () {
+                console.log('Admin status changed!')
+            })
+        })
+
+    }
+
     UserFactory.getAll()
     .then(function (users) {
         $scope.allUsers = users;
