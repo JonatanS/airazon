@@ -142,10 +142,10 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
                     //let the navbar know:
                     Session.cart = updatedCart;
                     $rootScope.$emit('cartUpdated', 'Switched To backend');
+                    //remove storage cart
+                    removeCartFromLocalStorage();
+                    console.log('SWITCHED TO BACKEND FOR CART AFTER LOGIN');
                 });
-                //remove storage cart
-                removeCartFromLocalStorage();
-                console.log('SWITCHED TO BACKEND FOR CART AFTER LOGIN');
             }
             else{
                 //return cart from backend:
