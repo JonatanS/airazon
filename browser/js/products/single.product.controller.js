@@ -1,4 +1,4 @@
-app.controller('SingleProductCtrl', function ($scope, $state, AuthService, UserFactory, ProductFactory) {
+app.controller('SingleProductCtrl', function ($scope, $rootScope, $state, AuthService, UserFactory, ProductFactory, CartService) {
 	var calcArrs = function() {
 		$scope.ratingArr = new Array(ProductFactory.getRatings($scope.thisProduct.reviews))
 	$scope.remainder = new Array(5-ProductFactory.getRatings($scope.thisProduct.reviews))
@@ -17,6 +17,10 @@ app.controller('SingleProductCtrl', function ($scope, $state, AuthService, UserF
             });
         });
     };
+
+	$scope.updateCart = function(count, productId) {
+		CartService.updateProductCount(productId, count);
+	}
 
     $scope.submitProduct = function (productData) {
     	productData.tags = productData.tags.split(' ');
@@ -38,7 +42,7 @@ app.controller('SingleProductCtrl', function ($scope, $state, AuthService, UserF
 			console.log('deleted ', res);
 			ProductFactory.getAll()
 			.then(function (products) {
-				$scope.productArr = products;
+				$rootScope.$broadcast('updated productArr', products);
 			});
 		});
 	}

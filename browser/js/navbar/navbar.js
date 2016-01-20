@@ -54,6 +54,7 @@ app.directive('navbar', function ($rootScope, AuthService, UserFactory, AUTH_EVE
                     scope.cart = curCart;
                     if(scope.cart) setTotalNumItems();
                     console.log('Cart set in navbar:', scope.cart);
+					$rootScope.$broadcast('navbar update', scope.numItems);
                 });
             };
 

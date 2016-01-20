@@ -107,6 +107,16 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
         }
     }
 
+	this.updateProductCount = function(productId, count) {
+		return findIdx(productId).then(function(idx) {
+			return self.getCurrentCart()
+				.then(function(curCart) {
+				curCart.products[idx].quantity = count;
+				return updateCurrentCart(curCart);
+			});
+		});
+	}
+
     function updateCurrentCart(cartData) {
         console.log(cartData);
         return self.getCurrentCart()    //remove this

@@ -1,4 +1,4 @@
-app.controller('ProductCtrl', function ($scope, $state, AuthService, Session, UserFactory, ProductFactory) {
+app.controller('ProductCtrl', function ($rootScope, $scope, $state, AuthService, Session, UserFactory, ProductFactory) {
 	ProductFactory.getAll()
 	.then(function (products) {
 		$scope.productArr = products;
@@ -15,5 +15,10 @@ app.controller('ProductCtrl', function ($scope, $state, AuthService, Session, Us
 		console.log('admin should see shit', Session.user.isAdmin);
 		$scope.userIsAdmin = Session.user.isAdmin;
 	}
+
+	$rootScope.$on('updated productArr', function(emit, data) {
+		console.log('emission');
+		$scope.productArr = data;
+	});
 
 });
