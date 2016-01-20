@@ -20,7 +20,7 @@ app.config(function ($urlRouterProvider, $locationProvider, localStorageServiceP
 
     localStorageServiceProvider
         .setPrefix('Airazon')
-        .setStorageType('sessionStorage')
+        .setStorageType('localStorage')
         .setStorageCookieDomain('')
         //.setStorageCookieDomain('<domain>');  //change this once depolyed
         .setNotify(true, true)

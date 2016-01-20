@@ -28,7 +28,6 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     var self = this;
 
     function findIdx(pid){
-        console.log("findIdx", pid);
         var productIdx = -1;
         return self.getCurrentCart()
         .then(function(curCart){
@@ -49,13 +48,17 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     };
 
     function getCartFromLocalStorage() {
+        console.log("GETTING FROM LOCAL");
         if(localStorageService.isSupported) {   //might have been disabled by user
             var lsKeys = localStorageService.keys();
             if(lsKeys.indexOf('cart')!== -1) {
                 //found existing cart! grab it!
+                console.log("FOUND EXISTING IN LOCAL");
                 return JSON.parse(localStorageService.get('cart'));
             }
             else {
+
+                console.log("STORING NEW IN LOCAL")
                 var newCart = {products:[], dateCookieCreated: new Date()};
                 setCartInLocalStorage(newCart);
                 return newCart;
@@ -69,21 +72,18 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
     };
 
     function getCartByUser() {
-        console.log('GETTING CART FROM USER:');
         return UserFactory.getOne(Session.user._id)
         .then(function (populatedUser) {
             if(populatedUser) {
                 var userCart = populatedUser.orders.filter(function (o) {
                     return o.status.current === 'cart';
                 })[0];
-                console.log(userCart);
                 if (userCart) return userCart;
                 else {
                     console.log('creating empty cart on backend');
                     //create a new one on backend:
                     return OrderFactory.createCart({products:[]})
                     .then(function(newCart){
-                        console.log(newCart);
                         return newCart;
                     });
                 }
@@ -154,10 +154,8 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
             //check if product already exists and update quantity:
             return findIdx(productToAdd._id)
             .then(function(productIdx){
-                console.log('\n\n\n',productIdx);
                 return self.getCurrentCart()
                 .then(function(curCart){
-                    console.log('GRABBED CURRENT CART');
                     if(productIdx === -1) {
                         curCart.products.push({product:productToAdd._id, quantity:numProducts, pricePaid: productToAdd.price});
                     }
@@ -165,7 +163,6 @@ app.service('CartService', function ($rootScope,localStorageService, AUTH_EVENTS
                         curCart.products[productIdx].quantity += numProducts;
                     }
                     //update cart in local Storage:
-                    console.log(curCart.products);
                     return updateCurrentCart(curCart)
                     .then(function(){
                         //let the navbar know:
