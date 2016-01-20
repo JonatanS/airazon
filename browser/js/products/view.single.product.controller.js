@@ -16,7 +16,7 @@ app.controller('ViewSingleProductCtrl', function ($scope, Session, $state, CartS
 		if (Session.user) {
 			$state.go('add-review', { productId: productId });
 		} else {
-			console.log('Please Sign In To Write A Review!');
+			alert("Please Sign In To Write A Review!");
 		}
 	}
 });

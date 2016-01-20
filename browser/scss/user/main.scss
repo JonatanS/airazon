@@ -2,6 +2,7 @@
     * {
         list-style: none;
     }
+
     .fullname {
         text-align: center;
         font-style: italic;
@@ -19,7 +20,15 @@
         color: black;
         cursor: pointer;
         &.active {
-            color: #008cba;
+          color: #008cba;
+        }
+        &:hover {
+          background: none;
+          color: #008cba;
+        }
+        &:focus {
+          background: none;
+          color: #008cba;
         }
         &:hover {
             background: none;
@@ -49,8 +58,10 @@
         list-style: none;
     }
     .col-md-3 {
-        margin: 10px 10px 10px 10px;
+        margin-left: 50px;
+        margin-top: 30px;
         border: 1px solid black;
+        padding: 10px;
     }
 }
 
