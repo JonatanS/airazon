@@ -44,11 +44,14 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
     // }
 
     var populateUser = function () {
-        AuthService.getLoggedInUser().then(function (user) {
-            //console.log(loggedInUser);
-            UserFactory.getOne(user._id).then(function (populatedUser) {
-                $scope.currentUser = populatedUser;
-            });
+        AuthService.getLoggedInUser()
+        .then(function (user) {
+            if (user._id) {
+                //console.log(loggedInUser);
+                UserFactory.getOne(user._id).then(function (populatedUser) {
+                    $scope.currentUser = populatedUser;
+                });
+            }
         });
     };
 
