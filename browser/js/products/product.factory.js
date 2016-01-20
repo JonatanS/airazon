@@ -13,7 +13,7 @@ app.factory('ProductFactory', function ($http) {
                 })
         },
         remove: function(id) {
-            return $http.delete('/api/products/' + id).exec();
+            return $http.delete('/api/products/' + id).then(res => res.data);
         },
         update: function(productObj) {
             return $http.put('/api/products/' + productObj._id, productObj)

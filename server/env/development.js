@@ -10,6 +10,8 @@ module.exports = {
   	"testSecretKey": "sk_test_ywYTergB6avFv5nS0OBleBxq"
   },
   "MANDRILL": {
-  	"key": 'sZOZ_KZWBPbZ4lh-DnUQ2w'
+    "key": 'amsOzjEI9CvqhkU40I2y0A' //jon's api key
+
+  	// "key": 'sZOZ_KZWBPbZ4lh-DnUQ2w' //daniel's api key
   }
 };

@@ -1,9 +1,6 @@
 'use strict';
 var mongoose = require('mongoose');
-var User = require('./users');
 
-//var User = mongoose.model('User');
-console.log(mongoose.model);
 
 var schema = new mongoose.Schema({
     address: {
@@ -12,7 +9,8 @@ var schema = new mongoose.Schema({
     },
     created_at: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
+        required: true
     },
     products: [{
         quantity: {
@@ -37,7 +35,9 @@ var schema = new mongoose.Schema({
             enum: ['transit', 'delivered', 'processing', 'cart', 'cancelled']
         },
         updated_at: {
-            type: Date
+            type: Date,
+            required: true,
+            default: Date.now()
         }
     },
     trackingNumber: Number,
@@ -47,8 +47,11 @@ var schema = new mongoose.Schema({
     },
     billingZip: {
         type: Number,
-        min: 5,
-        max: 5
+        minlength: 5,
+        maxlength: 5
+    },
+    email: {
+        type: String
     }
 });
 
@@ -59,21 +62,27 @@ schema.virtual('total').get(function() {
 });
 
 schema.pre('save', function(next) {
-    var now = new Date();
-    this.status.updated_at = now;
-    if (this.status === 'processing') this.created_at = now;
-    if (!this.trackingNumber)
-        this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
-    next();
+    try{
+        console.log('saving')
+        var now = new Date();
+        this.status.updated_at = now;
+        if (this.status === 'processing') this.created_at = now;
+        if (!this.trackingNumber)
+            this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
+        next();
+    }catch(e){
+        console.error(e)
+    }
 });
 
 schema.pre('remove', function(next) {
-    User.findById(this.user).then(function(user) {
-        user.orders.pull({
-            _id: this._id
-        });
+	console.log('hitting pre-remove');
+	var that = this;
+	var User = mongoose.model('User');
+    User.findById(this.user).then(function (user) {
+        user.orders.pull(that._id);
         next();
-    });
+    }).then(null, console.error);
 });
 
 mongoose.model('Order', schema);

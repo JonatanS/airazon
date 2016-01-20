@@ -1,0 +1,20 @@
+<div>
+	Admin status: {{isAdmin}}
+	<ul class='borderbox-me-pls' ng-repeat='order in orders' ng-show='order.status.current !== "cart"'>
+		<button class='btn btn-danger' ng-click='deleteOrder(order._id)'>DELETE</button>
+		<li ng-click='viewOrder(order._id)'>Id: {{order._id}}</li>
+		<li><span ng-click='viewOrder(order._id)'>Status: {{ order.status.current }}</span>
+		<form>
+			<select ng-model=newStatus>
+				<option>transit</option>
+				<option>delivered</option>
+				<option>processing</option>
+				<option>cart</option>
+				<option>cancelled</option>
+			</select>
+		</form>
+		<button ng-click='changeStatus(order._id, newStatus)' class='btn'>Update Status</button></li>
+		<li ng-click='viewOrder(order._id)'>Order Date: {{ order.status.updated_at | date:'MM/dd/yyyy @ h:mma'}}</li>
+		<li ng-click='viewOrder(order._id)'>Tracking #: {{ order.trackingNumber }}</li>
+	</ul>
+</div>

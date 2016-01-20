@@ -3,21 +3,16 @@ app.config(function($stateProvider) {
         url: '/cart',
         controller: 'CartCtrl',
         templateUrl: 'js/cart/cart.html',
-        // resolve: {
-        //     currentCart: function(CartService) {
-        //         console.log("getting current cart in RESOLVE");
-        //         return CartService.getFromCookieOrCreateInCookie().$promise;
-        //     }
-        //}
     });
 });
 
-
 app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, $rootScope, $q, $http, CartService) {
-    var orderId = "569ad18c78ae327f1e82ddcf"
-    var namesString, totalPrice, productIds, productQuantities, productData;
+
+    var namesString, productPrices, totalPrice, productIds, productQuantities, productData;
+    var orderId;
 
     var renderProducts = function() {
+        //console.log($scope.cart);
 		var products = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
             .then(function(populatedProduct) {
@@ -27,38 +22,52 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
             })
 		});
 
-		$q.all(products).then(function(products) {
-			$scope.productArr = products;
-            namesString = products.map(function(product){
+        $q.all(products).then(function(products) {
+            $scope.productArr = products;
+            namesString = products.map(function(product) {
                 return product.name;
             });
             totalPrice = $scope.cart.products.reduce(function(prev, product) {
-                return prev + (product.quantity*product.pricePaid);
+                return prev + (product.quantity * product.pricePaid);
             }, 0);
-            productIds = products.map(function(product){
+            productIds = products.map(function(product) {
                 console.log(product)
                 return product._id
             })
-            productQuantities = products.map(function(product){
+            productQuantities = products.map(function(product) {
                 return product.quantity
             })
+            productPrices = products.map(function(product) {
+                return product.price
+            })
 
-            console.log("PRODUCT IDS:",productIds)
+            console.log("PRODUCT IDS:", productIds)
             console.log("TOTAL PRICE:", totalPrice)
             console.log("NAMES STRING", namesString)
             productData = {
                 names: namesString,
                 price: totalPrice,
                 productIds: productIds,
-                productQuantities: productQuantities
+                productQuantities: productQuantities,
+                productPrices: productPrices
             }
-		});
-	};
+        });
+    };
+
 
     var setCart = function () {
-        $scope.cart = CartService.getCurrentCart();
-        renderProducts();
-        console.log('Cart set in CartCtrl:', $scope.cart);
+        return CartService.getCurrentCart()
+        .then(function(curCart) {
+            $scope.cart = curCart
+            if(curCart._id){
+                console.log("THERE IS AN ORDER ID")
+                orderId = curCart._id
+            }else{
+                console.log("THERE IS NOT AN ORDER ID")
+            }
+            renderProducts();
+            //console.log('Cart set in CartCtrl:', $scope.cart);
+        });
     };
 
     var handler = StripeCheckout.configure({
@@ -68,6 +77,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         billingAddress: true,
         token: function(token) {
             StripeFactory.postStripeToken(token, orderId, productData);
+
         }
     });
 
@@ -75,15 +85,11 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         handler.open({
             name: 'Airazon',
             description: "Get some fresh air",
-            amount: totalPrice*100,
+            amount: totalPrice * 100,
         });
     };
 
-    $scope.updateProductCountInCart = function() {
-        //get productId and quantity and call cart service
-    }
-
     $rootScope.$on('cartUpdated', setCart);
-	//$rootScope.$on('cart populated', renderProducts);
+    //$rootScope.$on('cart populated', renderProducts);
     setCart();
 });

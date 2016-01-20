@@ -18,6 +18,16 @@ app.controller('UserCtrl', function($rootScope, $scope, AuthService, AUTH_EVENTS
         });
     };
 
+	$scope.viewOrder = function(orderId) {
+		console.log('viewing order: '+orderId);
+		$state.go('vieworder', {id: orderId});
+	}
+
+	$scope.goToAllOrders = function() {
+		console.log('Going to all orders and i am an admin: '+$scope.currentUser.isAdmin);
+		$state.go('allorders', {isAdmin: $scope.currentUser.isAdmin});
+	}
+
     UserFactory.getAll()
     .then(function (users) {
         $scope.allUsers = users;
