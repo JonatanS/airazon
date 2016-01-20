@@ -12,8 +12,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
     var orderId;
 
     var renderProducts = function() {
-        //console.log($scope.cart);
-		var products = $scope.cart.products.map(function(product) {
+		var productsPromise = $scope.cart.products.map(function(product) {
 			return $http.get('/api/products/'+product.product)
             .then(function(populatedProduct) {
                 var retObj = populatedProduct.data;
@@ -22,7 +21,7 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
             })
 		});
 
-        $q.all(products).then(function(products) {
+        $q.all(productsPromise).then(function(products) {
             $scope.productArr = products;
             namesString = products.map(function(product) {
                 return product.name;
@@ -41,9 +40,6 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
                 return product.price
             })
 
-            console.log("PRODUCT IDS:", productIds)
-            console.log("TOTAL PRICE:", totalPrice)
-            console.log("NAMES STRING", namesString)
             productData = {
                 names: namesString,
                 price: totalPrice,
@@ -60,13 +56,10 @@ app.controller('CartCtrl', function ($scope, StripeFactory,localStorageService, 
         .then(function(curCart) {
             $scope.cart = curCart
             if(curCart._id){
-                console.log("THERE IS AN ORDER ID")
+                //there is an id on the cart
                 orderId = curCart._id
-            }else{
-                console.log("THERE IS NOT AN ORDER ID")
             }
             renderProducts();
-            //console.log('Cart set in CartCtrl:', $scope.cart);
         });
     };
 

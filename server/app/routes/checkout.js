@@ -13,10 +13,72 @@ const mongoose = require('mongoose');
 var Order = mongoose.models.Order;
 var Product = mongoose.models.Product;
 var Address = mongoose.models.Address;
+module.exports = router;
 
 var orderId, stripeToken, productData, namesOfProducts, productIds, totalPrice, productQuantities, productPrices;
-module.exports = router;
-router.post("/", function(req, res, next) {
+
+
+function sendEmail(to_name, to_email, from_name, from_email, subject, message_html) { //send email function. Taken from Scott's example file
+    // console.log(arguments)
+    var message = {
+        "html": message_html,
+        "subject": subject,
+        "from_email": from_email,
+        "from_name": from_name,
+        "to": [{
+            "email": to_email,
+            "name": to_name
+        }],
+        "important": false,
+        "track_opens": true,
+        "auto_html": false,
+        "preserve_recipients": true,
+        "merge": false,
+        "tags": []
+    };
+    var async = false;
+    var ip_pool = "Main Pool";
+    mandrill_client.messages.send({
+        "message": message,
+        "async": async,
+        "ip_pool": ip_pool
+    }, function(result) {
+        console.log(result)
+    }, function(e) {
+        // Mandrill returns the error as an object with name and message keys
+        console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+        // A mandrill error occurred: Unknown_Subaccount - No subaccount exists with the id 'customer-123'
+    });
+}
+
+function startSendingEmail(orderData) {
+    console.log("FOUND AND UPDATED ORDER")
+    var toName = orderData.token.card.name.slice(0, orderData.token.card.name.indexOf(' '));
+    var emailToUserTemplate = ejs.render(emailToUser, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
+        {
+            name: toName,
+            orderId: orderData.orderId,
+            productIds: productIds,
+            totalPrice: totalPrice,
+            namesOfProducts: namesOfProducts
+        });
+    var emailToAdminTemplate = ejs.render(emailToAdmin, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
+        {
+            user_order_name: orderData.token.card.name,
+            orderId: orderData.orderId,
+            productIds: productIds,
+            totalPrice: totalPrice,
+            namesOfProducts: namesOfProducts
+        });
+    sendEmail(toName, orderData.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", emailToUserTemplate);
+    sendEmail("Admin", "ldthorne@brandeis.edu", "Airazon Orders", "orders@airazon.com", "New order placed!", emailToAdminTemplate);
+    console.log("SENT EMAILS")
+    return orderData;
+}
+
+
+
+router.post("/", function(req, res) {
     console.log(req.body)
     orderId = req.body.orderId;
     stripeToken = req.body.token.stripeToken;
@@ -32,7 +94,8 @@ router.post("/", function(req, res, next) {
         currency: "usd",
         source: stripeToken,
         description: "Example charge"
-    }, function(err, charge) {
+    }, function(err, successfulCharge) {
+        console.log(successfulCharge)
         if (err && err.type === 'StripeCardError') {
             // The card has been declined
             res.status(500).send("ERROR")
@@ -61,11 +124,11 @@ router.post("/", function(req, res, next) {
                                 },
                                 billingZip: req.body.token.card.address_zip
                             })
-                            .then(function(order) {
+                            .then(function() {
                                 var orderDataFromFunc = startSendingEmail(req.body)
                                 res.status(200).send(orderDataFromFunc);
-                            }).catch(function(err) {
-                                console.error(err);
+                            }).catch(function(error) {
+                                console.error(error);
                                 res.status(500).send(err)
                             })
                         } else {
@@ -74,7 +137,7 @@ router.post("/", function(req, res, next) {
 
                             var address = req.body.token.card.address_line1 + '';
                             if (req.body.token.card.address_line2) {
-                                address += eq.body.token.card.address_line2;
+                                address += req.body.token.card.address_line2;
                             }
                             var addressInfo = {
                                 firstName: req.body.token.card.name.slice(0, req.body.token.card.name.indexOf(' ')),
@@ -125,61 +188,7 @@ router.post("/", function(req, res, next) {
     });
 })
 
-function startSendingEmail(orderData) {
-    console.log("FOUND AND UPDATED ORDER")
-    var toName = orderData.token.card.name.slice(0, orderData.token.card.name.indexOf(' '));
-    var emailToUserTemplate = ejs.render(emailToUser, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
-        {
-            name: toName,
-            orderId: orderData.orderId,
-            productIds: productIds,
-            totalPrice: totalPrice,
-            namesOfProducts: namesOfProducts
-        });
-    var emailToAdminTemplate = ejs.render(emailToAdmin, //create a new template, passing through their name, num months since contact, and the latestPosts array of objects
-        {
-            user_order_name: orderData.token.card.name,
-            orderId: orderData.orderId,
-            productIds: productIds,
-            totalPrice: totalPrice,
-            namesOfProducts: namesOfProducts
-        });
-    sendEmail(toName, orderData.token.email, "Airazon Orders", "orders@airazon.com", "Thanks for your order!", emailToUserTemplate);
-    sendEmail("Admin", "ldthorne@brandeis.edu", "Airazon Orders", "orders@airazon.com", "New order placed!", emailToAdminTemplate);
-    console.log("SENT EMAILS")
-    return orderData;
-}
 
 
-function sendEmail(to_name, to_email, from_name, from_email, subject, message_html) { //send email function. Taken from Scott's example file
-    // console.log(arguments)
-    var message = {
-        "html": message_html,
-        "subject": subject,
-        "from_email": from_email,
-        "from_name": from_name,
-        "to": [{
-            "email": to_email,
-            "name": to_name
-        }],
-        "important": false,
-        "track_opens": true,
-        "auto_html": false,
-        "preserve_recipients": true,
-        "merge": false,
-        "tags": []
-    };
-    var async = false;
-    var ip_pool = "Main Pool";
-    mandrill_client.messages.send({
-        "message": message,
-        "async": async,
-        "ip_pool": ip_pool
-    }, function(result) {
-        console.log(result)
-    }, function(e) {
-        // Mandrill returns the error as an object with name and message keys
-        console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
-        // A mandrill error occurred: Unknown_Subaccount - No subaccount exists with the id 'customer-123'
-    });
-}
+
+
