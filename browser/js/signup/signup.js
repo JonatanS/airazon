@@ -12,9 +12,9 @@ app.controller('SignupCtrl', function ($scope, UserFactory, $state, AuthService)
 
     $scope.sendSignup = function(signupInfo){
         UserFactory.signup(signupInfo)
-        .then(function(loginInfo){
+        .then(function(){
             $scope.error = null;
-            AuthService.login(loginInfo)
+            AuthService.getLoggedInUser()
             .then(function () {
                 $state.go('home');
             }).catch(function () {

@@ -44,6 +44,11 @@ var schema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    billingZip: {
+        type: Number,
+        min: 5,
+        max: 5
     }
 });
 
@@ -53,18 +58,20 @@ schema.virtual('total').get(function() {
     }, 0);
 });
 
-schema.pre('save', function(next){
+schema.pre('save', function(next) {
     var now = new Date();
     this.status.updated_at = now;
     if (this.status === 'processing') this.created_at = now;
-    if(!this.trackingNumber)
+    if (!this.trackingNumber)
         this.trackingNumber = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
     next();
 });
 
 schema.pre('remove', function(next) {
-    User.findById(this.user).then(function (user) {
-        user.orders.pull({_id: this._id});
+    User.findById(this.user).then(function(user) {
+        user.orders.pull({
+            _id: this._id
+        });
         next();
     });
 });

@@ -54,6 +54,16 @@
     }
 }
 
+#user-update-admin {
+    li {
+        list-style: none;
+    }
+    .col-md-3 {
+        margin: 10px 10px 10px 10px;
+        border: 1px solid black;
+    }
+}
+
 #user-add-address {
     .form-group {
         margin-top: 30px;

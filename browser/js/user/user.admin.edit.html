@@ -1,0 +1,18 @@
+<div id='user-update-admin'>
+	<form novalidate class="form-horizontal" name='productForm' ng-submit='editUser(adminInfo)'>
+	    <div class="form-group">
+			<div class="col-md-3" ng-repeat='user in allUsers'>
+			    <li>Name: {{ user.firstName + ' ' + user.lastName }}</li>
+			    <li>Email: {{ user.email }}</li>
+			    <li>Admin: <span ng-show='!user.isAdmin'>No</span><span ng-show='user.isAdmin'>Yes</span></li>
+				
+			</div>
+		</div>
+		<div class="form-group">
+	      <div class="col-sm-offset-2 col-sm-10">
+	        <button type="submit" class="btn btn-success" >Submit</button>
+	        <a ui-sref='user'><button class="btn btn-danger">Cancel</button></a>
+	      </div>
+	    </div>
+	</form>
+</div>
