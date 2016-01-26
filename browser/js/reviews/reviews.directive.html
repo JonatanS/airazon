@@ -1,0 +1,13 @@
+<div ng-controller="ReviewCtrl" >
+    <div class="review col-xl-6 col-lg-6 col-md-8 col-sm-10 col-xs-12">
+       	<div>
+       	<h4><span id="title"><b>{{thisReview.title}}</b></span><span id="name" ng-show='thisReview.user'>{{thisReview.user.firstName}} {{thisReview.user.lastName[0]}}.</span><span id="name" ng-show='thisReview.user === null'>Anon</span></h4><br>
+        </div>
+        <div id="review-body">
+        <p>{{thisReview.body}}</p>
+        </div>
+        <hr>
+        <span ng-repeat="t in numStars track by $index"><i class='material-icons stars md-dark'>star_rate</i></span><span ng-repeat="t in numNotStars track by $index"><i class='material-icons stars white'>star_rate</i></span>
+    </div>
+</div>
+

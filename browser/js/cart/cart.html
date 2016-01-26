@@ -1,0 +1,11 @@
+<section id="cart">
+    <h2><span>Your cart contains {{cartSize}} product</span><span ng-show="cart.products.length != 1">s</span>. <span ng-show="cart.products.length === 0"> Go get some <a ui-sref="products">fresh air</a>!</span></h2>
+
+    <h4 ng-show="cart.created_at">Your cart was created on {{cart.created_at | date : 'short'}}</h4>
+    <div ng-repeat='product in productArr'>
+        <product this-product=product on-cart-page=true quantity=product.quantity></product>
+    </div>
+    <div  id="checkout">
+        <button ng-hide="productArr.length === 0" ng-click="showStripe()">Checkout</button>
+    </div>
+</section>

@@ -1,0 +1,103 @@
+#user {
+    * {
+        list-style: none;
+    }
+
+    .fullname {
+        text-align: center;
+        font-style: italic;
+    }
+    .avatar {
+        width: 125px;
+        height: 125px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+    .material-icons {
+        margin-left: 10px;
+    }
+    a {
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+        &.active {
+          color: #008cba;
+        }
+        &:hover {
+          background: none;
+          color: #008cba;
+        }
+        &:focus {
+          background: none;
+          color: #008cba;
+        }
+        &:hover {
+            background: none;
+            color: #008cba;
+        }
+        &:focus {
+            background: none;
+        }
+    }
+    #order {
+        margin-top: 20px;
+    }
+    h4 {
+        margin-left: 40px;
+    }
+    #your {
+        margin-left: 0px;
+    }
+    .admin {
+        margin-bottom: 15px;
+    }
+    .prof {
+        border-style: solid;
+        border-width: 1px;
+        padding: 10px 0px 10px 10px;
+    }
+    .col-sm-3 {
+        border-left-width: 1px;
+    }
+}
+
+#user-edit {
+    .form-group {
+        margin-top: 30px;
+    }
+    label {
+        font-weight: bold;
+        font-size: 16px;
+    }
+}
+
+#user-update-admin {
+    li {
+        list-style: none;
+    }
+    .col-md-3 {
+        margin-left: 50px;
+        margin-top: 30px;
+        border: 1px solid black;
+        padding: 10px;
+    }
+}
+
+#user-add-address {
+    .form-group {
+        margin-top: 30px;
+    }
+    label {
+        font-weight: bold;
+        font-size: 16px;
+        margin-top: 30px;
+        width: 80%
+    }
+}
+
+.borderbox-me-pls {
+    border: 1px solid black;
+    margin-right: 20px;
+    padding: 5px;
+}
+

@@ -1,0 +1,6 @@
+<div ng-controller='SingleProductCtrl'>
+	<h3><span>Product</span><a ui-sref='add-product' ng-show='currentUser.isAdmin === true' class='glyphicon glyphicon-plus'></a></h3>
+	<div ng-repeat='product in productArr | filter: {name: filterParam}'>
+		<product this-product='product' is-admin='userIsAdmin'></product>
+    </div>
+</div>
